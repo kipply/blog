@@ -4,18 +4,18 @@ date = 2021-03-06
 weight = 4
 +++
 
-> All code examples can be found in [this repo](https://github.com/kipply/tf-go-examples). If you know what you're looking for, and the code works out of the box for you, the following post will be pretty useless. 
+> All code examples can be found in [this repo](https://github.com/kipply/tf-go-examples). If you know what you're looking for, and the code works out of the box for you, the following post will be pretty useless.
 
-Tensorflow doesn't yet have support for TFRecords or TF Serving clients. This is not a package because TFRecord read/write and gRPC TFServing client are no more than a hundred lines each, and I don't want to maintain it. 
+Tensorflow doesn't yet have support for TFRecords or TF Serving clients. This is not a package because TFRecord read/write and gRPC TFServing client are no more than a hundred lines each, and I don't want to maintain it.
 
-Reference Links: [gRPC](https://grpc.io/) || [Proto Buffers Go](https://developers.google.com/protocol-buffers/docs/gotutorial) || [Tensorflow Serving](https://www.tensorflow.org/tfx/serving/serving_basic) || [TFRecords and tf.Train.Example](https://www.tensorflow.org/tutorials/load_data/tfrecord) 
+Reference Links: [gRPC](https://grpc.io/) || [Proto Buffers Go](https://developers.google.com/protocol-buffers/docs/gotutorial) || [Tensorflow Serving](https://www.tensorflow.org/tfx/serving/serving_basic) || [TFRecords and tf.Train.Example](https://www.tensorflow.org/tutorials/load_data/tfrecord)
 
 ### Compiling Protos
 
-To generate the Go files: 
+To generate the Go files:
 
 - Clone the TF Serving and Tensorflow repositories
-- Checkout to the version you need 
+- Checkout to the version you need
 - Run [this script](https://github.com/kipply/tf-go-examples/blob/master/compile.sh) after replacing the `PATH_TO_TF` and `PATH_TO_TF_SERVING` variables with your path.
 
 ```bash
@@ -36,25 +36,25 @@ eval "protoc -I $PATH_TO_TF_SERVING -I $PATH_TO_TF --go_out=plugins=grpc:src/ $P
 rm src/tensorflow_serving/apis/prediction_log.pb.go # causes an import loop
 ```
 
-I also commited the compilation [here](https://github.com/kipply/tf-go-examples/tree/master/src), though I can't guarantee the version. I recommend that the compiled files be placed in the gopath, or the package name can be find+replaced and you can commit the `pb.go` files to your repository. 
+I also commited the compilation [here](https://github.com/kipply/tf-go-examples/tree/master/src), though I can't guarantee the version. I recommend that the compiled files be placed in the gopath, or the package name can be find+replaced and you can commit the `pb.go` files to your repository.
 
-The script compiles more packages than is absolutely necessary for TFServing+TFRecord writing. The import loop is that ``tensorflow_serving/prediction_log` imports `tensorflow_serving/core` which imports `tensorflow_serving/apis`. It's a logically valid import cycle of the structs and functions, but Golang won't allow package import cycles. If you need `prediction_log` protos, you can manually move `/core` into `/apis`.
+The script compiles more packages than is absolutely necessary for TFServing+TFRecord writing. The import loop is that `tensorflow_serving/prediction_log` imports `tensorflow_serving/core` which imports `tensorflow_serving/apis`. It's a logically valid import cycle of the structs and functions, but Golang won't allow package import cycles. If you need `prediction_log` protos, you can manually move `/core` into `/apis`.
 
 ### TF Serving Client over GRPC
 
-A link to a executable script [here](https://github.com/kipply/tf-go-examples/blob/master/client.go). `cd` into the repository directory and execute with: 
+A link to a executable script [here](https://github.com/kipply/tf-go-examples/blob/master/client.go). `cd` into the repository directory and execute with:
 
 ```
 export GOPATH=$GOPATH:$PWD && go run client.go
 ```
 
-If no TF Serving Server is running at `localhost:9000`, then you'll get the following error; 
+If no TF Serving Server is running at `localhost:9000`, then you'll get the following error;
 
 ```
 rpc error: code = Unavailable desc = connection error: desc = "transport: Error while dialing dial tcp [::1]:9000: connect: connection refused"
 ```
 
-Here's a snippet of the script that fetches the model metadata, given the name of the model. In production, you should use a connection pool. 
+Here's a snippet of the script that fetches the model metadata, given the name of the model. In production, you should use a connection pool.
 
 ```go
 modelURL := "localhost:9000"
@@ -98,7 +98,7 @@ func int32Flatten(slisli [][]int32) []int32 {
 }
 ```
 
-### TFRecord Example Read+Write 
+### TFRecord Example Read+Write
 
 Link to executable script [here](https://github.com/kipply/tf-go-examples/blob/master/tfrecords.go). `cd` into the directory and execute with:
 
@@ -106,13 +106,13 @@ Link to executable script [here](https://github.com/kipply/tf-go-examples/blob/m
 go run tfrecords.go
 ```
 
-The output should be; 
+The output should be;
 
 ```
 [1 2 3 4 5] hello [0.1 0.2 0.3 0.4 0.5]
 ```
 
-Here is the part of the script that's needed for read+write! 
+Here is the part of the script that's needed for read+write!
 
 ```go
 // https://github.com/tensorflow/tensorflow/blob/051a96f3ec4fc38b248e8ae8ad2f8ad124eda59b/tensorflow/core/lib/hash/crc32c.h
@@ -207,9 +207,9 @@ func Read(r io.Reader) (data []byte, err error) {
 }
 ```
 
-The code that writes tf.Train.Examples is [here](https://github.com/kipply/tf-go-examples/blob/master/tfrecords.go), and uses the Example proto compiled in the previous step. 
+The code that writes tf.Train.Examples is [here](https://github.com/kipply/tf-go-examples/blob/master/tfrecords.go), and uses the Example proto compiled in the previous step.
 
 ---
 
-I'd like this to be good for Sea Eel Orbit, so in this post you have learned how to read and write Tensorflow Records in Golang and how to communicate with a Tensorflow Serving gRPC server with Golang. It also includes compiling Tensorflow and Tensorflow Serving protobufs. 
+I'd like this to be good for Sea Eel Orbit, so in this post you have learned how to read and write Tensorflow Records in Golang and how to communicate with a Tensorflow Serving gRPC server with Golang. It also includes compiling Tensorflow and Tensorflow Serving protobufs.
 

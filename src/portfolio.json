@@ -1,22 +1,18 @@
 {
   "experience": [
     {
-      "thing": "Generic Stealth AI Startup",
+      "thing": "Cohere AI",
       "description" : "Software Engineer",
       "date": "May 2020 - Present",
       "toggle": [1, 2, 3, 4, 5],
       "points": [
         {
           "toggle": [1, 2, 3, 4, 5],
-          "content": "Hand-sewing designs onto shirts for interns"
+          "content": "Hand-sewing logos onto shirts for swag"
         },
         {
           "toggle": [1, 2, 3, 4, 5],
-          "content": "Came up with good project names like \"blobheart\" and \"aurthur\""
-        },
-        {
-          "toggle": [1, 2, 3, 4, 5],
-          "content": "Tweeted tweets responsible for much recruiting"
+          "content": "Started on training data, then started the API Platform project, now focusing on model serving."
         }
       ]
     },
@@ -31,11 +27,11 @@
           "content": "Worked on TruffleRuby, a high-performance implementation of Ruby."
         },
         {
-          "toggle": [2, 3, 4, 5],
+          "toggle": [3, 4, 5],
           "content": "Fixed bugs and worked on infra to get the storefront renderer application mirroring traffic in TruffleRuby."
         },
         {
-          "toggle": [2, 3, 4, 5],
+          "toggle": [3, 4, 5],
           "content": "Worked on profiling, optimizations and wrote a <a href='https://engineering.shopify.com/blogs/engineering/optimizing-ruby-lazy-initialization-in-truffleruby-with-deoptimization'>blog post</a>."
         }
       ]
@@ -59,6 +55,10 @@
       "toggle": [1, 2, 3, 4, 5],
       "points": [
         {
+          "toggle": [2],
+          "content": "Worked on integrations for Facebook Ads and Instagram Checkout in the Shopify Platform."
+        },
+        {
           "toggle": [3, 4, 5],
           "content": "Documented and built components for moving to a new authentication system for internal tools. "
         },
@@ -67,15 +67,15 @@
           "content": "Made multiple apps GDPR compliant, impacting over 50,000 stores. "
         },
         {
-          "toggle": [2, 3, 4, 5],
+          "toggle": [3, 4, 5],
           "content": "Shipped features for reporting Facebook Ad analytics to Shopify."
         },
         {
-          "toggle": [2, 3, 4, 5],
+          "toggle": [3, 4, 5],
           "content": "Worked on building onboarding for the Instagram Checkout app, reduced API errors."
         },
         {
-          "toggle": [2, 3, 4, 5],
+          "toggle": [3, 4, 5],
           "content": "Shipped code generators for partners to build marketing activity extensions in NodeJS and Rails."
         }
       ]
@@ -88,15 +88,11 @@
       "points": [
         {
           "toggle": [2, 3, 4, 5],
-          "content": "Designed a new CS curriculum currently in-use with a focus on self-learning, targeted towards high school students."
+          "content": "Designed and built a platform for a CS curriculum with a focus on self-learning, targeted towards high school students."
         },
         {
-          "toggle": [2, 3, 4, 5],
-          "content": "Built a platform for coaches and students to track progress for the new curriculum."
-        },
-        {
-          "toggle": [4, 5],
-          "content": "Added end-to-end testing with <a target=\"_blank\" href='https://www.cypress.io/'>Cypress</a> while working on small features and bugs."
+          "toggle": [3, 4, 5],
+          "content": "Added end-to-end testing with <a target=\"_blank\" href='https://www.cypress.io/'>Cypress</a> while maintaining and adding features to the platform."
         },
         {
           "toggle": [5],
@@ -252,57 +248,57 @@
   "hobbies": [
     {
       "thing": "Aerial Arts",
-      "description": "Mostly hoop, some silks, rope and pole",
+      "description": "Mostly hoop, sometimes pole",
       "date": "August 2018 - Now",
       "toggle": [1, 2, 3, 4, 5],
       "points": [
         {
           "toggle": [2, 3, 4, 5],
-          "content": "I get really sad when I don't go to the circus space for too long <3."
+          "content": "I used to tell people I'm not that good but turns out everyone is impressed by it, so yeah I can hang from a bar with one kneepit."
         },
         {
-          "toggle": [2, 3, 4, 5],
+          "toggle": [3, 4, 5],
           "content": "I've also started playing around with poi and juggling!"
         }
       ]
     },
     {
       "thing": "Reading",
-      "description": "Money Stuff, Wait but Why, some others",
-      "date": "",
+      "description": "Mostly blog posts, tweets, my friends' messages",
+      "date": "inf",
       "toggle": [1, 2, 3, 4, 5],
       "points": [
         {
           "toggle": [2, 3, 4, 5],
-          "content": "I don't read a lot of full books, but I never miss an article of Money Stuff (about finance)"
+          "content": "I almost never read books, it's incredibly difficult for me and I'm a silly person who still hasn't tried audiobooks."
         },
         {
           "toggle": [2, 3, 4, 5],
-          "content": "I'm working through Wait but Why, and a bunch of miscellaneous blogs. A lot of my reading time goes towards Reddit / Twitter etc"
+          "content": "I mostly read things related to programming, I never miss Money Stuff and I read a lot of effective altruism related content. I read a much of other miscellaneous stuff, mostly with the goal of helping me form new opinions (which is fun!)"
         }
       ]
     },
     {
       "thing": "Consuming Media",
       "description": "Anime, TV, Film, etc",
-      "date": "All the damn time",
+      "date": "inf",
       "toggle": [1, 2, 3, 4, 5],
       "points": [
         {
           "toggle": [2, 3, 4, 5],
-          "content": "Anime is always great, and I watch some of the big movies. I watch a lot of TV shows (drama, sitcom, reality, whatever) though the one that still stands out to me in Hannibal."
+          "content": "I consume a lot of mainstream stuff (sitcoms, Marvel movies, dramas) and used to watch a lot of anime. Now, I mostly try to listen to music (Taylor Swift!) and watch wholesome things (Great British Bakeoff)."
         }
       ]
     },
     {
-      "thing": "Beat Saber",
-      "description": "The VR game where you hit stuff to music",
+      "thing": "Rhythm Games",
+      "description": "Beat Saber, Dance Dance Revolution",
       "date": "August 2019 - Now",
       "toggle": [1, 2, 3, 4, 5],
       "points": [
         {
-          "toggle": [4, 5],
-          "content": "I have an Oculus Quest, plays Expert+"
+          "toggle": [2, 3, 4, 5],
+          "content": "Retired from Beat Saber but could S rank most Expert+, now trying to get more DDR time."
         }
       ]
     },
@@ -468,7 +464,7 @@
       "points": []
     },
     {
-      "thing": "Hackathons",
+      "thing": "30+ Hackathons",
       "description": "Various of Universities and Venues",
       "date": "November 2015 - August 2018",
       "toggle": [2, 3, 4, 5],
@@ -488,32 +484,11 @@
       ]
     },
     {
-      "thing": "Speaker",
-      "description": "Wolfram Technology Conference",
-      "date": "Oct 2017",
-      "toggle": [1, 2, 3, 4, 5],
-      "points": [
-        {
-          "toggle": [2, 3, 4, 5],
-          "content": "Spoke about the applications of Wolfram Alpha in education, and how to used software to improve existing study tools targeted towards sciences."
-        }
-      ]
-    },
-    {
-      "thing": "Speaker",
-      "description": "PyCon Canada",
-      "date": "Nov 2019",
-      "toggle": [1, 2, 3, 4, 5],
-      "points": [
-        {
-          "toggle": [2, 3, 4, 5],
-          "content": "Spoke about Python design history and some weird highlights."
-        },
-        {
-          "toggle": [2, 3, 4, 5],
-          "content": "It's very all-over-the-place, but I wrote a loosely related <a href='https://carolchen.me/blog/2020/02/24/Python-History-Since-the-Fifteenth-Century/'>blog post</a>."
-        }
-      ]
+      "thing": "Interact Fellowship",
+      "description": "Fellow",
+      "date": "2021",
+      "toggle": [2, 3, 4, 5],
+      "points": []
     },
     {
       "thing": "SPARC",
@@ -527,7 +502,35 @@
         },
         {
           "toggle": [2, 3, 4, 5],
-          "content": "I can't quite put it into words, but it was a very impactful experience."
+          "content": "This experience ranks as one of the best things that have happened to me <3"
+        }
+      ]
+    },
+    {
+      "thing": "Speaker",
+      "description": "Wolfram Technology Conference",
+      "date": "Oct 2017",
+      "toggle": [1, 2, 3, 4, 5],
+      "points": [
+        {
+          "toggle": [3, 4, 5],
+          "content": "Spoke about the applications of Wolfram Alpha in education, and how to used software to improve existing study tools targeted towards sciences."
+        }
+      ]
+    },
+    {
+      "thing": "Speaker",
+      "description": "PyCon Canada",
+      "date": "Nov 2019",
+      "toggle": [1, 2, 3, 4, 5],
+      "points": [
+        {
+          "toggle": [3, 4, 5],
+          "content": "Spoke about Python design history and some weird highlights."
+        },
+        {
+          "toggle": [3, 4, 5],
+          "content": "It's very all-over-the-place, but I wrote a loosely related <a href='https://carolchen.me/blog/2020/02/24/Python-History-Since-the-Fifteenth-Century/'>blog post</a>."
         }
       ]
     },

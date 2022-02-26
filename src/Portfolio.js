@@ -22,7 +22,6 @@ class Portfolio extends Component {
         <section id="portfolio">
           <h2 className="section-heading">things i've done</h2>
           <center>
-            <span>Last Updated May 2020</span>
             <Slider
               defaultValue={2}
               min={1}
