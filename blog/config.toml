@@ -1,8 +1,8 @@
 # Put all your custom variables here
 # Base URL of the site, the only required config argument
 base_url = "/blog"
-title = "kipply's Blog"
-description = "Carol Chen's blog about stuff she does or reads about or observes"
+title = "blog"
+description = "kipply's blog about stuff she does or reads about or observes"
 # The default language, used in RSS
 default_language = "en"
 
@@ -78,3 +78,5 @@ extra_syntaxes = []
 # will be accessible in all templates
 [extra]
 analytics = ""
+katex_enable = true
+katex_auto_render = true

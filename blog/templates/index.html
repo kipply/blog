@@ -39,6 +39,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
   {%- endblock css %}
 
+  {% block js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    {% if config.extra.katex_enable %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+        {% if config.extra.katex_auto_render %}
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"
+            onload="renderMathInElement(document.body);"></script>
+        {% endif %}
+    {% endif %}
+  {% endblock js %}
+
   <script type="text/javascript">
   let fetchStyle = function() {
     const themes = ['blue', 'cyan', 'deeppurple', 'green', 'indigo', 'lightblue', 'lightgreen', 'pink', 'purple', 'teal'];
@@ -86,37 +100,35 @@
     {% block content -%}
     <div class="row">
       <div class="col">
-        <h1>technical</h1>
-        {% set section = get_section(path="technical/_index.md") %}
-        {% for page in section.pages %}
-          <article class="c-article p-list-article">
-            {{ macros::title(page=page) }}
-          </article>
-        {% endfor %}
-
-        <h1>tech related</h1>
-        {% set section = get_section(path="tech/_index.md") %}
-        {% for page in section.pages %}
+        <h1>chronological</h1>
+        {% set is_first_page = true %}
+        {% if paginator is defined %}
+            {% set pages = paginator.pages %}
+            {% set is_first_page = paginator.current_index == 1 %}
+        {% elif section is defined %}
+            {% set pages = section.pages %}
+        {% endif %}
+        {% for page in pages %}
           <article class="c-article p-list-article">
             {{ macros::title(page=page) }}
           </article>
         {% endfor %}
       </div>
       <div class="col">
-        <h1>musings</h1>
-        {% set section = get_section(path="misc/_index.md") %}
-        {% for page in section.pages %}
+        <h1>endorsed</h1>
+          {% set section = get_section(path="endorsed/_index.md") %}
+          {% for page in section.pages %}
           <article class="c-article p-list-article">
             {{ macros::title(page=page) }}
           </article>
-        {% endfor %}
-        <h1>logs</h1>
-        {% set section = get_section(path="logs/_index.md") %}
-        {% for page in section.pages %}
+          {% endfor %}
+        <h1>promoted</h1>
+          {% set section = get_section(path="promoted/_index.md") %}
+          {% for page in section.pages %}
           <article class="c-article p-list-article">
             {{ macros::title(page=page) }}
           </article>
-        {% endfor %}
+          {% endfor %}
       </div>
     </div>
     {%- endblock content %}
