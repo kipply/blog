@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" >
-<link rel="stylesheet" href="/blog/themes/purple.css">
+<link rel="stylesheet" href="/personal_site/themes/purple.css">
 <head>
   <meta charset="utf-8" />
   <meta name="referrer" content="no-referrer">
@@ -17,7 +17,7 @@
   <meta name="twitter:description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
 
   <meta property="og:site_name" content="blog" />
-  <meta property="og:url" content="&#x2F;blog" />
+  <meta property="og:url" content="&#x2F;personal_site" />
 
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
@@ -40,7 +40,7 @@
   <script type="text/javascript">
   let fetchStyle = function() {
     const themes = ['blue', 'cyan', 'deeppurple', 'green', 'indigo', 'lightblue', 'lightgreen', 'pink', 'purple', 'teal'];
-    const theme = "/blog/themes/" + themes[Math.floor(Math.random() * themes.length)] + ".css";
+    const theme = "/personal_site/themes/" + themes[Math.floor(Math.random() * themes.length)] + ".css";
 
     let link = document.createElement('link');
     link.type = 'text/css';
@@ -56,7 +56,7 @@
   fetchStyle()
   </script>
 
-  <link rel='icon' type='image/x-icon' href="/blog/favicon.ico" />
+  <link rel='icon' type='image/x-icon' href="/personal_site/favicon.ico" />
 
   
 
@@ -65,7 +65,7 @@
 </head>
 <body>
   <header class="header">
-    <h1 class="title-link"><a href="&#x2F;blog" class="p-title__link">blog</a></h1>
+    <h1 class="title-link"><a href="&#x2F;personal_site" class="p-title__link">blog</a></h1>
     <div class="header-links">
       <a href="https://carolchen.me"> Personal Site </a> |
       <a href="https://twitter.com/kipperrii"> Twitter </a> |
@@ -102,12 +102,12 @@ I will also provide code examples to show where an optimization might occur, how
 </blockquote>
 <h2 id="table-of-contents-highlights">Table of Contents / Highlights</h2>
 <ul>
-<li><a href="/blog/jits-impls/#wait-but-you-said-meta-tracing">How meta-tracing in Pypy works</a></li>
-<li><a href="/blog/jits-impls/#interpreting-c">How GraalVM languages support C extensions</a></li>
-<li><a href="/blog/jits-impls/#go-back-to-the-interpreted-code-it-ll-be-faster">Deoptimisation</a></li>
-<li><a href="/blog/jits-impls/#wet-code-is-fast-code-inlining-and-osr">Inlining and OSR</a></li>
-<li><a href="/blog/jits-impls/#what-if-instead-of-instruction-based-ir-like-everyone-else-we-had-a-big-graph-and-also-it-modifies-itself">Seas of Nodes</a></li>
-<li><a href="/blog/jits-impls/#yay-jit-compiled-code-let-s-compile-it-again-and-again">Tiering JITs</a></li>
+<li><a href="/personal_site/jits-impls/#wait-but-you-said-meta-tracing">How meta-tracing in Pypy works</a></li>
+<li><a href="/personal_site/jits-impls/#interpreting-c">How GraalVM languages support C extensions</a></li>
+<li><a href="/personal_site/jits-impls/#go-back-to-the-interpreted-code-it-ll-be-faster">Deoptimisation</a></li>
+<li><a href="/personal_site/jits-impls/#wet-code-is-fast-code-inlining-and-osr">Inlining and OSR</a></li>
+<li><a href="/personal_site/jits-impls/#what-if-instead-of-instruction-based-ir-like-everyone-else-we-had-a-big-graph-and-also-it-modifies-itself">Seas of Nodes</a></li>
+<li><a href="/personal_site/jits-impls/#yay-jit-compiled-code-let-s-compile-it-again-and-again">Tiering JITs</a></li>
 </ul>
 <h1 id="meta-tracing">(Meta)Tracing</h1>
 <p>LuaJIT employs a method called tracing. Pypy does meta-tracing, which involves using a system to generate tracing interpreters and JITs. Pypy and LuaJIT are not the reference implementations of Python or Lua, but projects on their own. I would describe LuaJIT as shockingly fast, and it describes itself as one of the fastest dynamic language implementations -- which I buy fully.</p>
@@ -424,9 +424,9 @@ I will also provide code examples to show where an optimization might occur, how
     ga('create', 'UA-96105732-1', 'auto');
     ga('send', 'pageview');
   </script>
-  <link rel="stylesheet" href="/blog/css/katex.min.css">
-  <script defer src="/blog/js/katex.min.js"></script>
-  <script defer src="/blog/js/mathtex-script-type.min.js"></script>
+  <link rel="stylesheet" href="/personal_site/css/katex.min.css">
+  <script defer src="/personal_site/js/katex.min.js"></script>
+  <script defer src="/personal_site/js/mathtex-script-type.min.js"></script>
   <script src="https://kit.fontawesome.com/fa2f0e5568.js" crossorigin="anonymous"></script>
 </body>
 </html>
