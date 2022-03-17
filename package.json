@@ -26,7 +26,7 @@
     "start-js": "react-scripts start",
     "start": "npm-run-all -p start-js",
     "build-js": "react-scripts build",
-    "dev-blog": "cd blog && zola build --output-dir ../docs/",
+    "dev-blog": "cd blog && zola build --output-dir ../docs/blog",
     "build": "npm-run-all build-css build-js && cd blog && zola build --output-dir ../build/blog/",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

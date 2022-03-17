@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" >
+<link rel="stylesheet" href="/blog/themes/purple.css">
+<head>
+  <meta charset="utf-8" />
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+  <title>shortest path, faster | blog</title>
+<meta property="og:title" content="shortest path, faster | blog" />
+<meta name="twitter:title" content="shortest path, faster | blog" />
+
+  <meta name="description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+  <meta property="og:description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+  <meta name="twitter:description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+
+  <meta property="og:site_name" content="blog" />
+  <meta property="og:url" content="&#x2F;blog" />
+
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"
+            onload="renderMathInElement(document.body);"></script>
+        
+    
+  
+
+  <script type="text/javascript">
+  let fetchStyle = function() {
+    const themes = ['blue', 'cyan', 'deeppurple', 'green', 'indigo', 'lightblue', 'lightgreen', 'pink', 'purple', 'teal'];
+    const theme = "/blog/themes/" + themes[Math.floor(Math.random() * themes.length)] + ".css";
+
+    let link = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.onload = function() {
+      document.documentElement.setAttribute("style", "display:auto");
+     };
+    link.href = theme;
+
+    let headScript = document.querySelector('script');
+    headScript.parentNode.insertBefore(link, headScript);
+  }
+  fetchStyle()
+  </script>
+
+  <link rel='icon' type='image/x-icon' href="/blog/favicon.ico" />
+
+  
+
+  
+
+</head>
+<body>
+  <header class="header">
+    <h1 class="title-link"><a href="&#x2F;blog" class="p-title__link">blog</a></h1>
+    <div class="header-links">
+      <a href="https://carolchen.me"> Personal Site </a> |
+      <a href="https://twitter.com/kipperrii"> Twitter </a> |
+      <a href="https://github.com/kipply"> Github </a> |
+      <a href="mailto:hello@carolchen.me"> Email </a>
+    </div>
+  </header>
+
+  <main id="main" class="main">
+    
+<article class="article">
+  <header>
+    <h1>shortest path, faster</h1>
+    <div>
+      <div class="article-meta">
+        <time datetime="2021-04-01">
+          2021-04-01
+        </time>
+        
+        (4 min read)
+      </div>
+    </div>
+  </header>
+  <section id="js-article" class="article-body">
+    
+<p>when i was young, i had no care for software engineering. data structures and algorithms were much more alluring.</p>
+<p>i learned about the time and its complexity, and the fastest ways to solve my perplexities.</p>
+<p>the challenges i faced were of that a multitude, but none changed me like <a href="https://dmoj.ca/problem/vmss7wc15c4p3">&quot;Gold-Chain Rule&quot;</a>.</p>
+<p>see i knew to find the shortest path, dijkstra's algorithm was the fastes.</p>
+<p>it runs in oh of [V plus (E times log V)] where V and E are the number of verticies and edges on a ~tree~ directed weighted graph.</p>
+<p>when people talk about complexity they always assume the worst case. considering the average may give you a taste.</p>
+<p>see to pass gold-chain rule, dijkstra was not faster. shortest path faster algorithm was... faster.</p>
+<p>though no average case has been proved, an O(E) average case complexity seems to be the truth</p>
+<p>but how better to explain shortest path faster algorithm, than to describe it in poem?</p>
+<p>surely an implementation is called for, i won't make you wait anymore.</p>
+<pre data-lang="python" style="background-color:#282a36;color:#f8f8f2;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#6272a4;"># a deque is a double ended queue
+</span><span style="color:#ff79c6;">from </span><span>collections </span><span style="color:#ff79c6;">import </span><span>deque
+</span><span>
+</span><span style="color:#6272a4;"># V and E are vertices and edges, which you knew
+</span><span>v </span><span style="color:#ff79c6;">= </span><span style="color:#bd93f9;">4
+</span><span>e </span><span style="color:#ff79c6;">= </span><span style="color:#bd93f9;">3
+</span><span>
+</span><span style="color:#6272a4;"># adj[x].append((y, d)) says there&#39;s a path from x to y with distance d
+</span><span>adj </span><span style="color:#ff79c6;">= </span><span>[[] </span><span style="color:#ff79c6;">for </span><span style="color:#bd93f9;">_ </span><span style="color:#ff79c6;">in </span><span style="color:#8be9fd;">range</span><span>(v </span><span style="color:#ff79c6;">+ </span><span style="color:#bd93f9;">1</span><span>)]
+</span><span>adj[</span><span style="color:#bd93f9;">1</span><span>]</span><span style="color:#ff79c6;">.</span><span style="color:#50fa7b;">append</span><span>((</span><span style="color:#bd93f9;">2</span><span>, </span><span style="color:#bd93f9;">2</span><span>))
+</span><span>adj[</span><span style="color:#bd93f9;">1</span><span>]</span><span style="color:#ff79c6;">.</span><span style="color:#50fa7b;">append</span><span>((</span><span style="color:#bd93f9;">3</span><span>, </span><span style="color:#bd93f9;">5</span><span>))
+</span><span>adj[</span><span style="color:#bd93f9;">2</span><span>]</span><span style="color:#ff79c6;">.</span><span style="color:#50fa7b;">append</span><span>((</span><span style="color:#bd93f9;">3</span><span>, </span><span style="color:#bd93f9;">2</span><span>))
+</span><span>
+</span><span style="color:#6272a4;"># distances holds the of the shortest path for each node from node one, stay with me
+</span><span>distances </span><span style="color:#ff79c6;">= </span><span>[</span><span style="color:#ff79c6;">-</span><span style="color:#bd93f9;">1 </span><span style="color:#ff79c6;">for </span><span style="color:#bd93f9;">_ </span><span style="color:#ff79c6;">in </span><span style="color:#8be9fd;">range</span><span>(v </span><span style="color:#ff79c6;">+ </span><span style="color:#bd93f9;">1</span><span>)]
+</span><span>
+</span><span style="color:#6272a4;"># a queue is needed to store nodes as they&#39;re nagivated
+</span><span style="color:#6272a4;"># it started with node one with a distance of zero, this is fated
+</span><span>q </span><span style="color:#ff79c6;">= </span><span style="color:#50fa7b;">deque</span><span>([(</span><span style="color:#bd93f9;">0</span><span>, </span><span style="color:#bd93f9;">1</span><span>)])
+</span><span style="color:#6272a4;"># tree traversal starts!
+</span><span style="color:#ff79c6;">while </span><span>q:
+</span><span>    distance, node </span><span style="color:#ff79c6;">= </span><span>q</span><span style="color:#ff79c6;">.</span><span style="color:#50fa7b;">popleft</span><span>()
+</span><span>    distances[node] </span><span style="color:#ff79c6;">= </span><span>distance
+</span><span>    </span><span style="color:#ff79c6;">for </span><span>dest, add </span><span style="color:#ff79c6;">in </span><span>adj[node]:
+</span><span>        </span><span style="color:#6272a4;"># we only want to continue traversal down this branch if it feels good in our hearts
+</span><span>        </span><span style="color:#ff79c6;">if </span><span>distance </span><span style="color:#ff79c6;">+ </span><span>add </span><span style="color:#ff79c6;">&lt; </span><span>distances[node] </span><span style="color:#ff79c6;">or </span><span>distances[node] </span><span style="color:#ff79c6;">!= -</span><span style="color:#bd93f9;">1</span><span>:
+</span><span>            q</span><span style="color:#ff79c6;">.</span><span style="color:#50fa7b;">append</span><span>((distance </span><span style="color:#ff79c6;">+ </span><span>add, dest))
+</span><span>
+</span><span style="color:#ff79c6;">for </span><span>l </span><span style="color:#ff79c6;">in </span><span style="color:#8be9fd;">range</span><span>(</span><span style="color:#bd93f9;">1</span><span>, v </span><span style="color:#ff79c6;">+ </span><span style="color:#bd93f9;">1</span><span>):
+</span><span>    </span><span style="color:#8be9fd;">print</span><span>(distances[l])
+</span></code></pre>
+<p>so now you know how shortest path fastest algorithm works, perhaps it would help to see that it is no quirk.</p>
+<p>compare this to dijkstra's in your head, or just let me show you instead</p>
+<pre data-lang="python" style="background-color:#282a36;color:#f8f8f2;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#6272a4;"># import for priority queue, which again i suppose you knew
+</span><span style="color:#ff79c6;">from </span><span>heapq </span><span style="color:#ff79c6;">import </span><span>heappush, heappop
+</span><span>
+</span><span>v </span><span style="color:#ff79c6;">= </span><span style="color:#bd93f9;">4 </span><span style="color:#6272a4;"># same
+</span><span>e </span><span style="color:#ff79c6;">= </span><span style="color:#bd93f9;">3 </span><span style="color:#6272a4;"># same
+</span><span>adj </span><span style="color:#ff79c6;">= </span><span>[[] </span><span style="color:#ff79c6;">for </span><span style="color:#bd93f9;">_ </span><span style="color:#ff79c6;">in </span><span style="color:#8be9fd;">range</span><span>(v </span><span style="color:#ff79c6;">+ </span><span style="color:#bd93f9;">1</span><span>)] </span><span style="color:#6272a4;"># same
+</span><span>adj[</span><span style="color:#bd93f9;">1</span><span>]</span><span style="color:#ff79c6;">.</span><span style="color:#50fa7b;">append</span><span>((</span><span style="color:#bd93f9;">2</span><span>, </span><span style="color:#bd93f9;">2</span><span>)) </span><span style="color:#6272a4;"># same
+</span><span>adj[</span><span style="color:#bd93f9;">1</span><span>]</span><span style="color:#ff79c6;">.</span><span style="color:#50fa7b;">append</span><span>((</span><span style="color:#bd93f9;">3</span><span>, </span><span style="color:#bd93f9;">5</span><span>)) </span><span style="color:#6272a4;"># same
+</span><span>adj[</span><span style="color:#bd93f9;">2</span><span>]</span><span style="color:#ff79c6;">.</span><span style="color:#50fa7b;">append</span><span>((</span><span style="color:#bd93f9;">3</span><span>, </span><span style="color:#bd93f9;">2</span><span>)) </span><span style="color:#6272a4;"># same
+</span><span>distances </span><span style="color:#ff79c6;">= </span><span>[</span><span style="color:#ff79c6;">-</span><span style="color:#bd93f9;">1 </span><span style="color:#ff79c6;">for </span><span style="color:#bd93f9;">_ </span><span style="color:#ff79c6;">in </span><span style="color:#8be9fd;">range</span><span>(v </span><span style="color:#ff79c6;">+ </span><span style="color:#bd93f9;">1</span><span>)] </span><span style="color:#6272a4;"># same
+</span><span>
+</span><span style="color:#6272a4;"># saying the same words many times, does count as a rhyme
+</span><span>q </span><span style="color:#ff79c6;">= </span><span>[(</span><span style="color:#bd93f9;">0</span><span>, </span><span style="color:#bd93f9;">1</span><span>)] </span><span style="color:#6272a4;"># this is still the same, except it&#39;s a list instead of a deque, which in python is just a name
+</span><span style="color:#ff79c6;">while </span><span>q: </span><span style="color:#6272a4;"># same
+</span><span>    distance, node </span><span style="color:#ff79c6;">= </span><span style="color:#50fa7b;">heappop</span><span>(q) </span><span style="color:#6272a4;"># the essence of the pop is maintained
+</span><span>
+</span><span>    </span><span style="color:#6272a4;"># this is something a little different, logic that was in the loop is now in the parent
+</span><span>    </span><span style="color:#ff79c6;">if </span><span>distances[node] </span><span style="color:#ff79c6;">!= -</span><span style="color:#bd93f9;">1</span><span>:
+</span><span>        </span><span style="color:#ff79c6;">continue
+</span><span>
+</span><span>    distances[node] </span><span style="color:#ff79c6;">= </span><span>distance </span><span style="color:#6272a4;"># same
+</span><span>    </span><span style="color:#ff79c6;">for </span><span>dest, add </span><span style="color:#ff79c6;">in </span><span>adj[node]: </span><span style="color:#6272a4;"># same
+</span><span>        </span><span style="color:#50fa7b;">heappush</span><span>(q, (distance </span><span style="color:#ff79c6;">+ </span><span>add, dest)) </span><span style="color:#6272a4;"># the essence of the push is maintained
+</span><span>
+</span><span style="color:#ff79c6;">for </span><span>l </span><span style="color:#ff79c6;">in </span><span style="color:#8be9fd;">range</span><span>(</span><span style="color:#bd93f9;">1</span><span>, v </span><span style="color:#ff79c6;">+ </span><span style="color:#bd93f9;">1</span><span>): </span><span style="color:#6272a4;"># same
+</span><span>    </span><span style="color:#8be9fd;">print</span><span>(distances[l]) </span><span style="color:#6272a4;"># same
+</span></code></pre>
+<p>a pop quiz! get ready!</p>
+<p>intuitive this algorithm may be, but how would you prove its correctness with ease?</p>
+<p>this is a challenging question i pose, as code examples are always mostly a show. not a bug in the implementation of shortest path faster algorithm per say, but perhaps a limitation of inputs are at play. a hint i shall provide, for addressing negative weights in a graph often slides.</p>
+
+
+  </section>
+  <footer>
+    <div class="social-icons">
+      ---
+      <br/>
+      Thanks for reading <3
+      <br/>
+      I'm generally open to being contacted, find/contact me via:
+      <a class="icon-link" href="https://twitter.com/kipperrii">
+        <i class="fab fa-twitter"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/kipply">
+        <i class="fab fa-github"></i>
+      </a>
+      <a class="icon-link" href="https://www.instagram.com/kipperrii/">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a class="icon-link" href="mailto:hello@carolchen.me">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </div>
+  </footer>
+</article>
+  </main>
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-96105732-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  <link rel="stylesheet" href="/blog/css/katex.min.css">
+  <script defer src="/blog/js/katex.min.js"></script>
+  <script defer src="/blog/js/mathtex-script-type.min.js"></script>
+  <script src="https://kit.fontawesome.com/fa2f0e5568.js" crossorigin="anonymous"></script>
+</body>
+</html>
+
