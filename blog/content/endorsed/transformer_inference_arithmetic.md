@@ -17,6 +17,7 @@ Each weight or a parameter is a float that was tuned during training and is usua
 
 It's useful to break down what these weights are, so that we can understand how the components are used for inferencing later.
 
+> todo update to include layer norm and add token embeddings to main equation. update language for input projections for qkv and ouptut projection for o
 The weights loosely consist of the following, per each layer:
 
  - \\( W_q,W_k,W_v \\) matrices, which are each \\(d_{model} \cdot n_{heads}\cdot d_{head} \\)
@@ -44,7 +45,7 @@ This is not *quite* 52B. It's probably cheating to round up by half a billion pa
 
 
 ### kv cache
-Before sampling execuse, there's a forwards pass, or input encoding step which computes some matrices from the context provided to the model. We'll call this a kv cache, because \\(k, v \\) are the values stored in the cache (for each attention layer). Others may call it a past cache (aka, the open source GPT-2 implementation called it `past`).
+Before sampling executes, there's a forwards pass, or input encoding step which computes some matrices from the context provided to the model. We'll call this a kv cache, because \\(k, v \\) are the values stored in the cache (for each attention layer). Others may call it a past cache (aka, the open source GPT-2 implementation called it `past`).
 
 The purpose of this, is that it would be inefficient to recalculate those values every time we wanted to generate a new token. With the computed \\(k, v \\) values, we can save quite a bit of computation. Per token, the number of bytes we store is
 
@@ -244,6 +245,8 @@ The following calculations are per token, per layer. I describe \\(W_q, W_k, W_v
     - The original transformer has a cosine positional encoding scheme, which is an addition to the token embedding.
     - Different transformers have fairly different ways of giving position-data, which is why I wanted to consider it separately. But loosely, an addition across a token embedding matrix should be \\(d_{model}\\), though some other minor operations also happen so I'll approximate to \\(6 \cdot d_{model}\\)
     - Flop count: \\(6 \cdot d_{model}\\)
+
+> todo: add layer norm
 
 Adding up all the flops!
 

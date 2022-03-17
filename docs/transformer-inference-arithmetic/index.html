@@ -99,7 +99,10 @@
 <h3 id="parameter-counting">parameter counting</h3>
 <p>Each weight or a parameter is a float that was tuned during training and is usually two bytes as most training is done half-precision now(<a href="https://en.wikipedia.org/wiki/Bfloat16_floating-point_format">bfloat16</a>). Not everything is trained/served bfloat16, but it's at least half-precision (at least since <a href="https://arxiv.org/pdf/2005.14165.pdf">the GPT-3 Paper</a> in 2020) which gets us the two bytes.</p>
 <p>It's useful to break down what these weights are, so that we can understand how the components are used for inferencing later.</p>
-<p>The weights loosely consist of the following, per each layer:</p>
+<blockquote>
+<p>todo update to include layer norm and add token embeddings to main equation. update language for input projections for qkv and ouptut projection for o
+The weights loosely consist of the following, per each layer:</p>
+</blockquote>
 <ul>
 <li>\( W_q,W_k,W_v \) matrices, which are each \(d_{model} \cdot n_{heads}\cdot d_{head} \)</li>
 <li>projector weights, \( W_o \), which are also \(d_{model}\cdot n_{heads}\cdot d_{head} \) and used right before the MLP layer (the feed-foward neural network that's layered on top of self-attention)</li>
@@ -117,7 +120,7 @@
 = 51,539,607,552</script>
 <p>This is not <em>quite</em> 52B. It's probably cheating to round up by half a billion parameters, but we can account for them! The equation above is most of the parameters, but we're missing token embeddings. Anthropic uses a 65536 vocab size, so we get \(n_{tokens} * d_{model} = 536,870,912 \). Adding \(536,870,912 + 51,539,607,552 = 52,076,478,464\). There might be some other paramers like biases for the models, or for Gopher 280B there's 21.5B weights spent on some relative positional encoding method presented in the <a href="https://arxiv.org/abs/1901.02860">Transformer XL paper</a>.</p>
 <h3 id="kv-cache">kv cache</h3>
-<p>Before sampling execuse, there's a forwards pass, or input encoding step which computes some matrices from the context provided to the model. We'll call this a kv cache, because \(k, v \) are the values stored in the cache (for each attention layer). Others may call it a past cache (aka, the open source GPT-2 implementation called it <code>past</code>).</p>
+<p>Before sampling executes, there's a forwards pass, or input encoding step which computes some matrices from the context provided to the model. We'll call this a kv cache, because \(k, v \) are the values stored in the cache (for each attention layer). Others may call it a past cache (aka, the open source GPT-2 implementation called it <code>past</code>).</p>
 <p>The purpose of this, is that it would be inefficient to recalculate those values every time we wanted to generate a new token. With the computed \(k, v \) values, we can save quite a bit of computation. Per token, the number of bytes we store is</p>
 <script type="math/tex;mode=display">2\cdot n_{layers} \cdot d_{head} \cdot n_{heads} \cdot 2</script>
 <p>Where we have 2 for \(k\) and \(v\), then we store that per each layer, and each of those values is a \(d_{head} \times n_{heads}\) matrix. Then multiply by two again for the number of bytes.</p>
@@ -263,6 +266,9 @@ B   \geqslant   208 \\</script>
 </ul>
 </li>
 </ul>
+<blockquote>
+<p>todo: add layer norm</p>
+</blockquote>
 <p>Adding up all the flops!</p>
 <script type="math/tex;mode=display">F = n_{layers} \cdot ({d_{model}}^2 \cdot 2 \cdot 3 + 11 \cdot d_{model} + 2 \cdot {d_{model}}^2 + 16 \cdot {d_{model}}^2 + 6\cdot d_{model} + 6 \cdot d_{model})\\
  = n_{layers} \cdot(24\cdot {d_{model}}^2 + 23 \cdot d_{model})</script>
