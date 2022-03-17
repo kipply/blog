@@ -2,7 +2,6 @@
 title = "Transformer Inference Performance Arithmetic"
 date = 2020-04-20
 weight = 1
-draft = true
 path = "transformer-inference-arithmetic"
 +++
 
