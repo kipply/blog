@@ -45,7 +45,7 @@ This is not *quite* 52B. It's probably cheating to round up by half a billion pa
 
 
 ### kv cache
-Before sampling executes, there's a forwards pass, or input encoding step which computes some matrices from the context provided to the model. We'll call this a kv cache, because \\(k, v \\) are the values stored in the cache (for each attention layer). Others may call it a past cache (aka, the open source GPT-2 implementation called it `past`).
+Frequently, transformer inference consists of processing a provided prompt/context (which can happen in parallel), and then sampling additional tokens one by one. The sampling process needs to refer to the context from the prompt and previously sampled tokens for the key and value components of its self-attention layers. This context is provided in matrices known as the kv cache, aka past cache (the open source GPT-2 implementation called it `past`).
 
 The purpose of this, is that it would be inefficient to recalculate those values every time we wanted to generate a new token. With the computed \\(k, v \\) values, we can save quite a bit of computation. Per token, the number of bytes we store is
 
@@ -58,6 +58,9 @@ Our weights that we multiply by the token embeddings are \\(W_k, W_v \in \mathbb
 {% katex(block=true) %}
 n_{layers} \cdot 2 \cdot {d_{model}}^2\cdot 2
 {% end %}
+
+> todo update this math to account for parallelism
+
 
 To compute just \\(k\\) we multiply \\(t_e\\) by \\(W_k\\), which takes \\(2 \cdot {d_{model}}^2\\) flops, as the computation for a matrix-vector multiplication is \\(2mn\\) given \\(A \in \mathbb{R}^{m\times n}, b \in \mathbb{R}^{n}\\). We have another factor of two as we do \\(k\\) and \\(v\\) and then a factor of \\(n_{layers}\\).
 
@@ -96,7 +99,7 @@ Given the parameter count, we can multiply by two to get bytes. So to calculate 
 Oh no! This doesn't fit in one GPU! In practice, people can't really get access to the 80GB GPUs yet (see [GCP](https://web.archive.org/web/20220316203021/https://cloud.google.com/compute/docs/gpus) and [AWS](https://docs.aws.amazon.com/dlami/latest/devguide/gpu.html) GPU offerings). So for the 40GB GPUs, we'd need at least three GPUs just to have all the weights loaded in (will discuss how to use the GPUs together in the next section). That leaves us \\(120-104 = 16GB\\) left for our kv cache. Is that enough? Back to our equation for kv cache cost per token, again with a 52B model;
 
 {% katex(block=true) %}
-2\cdot n_{layers} \cdot d_{head} \cdot n_{heads} \cdot 2
+2\cdot n_{layers} \cdot n_{heads} \cdot d_{head}  \cdot 2
  = 2\cdot 64 \cdot 8192 * 2
  = 2,097,152 \text{bytes}
 \approx 0.002 GB

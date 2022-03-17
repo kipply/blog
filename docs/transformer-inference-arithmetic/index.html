@@ -120,12 +120,15 @@ The weights loosely consist of the following, per each layer:</p>
 = 51,539,607,552</script>
 <p>This is not <em>quite</em> 52B. It's probably cheating to round up by half a billion parameters, but we can account for them! The equation above is most of the parameters, but we're missing token embeddings. Anthropic uses a 65536 vocab size, so we get \(n_{tokens} * d_{model} = 536,870,912 \). Adding \(536,870,912 + 51,539,607,552 = 52,076,478,464\). There might be some other paramers like biases for the models, or for Gopher 280B there's 21.5B weights spent on some relative positional encoding method presented in the <a href="https://arxiv.org/abs/1901.02860">Transformer XL paper</a>.</p>
 <h3 id="kv-cache">kv cache</h3>
-<p>Before sampling executes, there's a forwards pass, or input encoding step which computes some matrices from the context provided to the model. We'll call this a kv cache, because \(k, v \) are the values stored in the cache (for each attention layer). Others may call it a past cache (aka, the open source GPT-2 implementation called it <code>past</code>).</p>
+<p>Frequently, transformer inference consists of processing a provided prompt/context (which can happen in parallel), and then sampling additional tokens one by one. The sampling process needs to refer to the context from the prompt and previously sampled tokens for the key and value components of its self-attention layers. This context is provided in matrices known as the kv cache, aka past cache (the open source GPT-2 implementation called it <code>past</code>).</p>
 <p>The purpose of this, is that it would be inefficient to recalculate those values every time we wanted to generate a new token. With the computed \(k, v \) values, we can save quite a bit of computation. Per token, the number of bytes we store is</p>
 <script type="math/tex;mode=display">2\cdot n_{layers} \cdot d_{head} \cdot n_{heads} \cdot 2</script>
 <p>Where we have 2 for \(k\) and \(v\), then we store that per each layer, and each of those values is a \(d_{head} \times n_{heads}\) matrix. Then multiply by two again for the number of bytes.</p>
 <p>Our weights that we multiply by the token embeddings are \(W_k, W_v \in \mathbb{R}^{d_{model}\times d_{model}}\) and then each token embedding is \(t_e\in \mathbb{R}^{1\times d_{model}}\). So then the computation to compute \(k\) and \(v\) for all our layers is</p>
 <script type="math/tex;mode=display">n_{layers} \cdot 2 \cdot {d_{model}}^2\cdot 2</script>
+<blockquote>
+<p>todo update this math to account for parallelism</p>
+</blockquote>
 <p>To compute just \(k\) we multiply \(t_e\) by \(W_k\), which takes \(2 \cdot {d_{model}}^2\) flops, as the computation for a matrix-vector multiplication is \(2mn\) given \(A \in \mathbb{R}^{m\times n}, b \in \mathbb{R}^{n}\). We have another factor of two as we do \(k\) and \(v\) and then a factor of \(n_{layers}\).</p>
 <p>This means for a 52B parameter model (taking Anthropic's, where \(d_{model} = 8192\) and \(n_{layers} = 64\)). The flops are;</p>
 <script type="math/tex;mode=display">64 \cdot 2 \cdot 8192^2\cdot 2 = 17,179,869,184</script>
@@ -145,7 +148,7 @@ The weights loosely consist of the following, per each layer:</p>
 <p>Given the parameter count, we can multiply by two to get bytes. So to calculate the size of the weights for a 52B model.</p>
 <script type="math/tex;mode=display">52,076,478,464 \cdot 2 = 104,152,956,928 \text{bytes} \approx 104\text{GB}\\</script>
 <p>Oh no! This doesn't fit in one GPU! In practice, people can't really get access to the 80GB GPUs yet (see <a href="https://web.archive.org/web/20220316203021/https://cloud.google.com/compute/docs/gpus">GCP</a> and <a href="https://docs.aws.amazon.com/dlami/latest/devguide/gpu.html">AWS</a> GPU offerings). So for the 40GB GPUs, we'd need at least three GPUs just to have all the weights loaded in (will discuss how to use the GPUs together in the next section). That leaves us \(120-104 = 16GB\) left for our kv cache. Is that enough? Back to our equation for kv cache cost per token, again with a 52B model;</p>
-<script type="math/tex;mode=display">2\cdot n_{layers} \cdot d_{head} \cdot n_{heads} \cdot 2
+<script type="math/tex;mode=display">2\cdot n_{layers} \cdot n_{heads} \cdot d_{head}  \cdot 2
  = 2\cdot 64 \cdot 8192 * 2
  = 2,097,152 \text{bytes}
 \approx 0.002 GB</script>
