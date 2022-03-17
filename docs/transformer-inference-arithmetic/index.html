@@ -100,7 +100,7 @@
 <p>It's useful to break down what these weights are, so that we can understand how the components are used for inferencing later.</p>
 <p>The weights loosely consist of the following, per each layer:</p>
 <ul>
-<li>\( q,k,v \) matrices, which are each \(d_{model} \cdot n_{heads}\cdot d_{head} \)</li>
+<li>\( W_q,W_k,W_v \) matrices, which are each \(d_{model} \cdot n_{heads}\cdot d_{head} \)</li>
 <li>projector weights, which are also \(d_{model}\cdot n_{heads}\cdot d_{head} \) and used right before the MLP layer (the feed-foward neural network that's layered on top of self-attention)</li>
 <li>MLP weights, which are two matrices of each \({d_{model}}^2 \cdot 4\)</li>
 </ul>
@@ -146,9 +146,6 @@
  = 2,097,152 \text{bytes}
 \approx 0.002 GB</script>
 <p>And then we'd do \(16/0.002 \approx 8000\) tokens can fit into our kv cache with this GPU set up, or that we could do up to a batch size 40 where each item is 200 tokens. For four GPUs, we'd get \(56/0.002 \approx 23000\).</p>
-<blockquote>
-<p>TODO: figure out why this number is so big when cohere ooms at batch size 2 of 2048 tokens, is the math wrong? am i missing factors? is cohere code broken?</p>
-</blockquote>
 <p>But the capacity goes a bit elsewhere. Though we already account for the weights, there are some other intermediate steps that take capacity, but they should be relatively negligible.</p>
 <p>Maybe we want more GPUs! If we're going to pay the capacity cost of storing weights, it may be advantageous to attach more GPUs together so that we can do more inferencing at once without paying the cost of storing weights many times. Additionally, larger batches have time savings per-token-generated though it's not perfect and will eventually get flop bound (adding to the batch will be about as fast as waiting for the batch to execute and then running another batch).</p>
 <h3 id="model-parallelism">model parallelism</h3>

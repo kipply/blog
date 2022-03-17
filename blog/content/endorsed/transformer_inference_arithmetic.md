@@ -16,7 +16,7 @@ It's useful to break down what these weights are, so that we can understand how 
 
 The weights loosely consist of the following, per each layer:
 
- - \\( q,k,v \\) matrices, which are each \\(d_{model} \cdot n_{heads}\cdot d_{head} \\)
+ - \\( W_q,W_k,W_v \\) matrices, which are each \\(d_{model} \cdot n_{heads}\cdot d_{head} \\)
  - projector weights, which are also \\(d_{model}\cdot n_{heads}\cdot d_{head} \\) and used right before the MLP layer (the feed-foward neural network that's layered on top of self-attention)
  - MLP weights, which are two matrices of each \\({d_{model}}^2 \cdot 4\\)
 
@@ -98,8 +98,6 @@ Oh no! This doesn't fit in one GPU! In practice, people can't really get access 
 \approx 0.002 GB
 {% end %}
 And then we'd do \\(16/0.002 \approx 8000\\) tokens can fit into our kv cache with this GPU set up, or that we could do up to a batch size 40 where each item is 200 tokens. For four GPUs, we'd get \\(56/0.002 \approx 23000\\).
-
-> TODO: figure out why this number is so big when cohere ooms at batch size 2 of 2048 tokens, is the math wrong? am i missing factors? is cohere code broken?
 
 But the capacity goes a bit elsewhere. Though we already account for the weights, there are some other intermediate steps that take capacity, but they should be relatively negligible.
 
