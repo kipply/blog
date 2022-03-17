@@ -255,9 +255,9 @@ F = 64\cdot(2\cdot 8192^2 + 23 \cdot 8192)
  = 103091273728 \text{flops}
 {% end %}
 
-103091273728 over two is 51545636864. The extra \\(64 \cdot 23 \cdot 8192\\) is all the intermediate calculations (things that weren't run directly against weights, except for any positional encoding ang token embedding weights) which is only 12 million flops so we can see that those operations are negligible.
+103091273728 over two is 51545636864. The extra \\(64 \cdot 23 \cdot 8192\\) is all the intermediate calculations (things that weren't run directly against weights, except for any positional encoding ang token embedding weights) which is only 0.012 billion flops so we can see that those operations are negligible relative to the 100billion flops.
 
-We're still under (we get 51.5B instead of 52B) but if we recall from the parameter counting session, there are 51.5B parameters if we exclude the token embeddings and there is almost perfectly half a billion of token embeddings given their 65536 vocab size. It would be reasonable to do the latency calculations with \\(2\cdot 12\cdot n_{layers} \cdot {d_{model}}^2\\) instead of \\(2\cdot P\\), but it is less than a 1% difference.
+We're still under (we get 51.5B instead of 52B) but if we recall from the parameter counting session, there are 51.5B parameters if we exclude the token embeddings and there is just about half a billion of token embeddings given their 65536 vocab size. It would be reasonable to do the latency calculations with \\(2\cdot 12\cdot n_{layers} \cdot {d_{model}}^2\\) instead of \\(2\cdot P\\), but it is less than a 1% difference.
 
 ### other optimisation factors
 > TODO talk about int8, sparse, compiler optimisations, more on comms+compute overlap

@@ -268,8 +268,8 @@ B   \geqslant   208 \\</script>
 <p>Subbing in our 8192 model, we should get about 100B flops;</p>
 <script type="math/tex;mode=display">F = 64\cdot(2\cdot 8192^2 + 23 \cdot 8192)
  = 103091273728 \text{flops}</script>
-<p>103091273728 over two is 51545636864. The extra \(64 \cdot 23 \cdot 8192\) is all the intermediate calculations (things that weren't run directly against weights, except for any positional encoding ang token embedding weights) which is only 12 million flops so we can see that those operations are negligible.</p>
-<p>We're still under (we get 51.5B instead of 52B) but if we recall from the parameter counting session, there are 51.5B parameters if we exclude the token embeddings and there is almost perfectly half a billion of token embeddings given their 65536 vocab size. It would be reasonable to do the latency calculations with \(2\cdot 12\cdot n_{layers} \cdot {d_{model}}^2\) instead of \(2\cdot P\), but it is less than a 1% difference.</p>
+<p>103091273728 over two is 51545636864. The extra \(64 \cdot 23 \cdot 8192\) is all the intermediate calculations (things that weren't run directly against weights, except for any positional encoding ang token embedding weights) which is only 0.012 billion flops so we can see that those operations are negligible relative to the 100billion flops.</p>
+<p>We're still under (we get 51.5B instead of 52B) but if we recall from the parameter counting session, there are 51.5B parameters if we exclude the token embeddings and there is just about half a billion of token embeddings given their 65536 vocab size. It would be reasonable to do the latency calculations with \(2\cdot 12\cdot n_{layers} \cdot {d_{model}}^2\) instead of \(2\cdot P\), but it is less than a 1% difference.</p>
 <h3 id="other-optimisation-factors">other optimisation factors</h3>
 <blockquote>
 <p>TODO talk about int8, sparse, compiler optimisations, more on comms+compute overlap</p>
