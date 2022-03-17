@@ -5,7 +5,7 @@ weight = 1
 path = "transformer-inference-arithmetic"
 +++
 
-This post assumes some prior knowledge about transformers, say at having understood most of [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) but not having internalised all of it. This is entirely focused on decoder-only architectures but can be extrapolated to encoder-decoder or encoder-only architectures.
+This post assumes some prior knowledge about transformers, say at having understood most of [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) but not having internalised all of it. This is entirely focused on decoder-only architectures but can be extrapolated to encoder-decoder or encoder-only architectures. The post is long and verbose, but has many sections of calculations that are trivial to derive or do on your own!
 
 > Would like to extend extremely large amount of credit to [James Bradbury](https://twitter.com/jekbradbury) for his tremendous help in teaching me about performance concepts and reviewing the post. Also big thanks to Horace He and Mo Bavarian for iterating with me (i prematurely put names here pls halp), and to Jim Wu for teaching me how to write math notation.
 
@@ -17,7 +17,7 @@ It's useful to break down what these weights are, so that we can understand how 
 The weights loosely consist of the following, per each layer:
 
  - \\( W_q,W_k,W_v \\) matrices, which are each \\(d_{model} \cdot n_{heads}\cdot d_{head} \\)
- - projector weights, which are also \\(d_{model}\cdot n_{heads}\cdot d_{head} \\) and used right before the MLP layer (the feed-foward neural network that's layered on top of self-attention)
+ - projector weights, \\( W_o \\), which are also \\(d_{model}\cdot n_{heads}\cdot d_{head} \\) and used right before the MLP layer (the feed-foward neural network that's layered on top of self-attention)
  - MLP weights, which are two matrices of each \\({d_{model}}^2 \cdot 4\\)
 
 
@@ -117,8 +117,8 @@ We will assume Tensor Parallel (also sometimes called model parallel) where we w
 For our inferencing this happens at;
 
 - three times to account for \\(q, k, v \\) for which \\(n_{layers} \cdot d_{model}\\) is communicated as \\(q,k,v \in \mathbb{R}^{1\times d_{model}} \\).
-- once for the output projection, which is the same dimension of \\(p \in \mathbb{R}^{1\times d_{model}} \\).
-- eight times to account for the two MLP operations, which is the dimension of \\(w_i, w_o \in \mathbb{R}^{4\times d_{model}} \\).
+- once for the output projection, which is the same dimension of \\(o \in \mathbb{R}^{1\times d_{model}} \\).
+- eight times to account for the two MLP operations, which is the dimension of \\(W_1, W_2 \in \mathbb{R}^{4\times d_{model}} \\).
 
 The full \\(q, k, v \\) set needs to come together to do this step of the attention;
 
@@ -126,7 +126,7 @@ The full \\(q, k, v \\) set needs to come together to do this step of the attent
 \text{softmax}(\frac{q\cdot k}{\sqrt{d_{head}}}) \cdot v = z
 {% end %}
 
-The projection \\(p \\) needs to come together to be passed into the MLP layer which does a multiplication that blows up \\(p\\) into \\(x \in \mathbb{R}^{1\times 4\cdot d_{model}} \\) with one operation of \\(p\cdot w_i\\), where  \\( w_i \in \mathbb{R}^{d_{model}\times4d_{model}}\\). That output \\(x\\) is then multiplied by \\(w_o\\), where \\( w_o \in \mathbb{R}^{4d_{model}\times d_{model}}\\)
+The projection \\(o \\) needs to come together to be passed into the MLP layer which does a multiplication that blows up \\(p\\) into \\(x \in \mathbb{R}^{1\times 4\cdot d_{model}} \\) with one operation of \\(p\cdot W_1\\), where  \\( W_1 \in \mathbb{R}^{d_{model}\times4d_{model}}\\). That output \\(x\\) is then multiplied by \\(W_2\\), where \\( W_2 \in \mathbb{R}^{4d_{model}\times d_{model}}\\)
 
 > TODO: reason through why there needs to be all these communications for the MLP layers
 
@@ -184,16 +184,80 @@ For a large batch of 512, for a total of 80ms per token generated (per batch, so
 
 As an exercise, try calculating the large batch speed for a 52B on 4xGPUs at batch size 2048. The compute should be 85ms and comms should be 53ms.
 
-Also note here, that we can't have the comms be greater than the compute! In these calculations I summed the comms and compute time, but logically there is no reason they can't be partially run in parallel (though it's hard). These numbers still land quite close to what should be acquired in practice, and lean towards being an optimal compute case (optimal hardware usage, we didn't factor in a lot of compute like softmaxes, attention, positional encoding, assumed perfect fusing).
+Also note here, that we can't have the comms be greater than the compute! In these calculations I summed the comms and compute time, but logically there is no reason they can't be partially run in parallel (though it's hard). These numbers still land quite close to what should be acquired in practice, and lean towards being an optimal compute case, as it assumes optimal hardware usage and good fusing, plus we didn't factor in a lot of compute like softmaxes, attention and positional encoding. I'd be surprised if someone had an inferencing setup that resulted in numbers lower than what this math comes up with given some core setup details (like int8 would call for different math).
 
 ### how many batches is enough?
 In the previous section, we have two calculations for when something memory bandwidth bound versus flops bound. To figure out which is at play we can compare these numbers;
+{% katex(block=true) %}
+\text{mem bandwidth time} = \frac{2 \cdot P}{N \cdot A_{bm}}\\
+\text{flops time} = B \cdot \frac{2 \cdot P}{N \cdot A_f}
+{% end %}
+
+And it becomes obvious why \\(B\\) is an important factor, as the memory bandwidth is not affected by \\(B\\), while flops is. So for \\(B=1\\) on our 52B architecture on four GPUs;
+{% katex(block=true) %}
+\text{mem bandwidth time} =  \frac{2 \cdot 52\text{e}9}{4 \cdot 1.5\text{e}12} = 17\text{ms}\\
+\text{flops time} = 1 \cdot \frac{2 \cdot 52\text{e}9}{4 \cdot 312\text{e}12} \approx 0.1\text{ms}
+{% end %}
+And to solve for the minimum batch size;
+{% katex(block=true) %}
+B \cdot \frac{2 \cdot 52\text{e}9}{4 \cdot 312\text{e}12}  \geqslant  \frac{2 \cdot 52\text{e}9}{4 \cdot 1.5\text{e}12} \\
+B   \geqslant   \frac{2 \cdot 52\text{e}9 \cdot 4 \cdot 312\text{e}12}{4 \cdot 1.5\text{e}12 \cdot  2 \cdot 52\text{e}9 } \\
+B   \geqslant   208 \\
+{% end %}
+
+To calculate when the capacity goes from mostly kv cache to mostly weights is trivial, and also isn't a binary in the same way (nothing special happens when your kv cache starts taking up more memory than your weights). But what about comms? For comms we want to see that the rate is higher than \\(A_c\\), like so;
+> TODO Comms calculations, also talk about the flops/communication ratio
+### flops counting
+Previously;
+> We do \\(2\cdot P\\) flops of operations, which can be intuited by the fact that we matmul through all the parameters, and as mentioned earlier, a matrix-vector multiplication is \\(2mn\\) given \\(A \in \mathbb{R}^{m\times n}, b \in \mathbb{R}^{n}\\).
 
 
-### flops counting and compiler optimisations
+This is correct reasoning, but also incomplete. For complete reasoning, the easiest thing to do is to walk through all the transformer steps and check that we get \\(2P\\). This will also show the work for our assumuption that things like the attention application, softmaxing, layer norms etc are negligible computations.
 
-> TODO: walk through attention + mlp steps to get to the 2P flops and talk about how softmaxes can prolly be fused away. maybe also talk about the flops/communication ratio here?
+To start by is a matmul of a matrix-vector 2mn? These [lecture notes](https://www.stat.cmu.edu/~ryantibs/convexopt-F18/scribes/Lecture_19.pdf) explain that fairly thoroughly, and it also makes sense from there that a matrix-matrix multiplication is \\(2mnp\\) if we multiplied \\(A \in \mathbb{R}^{m\times n}, B \in \mathbb{R}^{n \times p}\\). And then a vector-vector multiplication is just \\(2n\\). (The lecture notes are helpful for explaining the factor of 2).
 
+> TODO: insert attention + mlp code
 
+The following calculations are per token, per layer. I describe \\(W_q, W_k, W_v \in \mathbb{R}^{d_{model}\times d_{model}}\\) where it's more accurate to say we have \\(W_q^i, W_k^i, W_v^i \in \mathbb{R}^{d_{model}\times d_{head}}\\), where \\(i\\) goes up to \\(n_{heads}\\). But for the sake of calculating latency, I simplify \\(W_q, W_k, W_v\\) to include all the heads.
 
-> TODO: would be very silly if i didn't include a profile
+- Computing qkv
+    - Let \\(t_e\\) be our token embedding. Then we multiply \\(t_e \in \mathbb{R}^{1\times d_{model}}\\) by \\(W_q, W_k, W_v \in \mathbb{R}^{d_{model}\times d_{model}}\\). We do that multiplication three times for each of \\(q, k, v\\).
+    - Flop count: \\({d_{model}}^2 \cdot 2 \cdot 3\\)
+- Calculate z
+    - This is \\(\text{softmax}((q\cdot k)\div\sqrt{d_{head}}) \cdot v = z\\)
+    - I don't know how to count flops for softmax, so lets pretend it's 6n, where n is the length of the vector and 6 is to account for at least one multiplication operation to mutate the matrix, and say two operations to determine what to multiply by for three operations.
+    - Let's say square root takes 0 FLOPs.
+    - Then the flops are \\((2\cdot d_{model}) + (d_{model}) + (6\cdot d_{model}) + ({2\cdot d_{model}})\\) for the (qk multiplication), (divide by scalar), (softmax), (multiply by v).
+    - Flop count: \\(11 \cdot d_{model}\\)
+- Merge the head matrices, multiply by the projection matrix, finishing the self attention layer.
+    - We multiply \\(W_o \in \mathbb{R}^{d_{model}\times d_{model}}\\), by \\(z \in \mathbb{R}^{d_{model}\times1}\\).
+    - Flop count:  \\(2 \cdot {d_{model}}^2\\)
+- Feed-forward
+    - We have our MLP weights \\(W_1, W_2 \in \mathbb{R}^{4\times d_{model}} \\).
+    - The MLP is two linear transformations (read: matmul), with a ReLU  in the middle. I yet again do not know how to count ReLU flops, but let's again just give it 6n (which given my understanding of ReLU is probably too much).
+    - Then the flops are \\((2\cdot d_{model} \cdot 4\cdot d_{model}) + (6\cdot d_{model}) + (2\cdot d_{model} \cdot 4\cdot d_{model})\\) for the linear transform, ReLU and another linear transform.
+    - Flop count:  \\(16 \cdot {d_{model}}^2 + 6\cdot d_{model}\\)
+- Positional encoding
+    - The original transformer has a cosine positional encoding scheme, which is an addition to the token embedding.
+    - Different transformers have fairly different ways of giving position-data, which is why I wanted to consider it separately. But loosely, an addition across a token embedding matrix should be \\(d_{model}\\), though some other minor operations also happen so I'll approximate to \\(6 \cdot d_{model}\\)
+    - Flop count: \\(6 \cdot d_{model}\\)
+
+Adding up all the flops!
+
+{% katex(block=true) %}
+F = n_{layers} \cdot ({d_{model}}^2 \cdot 2 \cdot 3 + 11 \cdot d_{model} + 2 \cdot {d_{model}}^2 + 16 \cdot {d_{model}}^2 + 6\cdot d_{model} + 6 \cdot d_{model})\\
+ = n_{layers} \cdot(24\cdot {d_{model}}^2 + 23 \cdot d_{model})
+{% end %}
+Subbing in our 8192 model, we should get about 100B flops;
+
+{% katex(block=true) %}
+F = 64\cdot(2\cdot 8192^2 + 23 \cdot 8192)
+ = 103091273728 \text{flops}
+{% end %}
+
+103091273728 over two is 51545636864. The extra \\(64 \cdot 23 \cdot 8192\\) is all the intermediate calculations (things that weren't run directly against weights, except for any positional encoding ang token embedding weights) which is only 12 million flops so we can see that those operations are negligible.
+
+We're still under (we get 51.5B instead of 52B) but if we recall from the parameter counting session, there are 51.5B parameters if we exclude the token embeddings and there is almost perfectly half a billion of token embeddings given their 65536 vocab size. It would be reasonable to do the latency calculations with \\(2\cdot 12\cdot n_{layers} \cdot {d_{model}}^2\\) instead of \\(2\cdot P\\), but it is less than a 1% difference.
+
+### other optimisation factors
+> TODO talk about int8, sparse, compiler optimisations, more on comms+compute overlap
