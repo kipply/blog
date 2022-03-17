@@ -76,21 +76,22 @@
 
   <main id="main" class="main">
     
-<article class="article">
-  <header>
-    <h1>A Deep Introduction to JIT Compilers: JITs are not very Just-in-time</h1>
-    <div>
-      <div class="article-meta">
-        <time datetime="2020-07-03">
-          2020-07-03
-        </time>
-        
-        (11 min read)
-      </div>
+<header>
+  <h1>A Deep Introduction to JIT Compilers: JITs are not very Just-in-time</h1>
+  <div>
+    <div class="article-meta">
+      <time datetime="2020-07-03">
+        2020-07-03
+      </time>
+      
+      (11 min read)
     </div>
-  </header>
-  <section id="js-article" class="article-body">
-    
+  </div>
+</header>
+<article class="article">
+  <div class="page-body">
+    <section id="js-article" class="article-body">
+      
 <p><em>If you are familiar with how JITs generally work (if you get what the title is referring to), I recommend skimming this or going straight to reading <a href="https://carolchen.me/blog/jits-impls">How JIT Compilers are Implemented and Fast: Julia, Pypy, LuaJIT, Graal and More</a></em></p>
 <p>My mentor, <a href="https://chrisseaton.com/">Chris</a>, who took me from “what is a JIT” to where I am now once told me that compilers were just bytes in bytes out and not at all low-level and scary. This is actually fairly true, and it's fun to learn about compiler internals and often useful for programmers everywhere!</p>
 <p>This blog post gives background on how programming languages are implemented and how JITs work. It'll introduce the implementation details of the Julia language, though it won't talk about specific implementation details or optimizations made by more traditional JITs. Check out <a href="https://carolchen.me/blog/jits-impls">How JIT Compilers are Implemented and Fast: Julia, Pypy, LuaJIT, Graal and More</a> to read about how meta-tracing is implemented, how Graal supports C extensions, the relationship of JITs with LLVM and more!</p>
@@ -179,29 +180,31 @@
 </ul>
 
 
-  </section>
-  <footer>
-    <div class="social-icons">
-      ---
-      <br/>
-      Thanks for reading <3
-      <br/>
-      I'm generally open to being contacted, find/contact me via:
-      <a class="icon-link" href="https://twitter.com/kipperrii">
-        <i class="fab fa-twitter"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/kipply">
-        <i class="fab fa-github"></i>
-      </a>
-      <a class="icon-link" href="https://www.instagram.com/kipperrii/">
-        <i class="fab fa-instagram"></i>
-      </a>
-      <a class="icon-link" href="mailto:hello@carolchen.me">
-        <i class="fas fa-envelope"></i>
-      </a>
-    </div>
-  </footer>
+    </section>
+  </div>
+  
 </article>
+<footer>
+  <div class="social-icons">
+    ---
+    <br/>
+    Thanks for reading <3
+    <br/>
+    I'm generally open to being contacted, find/contact me via:
+    <a class="icon-link" href="https://twitter.com/kipperrii">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a class="icon-link" href="https://github.com/kipply">
+      <i class="fab fa-github"></i>
+    </a>
+    <a class="icon-link" href="https://www.instagram.com/kipperrii/">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a class="icon-link" href="mailto:hello@carolchen.me">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</footer>
   </main>
 
   <script>

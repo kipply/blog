@@ -3,13 +3,16 @@ title = "Transformer Inference Performance Arithmetic"
 date = 2020-04-20
 weight = 1
 path = "transformer-inference-arithmetic"
+
+[extra]
+show_toc = true
 +++
 
 This post assumes some prior knowledge about transformers, say at having understood most of [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) but not having internalised all of it. This is entirely focused on decoder-only architectures but can be extrapolated to encoder-decoder or encoder-only architectures. The post is long and verbose, but has many sections of calculations that are trivial to derive or do on your own!
 
 > Would like to extend extremely large amount of credit to [James Bradbury](https://twitter.com/jekbradbury) for his tremendous help in teaching me about performance concepts and reviewing the post. Also big thanks to Horace He and Mo Bavarian for iterating with me (i prematurely put names here pls halp), and to Jim Wu for teaching me how to write math notation.
 
-### what are the parameters?
+### parameter counting
 Each weight or a parameter is a float that was tuned during training and is usually two bytes as most training is done half-precision now([bfloat16](https://en.wikipedia.org/wiki/Bfloat16_floating-point_format)). Not everything is trained/served bfloat16, but it's at least half-precision (at least since [the GPT-3 Paper](https://arxiv.org/pdf/2005.14165.pdf) in 2020) which gets us the two bytes.
 
 It's useful to break down what these weights are, so that we can understand how the components are used for inferencing later.
@@ -186,7 +189,7 @@ As an exercise, try calculating the large batch speed for a 52B on 4xGPUs at bat
 
 Also note here, that we can't have the comms be greater than the compute! In these calculations I summed the comms and compute time, but logically there is no reason they can't be partially run in parallel (though it's hard). These numbers still land quite close to what should be acquired in practice, and lean towards being an optimal compute case, as it assumes optimal hardware usage and good fusing, plus we didn't factor in a lot of compute like softmaxes, attention and positional encoding. I'd be surprised if someone had an inferencing setup that resulted in numbers lower than what this math comes up with given some core setup details (like int8 would call for different math).
 
-### how many batches is enough?
+### batch sizes
 In the previous section, we have two calculations for when something memory bandwidth bound versus flops bound. To figure out which is at play we can compare these numbers;
 {% katex(block=true) %}
 \text{mem bandwidth time} = \frac{2 \cdot P}{N \cdot A_{bm}}\\

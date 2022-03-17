@@ -76,26 +76,27 @@
 
   <main id="main" class="main">
     
-<article class="article">
-  <header>
-    <h1>Transformer Inference Performance Arithmetic</h1>
-    <div>
-      <div class="article-meta">
-        <time datetime="2020-04-20">
-          2020-04-20
-        </time>
-        
-        (21 min read)
-      </div>
+<header>
+  <h1>Transformer Inference Performance Arithmetic</h1>
+  <div>
+    <div class="article-meta">
+      <time datetime="2020-04-20">
+        2020-04-20
+      </time>
+      
+      (21 min read)
     </div>
-  </header>
-  <section id="js-article" class="article-body">
-    
+  </div>
+</header>
+<article class="article">
+  <div class="page-body">
+    <section id="js-article" class="article-body">
+      
 <p>This post assumes some prior knowledge about transformers, say at having understood most of <a href="https://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer</a> but not having internalised all of it. This is entirely focused on decoder-only architectures but can be extrapolated to encoder-decoder or encoder-only architectures. The post is long and verbose, but has many sections of calculations that are trivial to derive or do on your own!</p>
 <blockquote>
 <p>Would like to extend extremely large amount of credit to <a href="https://twitter.com/jekbradbury">James Bradbury</a> for his tremendous help in teaching me about performance concepts and reviewing the post. Also big thanks to Horace He and Mo Bavarian for iterating with me (i prematurely put names here pls halp), and to Jim Wu for teaching me how to write math notation.</p>
 </blockquote>
-<h3 id="what-are-the-parameters">what are the parameters?</h3>
+<h3 id="parameter-counting">parameter counting</h3>
 <p>Each weight or a parameter is a float that was tuned during training and is usually two bytes as most training is done half-precision now(<a href="https://en.wikipedia.org/wiki/Bfloat16_floating-point_format">bfloat16</a>). Not everything is trained/served bfloat16, but it's at least half-precision (at least since <a href="https://arxiv.org/pdf/2005.14165.pdf">the GPT-3 Paper</a> in 2020) which gets us the two bytes.</p>
 <p>It's useful to break down what these weights are, so that we can understand how the components are used for inferencing later.</p>
 <p>The weights loosely consist of the following, per each layer:</p>
@@ -198,7 +199,7 @@ A_{bm} = 1,555\text{GBps}</script>
 \text{comms} = B \cdot \frac{n_{layers} \cdot 12 \cdot d_{model}}{A_c} = 512 \cdot \frac{ 80 \cdot 12 \cdot 16384}{300\text{e}9} \approx 27ms</script>
 <p>As an exercise, try calculating the large batch speed for a 52B on 4xGPUs at batch size 2048. The compute should be 85ms and comms should be 53ms.</p>
 <p>Also note here, that we can't have the comms be greater than the compute! In these calculations I summed the comms and compute time, but logically there is no reason they can't be partially run in parallel (though it's hard). These numbers still land quite close to what should be acquired in practice, and lean towards being an optimal compute case, as it assumes optimal hardware usage and good fusing, plus we didn't factor in a lot of compute like softmaxes, attention and positional encoding. I'd be surprised if someone had an inferencing setup that resulted in numbers lower than what this math comes up with given some core setup details (like int8 would call for different math).</p>
-<h3 id="how-many-batches-is-enough">how many batches is enough?</h3>
+<h3 id="batch-sizes">batch sizes</h3>
 <p>In the previous section, we have two calculations for when something memory bandwidth bound versus flops bound. To figure out which is at play we can compare these numbers;</p>
 <script type="math/tex;mode=display">\text{mem bandwidth time} = \frac{2 \cdot P}{N \cdot A_{bm}}\\
 \text{flops time} = B \cdot \frac{2 \cdot P}{N \cdot A_f}</script>
@@ -276,29 +277,77 @@ B   \geqslant   208 \\</script>
 </blockquote>
 
 
-  </section>
-  <footer>
-    <div class="social-icons">
-      ---
-      <br/>
-      Thanks for reading <3
-      <br/>
-      I'm generally open to being contacted, find/contact me via:
-      <a class="icon-link" href="https://twitter.com/kipperrii">
-        <i class="fab fa-twitter"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/kipply">
-        <i class="fab fa-github"></i>
-      </a>
-      <a class="icon-link" href="https://www.instagram.com/kipperrii/">
-        <i class="fab fa-instagram"></i>
-      </a>
-      <a class="icon-link" href="mailto:hello@carolchen.me">
-        <i class="fas fa-envelope"></i>
-      </a>
-    </div>
-  </footer>
+    </section>
+  </div>
+  
+  <div class="sidebar">
+    <ul class="sidebar-ul">
+    
+        <li>
+            <a href="/personal_site/transformer-inference-arithmetic/#parameter-counting">parameter counting</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/transformer-inference-arithmetic/#kv-cache">kv cache</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/transformer-inference-arithmetic/#capacity">capacity</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/transformer-inference-arithmetic/#model-parallelism">model parallelism</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/transformer-inference-arithmetic/#latency-calculations">latency calculations</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/transformer-inference-arithmetic/#batch-sizes">batch sizes</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/transformer-inference-arithmetic/#flops-counting">flops counting</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/transformer-inference-arithmetic/#other-optimisation-factors">other optimisation factors</a>
+            
+        </li>
+    
+    </ul>
+  </div>
+  
 </article>
+<footer>
+  <div class="social-icons">
+    ---
+    <br/>
+    Thanks for reading <3
+    <br/>
+    I'm generally open to being contacted, find/contact me via:
+    <a class="icon-link" href="https://twitter.com/kipperrii">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a class="icon-link" href="https://github.com/kipply">
+      <i class="fab fa-github"></i>
+    </a>
+    <a class="icon-link" href="https://www.instagram.com/kipperrii/">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a class="icon-link" href="mailto:hello@carolchen.me">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</footer>
   </main>
 
   <script>

@@ -76,21 +76,22 @@
 
   <main id="main" class="main">
     
-<article class="article">
-  <header>
-    <h1>How JIT Compilers are Implemented and Fast: Pypy, LuaJIT, Graal and More</h1>
-    <div>
-      <div class="article-meta">
-        <time datetime="2020-07-04">
-          2020-07-04
-        </time>
-        
-        (26 min read)
-      </div>
+<header>
+  <h1>How JIT Compilers are Implemented and Fast: Pypy, LuaJIT, Graal and More</h1>
+  <div>
+    <div class="article-meta">
+      <time datetime="2020-07-04">
+        2020-07-04
+      </time>
+      
+      (25 min read)
     </div>
-  </header>
-  <section id="js-article" class="article-body">
-    
+  </div>
+</header>
+<article class="article">
+  <div class="page-body">
+    <section id="js-article" class="article-body">
+      
 <p>This post goes into details of 5+ JITs and various optimization strategies and discuss how they work with different JITs. Information in this blog post is more <em>depth-first</em>, thus there are many important concepts that may be skipped. That also means that this blogpost is <em>not enough information</em> to draw meaningful conclusions on any comparisons of implementations/languages.</p>
 <p>For background on JIT compilers see <a href="https://carolchen.me/blog/jits-intro">A Deep Introduction to JIT Compilers: JITs are not very Just-in-time</a>. If the title does not make sense to you then it may be worth a skim.</p>
 <blockquote>
@@ -100,15 +101,6 @@
 <p>I will often describe an optimization behaviour and claim that it probably exists in some other compiler. Though I don't always check if an optimization exists in another JIT (it's sometimes ambiguous), I'll always state explicitly if I know it’s there.
 I will also provide code examples to show where an optimization might occur, however the optimization may not necessarily occur for that code because another optimization will take precedence. There may also be some general oversimplifications, but not more than I think exists in most posts like these.</p>
 </blockquote>
-<h2 id="table-of-contents-highlights">Table of Contents / Highlights</h2>
-<ul>
-<li><a href="/personal_site/jits-impls/#wait-but-you-said-meta-tracing">How meta-tracing in Pypy works</a></li>
-<li><a href="/personal_site/jits-impls/#interpreting-c">How GraalVM languages support C extensions</a></li>
-<li><a href="/personal_site/jits-impls/#go-back-to-the-interpreted-code-it-ll-be-faster">Deoptimisation</a></li>
-<li><a href="/personal_site/jits-impls/#wet-code-is-fast-code-inlining-and-osr">Inlining and OSR</a></li>
-<li><a href="/personal_site/jits-impls/#what-if-instead-of-instruction-based-ir-like-everyone-else-we-had-a-big-graph-and-also-it-modifies-itself">Seas of Nodes</a></li>
-<li><a href="/personal_site/jits-impls/#yay-jit-compiled-code-let-s-compile-it-again-and-again">Tiering JITs</a></li>
-</ul>
 <h1 id="meta-tracing">(Meta)Tracing</h1>
 <p>LuaJIT employs a method called tracing. Pypy does meta-tracing, which involves using a system to generate tracing interpreters and JITs. Pypy and LuaJIT are not the reference implementations of Python or Lua, but projects on their own. I would describe LuaJIT as shockingly fast, and it describes itself as one of the fastest dynamic language implementations -- which I buy fully.</p>
 <p>To determine when to start tracing, the interpreting loop will look for &quot;hot&quot; loops to trace (the concept of &quot;hot&quot; code is universal to JITS!). Then, the compiler will &quot;trace&quot; the loop, recording executed operations to compile well optimized machine code. In LuaJIT, the compilation is performed on the traces with an instruction-like IR that is unique to LuaJIT.</p>
@@ -333,7 +325,7 @@ I will also provide code examples to show where an optimization might occur, how
 <p><img src="../../img/jits/hotspottiers.png" alt="" /></p>
 <p>JavaScript Core tiers even harder! In fact, it has <em>three JITs</em>. JSC's interpreter also does light profiling, then moves onto the Baseline JIT, then to the DFG (Data Flow Graph) JIT, and finally to the FTL (Faster than Light) JIT. With these tiers, the meaning of deoptimization is no longer limited to a compiler-to-interpreter path, but deoptimization can happen from the DFG to the Baseline JIT (this doesn't seem to be the case for Hotspot C2-&gt;C1). These deoptimizations and passes into the next tier are done through on-stack-replacement.</p>
 <p>The Baseline JIT kicks in by 100 executions and the DFG JIT kicks in at about 1000 executions (with exceptions) which means that the JIT gets compiled code much more quickly than say Pypy (which took about 3000 executions). The tiering strategy enables the JIT to try to match the amount of time spent executing the code with the amount of time spent optimizing the code. There are a whole bunch more handy tricks as to which kind of optimizations (inlining, type inferencing, etc) are done at which tier and why that's optimal!</p>
-<h2 id="related-readings">Related Readings</h2>
+<h1 id="related-readings">Related Readings</h1>
 <p>In vague order of how they're related to the blog post.</p>
 <ul>
 <li>
@@ -386,34 +378,98 @@ I will also provide code examples to show where an optimization might occur, how
 </ul>
 </li>
 </ul>
-<h2 id="upcoming-blog-post-allocation-optimizations-for-jits">Upcoming Blog Post: Allocation Optimizations for JITs</h2>
-<p>When I started writing this post it wasn't for public consumption but to help me model my information. Thus, there are still a few thousand more words I have! I expect this post to be released in mid-July 2020.</p>
-<p>The next post will illustrate the basics of garbage collection, dynamics of allocations in compilers and describe some implementations of how JITs improve the cost of allocations (or remove them completely). The topic is hugely important to JITs, as a compiled program can rarely make assumptions about where, if and how some allocated data will be used. Writing to registers is orders of magnitude faster than malloc-ing and eliminating allocations can save the garbage collector time.</p>
 
 
-  </section>
-  <footer>
-    <div class="social-icons">
-      ---
-      <br/>
-      Thanks for reading <3
-      <br/>
-      I'm generally open to being contacted, find/contact me via:
-      <a class="icon-link" href="https://twitter.com/kipperrii">
-        <i class="fab fa-twitter"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/kipply">
-        <i class="fab fa-github"></i>
-      </a>
-      <a class="icon-link" href="https://www.instagram.com/kipperrii/">
-        <i class="fab fa-instagram"></i>
-      </a>
-      <a class="icon-link" href="mailto:hello@carolchen.me">
-        <i class="fas fa-envelope"></i>
-      </a>
-    </div>
-  </footer>
+    </section>
+  </div>
+  
+  <div class="sidebar">
+    <ul class="sidebar-ul">
+    
+        <li>
+            <a href="/personal_site/jits-impls/#meta-tracing">(Meta)Tracing</a>
+            
+                <ul>
+                    
+                        <li>
+                            <a href="/personal_site/jits-impls/#how-pypy-implements-tracing">How Pypy Implements Tracing</a>
+                        </li>
+                    
+                        <li>
+                            <a href="/personal_site/jits-impls/#wait-but-you-said-meta-tracing">Wait, but you said Meta-tracing!</a>
+                        </li>
+                    
+                        <li>
+                            <a href="/personal_site/jits-impls/#an-introduction-to-jvms">An Introduction to JVMs</a>
+                        </li>
+                    
+                </ul>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/jits-impls/#the-unexpectedly-great-jit-compiler-strategies">The Unexpectedly Great JIT Compiler Strategies</a>
+            
+                <ul>
+                    
+                        <li>
+                            <a href="/personal_site/jits-impls/#interpreting-c">Interpreting C</a>
+                        </li>
+                    
+                        <li>
+                            <a href="/personal_site/jits-impls/#go-back-to-the-interpreted-code-it-ll-be-faster">Go back to the interpreted code, it&#x27;ll be faster</a>
+                        </li>
+                    
+                        <li>
+                            <a href="/personal_site/jits-impls/#wet-code-is-fast-code-inlining-and-osr">Wet code is fast code - Inlining and OSR</a>
+                        </li>
+                    
+                        <li>
+                            <a href="/personal_site/jits-impls/#a-note-about-jits-and-the-llvm">A note about JITs and the LLVM</a>
+                        </li>
+                    
+                        <li>
+                            <a href="/personal_site/jits-impls/#what-if-instead-of-instruction-based-ir-like-everyone-else-we-had-a-big-graph-and-also-it-modifies-itself">What if instead of instruction based IR like everyone else we had a big graph, and also it modifies itself</a>
+                        </li>
+                    
+                        <li>
+                            <a href="/personal_site/jits-impls/#yay-jit-compiled-code-let-s-compile-it-again-and-again">Yay, JIT compiled code! Let&#x27;s compile it again! And again!</a>
+                        </li>
+                    
+                </ul>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/jits-impls/#related-readings">Related Readings</a>
+            
+        </li>
+    
+    </ul>
+  </div>
+  
 </article>
+<footer>
+  <div class="social-icons">
+    ---
+    <br/>
+    Thanks for reading <3
+    <br/>
+    I'm generally open to being contacted, find/contact me via:
+    <a class="icon-link" href="https://twitter.com/kipperrii">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a class="icon-link" href="https://github.com/kipply">
+      <i class="fab fa-github"></i>
+    </a>
+    <a class="icon-link" href="https://www.instagram.com/kipperrii/">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a class="icon-link" href="mailto:hello@carolchen.me">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</footer>
   </main>
 
   <script>

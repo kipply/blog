@@ -3,28 +3,20 @@ title = "Escape! From the Allocations: Escape Analysis in Pypy, LuaJIT, V8, C++,
 date = 2020-10-12
 weight = 4
 path = "escape-analysis"
+
+[extra]
+show_toc = true
 +++
 
 With software engineering, speed and memory are the basic measurement-benchmarks. For programming language implementations, the two affect each other heavily. In JIT compilers, that means storing more things in memory to speed up the program drastically. It also means putting time into garbage collection to keep memory down, spending time to try to eliminate allocations and deciding where to put some piece of data.
 
 Escape Analysis is a technique that determines the behaviour of how a variable (more specifically, a pointer) is used in a certain scope, and whether it not it escapes that scope (the scope is usually a function). Escape analysis allows the program to stack allocate (here is an article on [Stack vs Heap ](https://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap/80113#80113)allocations) when it's determined the variable will not be used outside of the scope or in other cases, try to eliminate the allocation completely.
 
-> #### Thank You Box
->
 > I'm writing this away from family during (Canadian) Thanksgiving so thank you kind and curious friends for coming to read this!
 >
 > Also thanks to [Chris Seaton](https://chrisseaton.com) who was my intern mentor back when I actually worked on compilers and taught me sooo much, and [JF Bastien](https://jfbastien.com/) who showed me how to look into `clang` and has just been generally helpful. Props to [Alberto](https://alberto.donizetti.eu/) who fixed a bug  in Go I ran into while investigating escape analysis in Go in a matter of hours after I opened an issue, and thanks to [Leo White](https://blog.janestreet.com/author/lwhite/) who answered my question about the lack of escape analysis in OCaml.
 
 For a little background on how programming languages work, skim through my post [A Deep Introduction to JIT Compilers: JITs are not very Just-in-time](https://carolchen.me/blog/jits-intro).
-
-## Highlights
-
- - [Escaping Boxing](#pypy-escapes-boxing)
- - [Allocation Sinking](#luajit-allocation-sinking)
- - [Chrome had a Security Incident because of Escape Analysis](#some-security-escaped-v8)
- - [Escape Analysis with LLVM backed languages](#escape-analysis-with-llvm-backed-languages)
- - [Escape Analysis in Go](#go)
- - [Other Compilers that do Escape Analysis](#other-compilers-that-do-escape-analysis)
 
 ### Pypy Escapes Boxing
 

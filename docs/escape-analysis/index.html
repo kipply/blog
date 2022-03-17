@@ -76,38 +76,29 @@
 
   <main id="main" class="main">
     
-<article class="article">
-  <header>
-    <h1>Escape! From the Allocations: Escape Analysis in Pypy, LuaJIT, V8, C++, Go and More</h1>
-    <div>
-      <div class="article-meta">
-        <time datetime="2020-10-12">
-          2020-10-12
-        </time>
-        
-        (23 min read)
-      </div>
+<header>
+  <h1>Escape! From the Allocations: Escape Analysis in Pypy, LuaJIT, V8, C++, Go and More</h1>
+  <div>
+    <div class="article-meta">
+      <time datetime="2020-10-12">
+        2020-10-12
+      </time>
+      
+      (22 min read)
     </div>
-  </header>
-  <section id="js-article" class="article-body">
-    
+  </div>
+</header>
+<article class="article">
+  <div class="page-body">
+    <section id="js-article" class="article-body">
+      
 <p>With software engineering, speed and memory are the basic measurement-benchmarks. For programming language implementations, the two affect each other heavily. In JIT compilers, that means storing more things in memory to speed up the program drastically. It also means putting time into garbage collection to keep memory down, spending time to try to eliminate allocations and deciding where to put some piece of data.</p>
 <p>Escape Analysis is a technique that determines the behaviour of how a variable (more specifically, a pointer) is used in a certain scope, and whether it not it escapes that scope (the scope is usually a function). Escape analysis allows the program to stack allocate (here is an article on <a href="https://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap/80113#80113">Stack vs Heap </a>allocations) when it's determined the variable will not be used outside of the scope or in other cases, try to eliminate the allocation completely.</p>
 <blockquote>
-<h4 id="thank-you-box">Thank You Box</h4>
 <p>I'm writing this away from family during (Canadian) Thanksgiving so thank you kind and curious friends for coming to read this!</p>
 <p>Also thanks to <a href="https://chrisseaton.com">Chris Seaton</a> who was my intern mentor back when I actually worked on compilers and taught me sooo much, and <a href="https://jfbastien.com/">JF Bastien</a> who showed me how to look into <code>clang</code> and has just been generally helpful. Props to <a href="https://alberto.donizetti.eu/">Alberto</a> who fixed a bug  in Go I ran into while investigating escape analysis in Go in a matter of hours after I opened an issue, and thanks to <a href="https://blog.janestreet.com/author/lwhite/">Leo White</a> who answered my question about the lack of escape analysis in OCaml.</p>
 </blockquote>
 <p>For a little background on how programming languages work, skim through my post <a href="https://carolchen.me/blog/jits-intro">A Deep Introduction to JIT Compilers: JITs are not very Just-in-time</a>.</p>
-<h2 id="highlights">Highlights</h2>
-<ul>
-<li><a href="/personal_site/escape-analysis/#pypy-escapes-boxing">Escaping Boxing</a></li>
-<li><a href="/personal_site/escape-analysis/#luajit-allocation-sinking">Allocation Sinking</a></li>
-<li><a href="/personal_site/escape-analysis/#some-security-escaped-v8">Chrome had a Security Incident because of Escape Analysis</a></li>
-<li><a href="/personal_site/escape-analysis/#escape-analysis-with-llvm-backed-languages">Escape Analysis with LLVM backed languages</a></li>
-<li><a href="/personal_site/escape-analysis/#go">Escape Analysis in Go</a></li>
-<li><a href="/personal_site/escape-analysis/#other-compilers-that-do-escape-analysis">Other Compilers that do Escape Analysis</a></li>
-</ul>
 <h3 id="pypy-escapes-boxing">Pypy Escapes Boxing</h3>
 <p>Pypy puts a lot of work into minimizing <em>boxing</em>, which is done through escape analysis. Boxing is when a primitive is boxed into an object wrapper type, such as an <code>int</code> to <code>Integer</code> in Java. Object oriented language implementations often utilize boxing (sometimes called auto-boxing), including JavaScript, C#, Haskell and others! Computers natively understands types like booleans and integers, but not objects, and unfortunately many languages need to store most of their data as an object and not the primitive. For example, <code>314</code> as a constant can be stored as a primitive on the stack, but when <code>314.toString()</code> is executed, <code>314</code> has to be boxed so that the method can be run on the object. Unboxing is performed to extract the value.</p>
 <p>Boxing and unboxing is an expensive operation, with .NET citing 20x the time for boxed assignment and 4x the time for unboxing assignment (when you explicitly cast back). Pypy also has expensive boxing operations, as it's not just assigning/computing more values but organizing them into a heap structure.</p>
@@ -317,29 +308,77 @@
 </span></code></pre>
 
 
-  </section>
-  <footer>
-    <div class="social-icons">
-      ---
-      <br/>
-      Thanks for reading <3
-      <br/>
-      I'm generally open to being contacted, find/contact me via:
-      <a class="icon-link" href="https://twitter.com/kipperrii">
-        <i class="fab fa-twitter"></i>
-      </a>
-      <a class="icon-link" href="https://github.com/kipply">
-        <i class="fab fa-github"></i>
-      </a>
-      <a class="icon-link" href="https://www.instagram.com/kipperrii/">
-        <i class="fab fa-instagram"></i>
-      </a>
-      <a class="icon-link" href="mailto:hello@carolchen.me">
-        <i class="fas fa-envelope"></i>
-      </a>
-    </div>
-  </footer>
+    </section>
+  </div>
+  
+  <div class="sidebar">
+    <ul class="sidebar-ul">
+    
+        <li>
+            <a href="/personal_site/escape-analysis/#pypy-escapes-boxing">Pypy Escapes Boxing</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/escape-analysis/#how-javascript-uses-escape-analysis-in-language-internals">How Javascript Uses Escape Analysis in Language Internals</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/escape-analysis/#luajit-allocation-sinking">LuaJIT Allocation Sinking</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/escape-analysis/#where-have-all-the-interpreted-languages-gone">Where have all the interpreted languages gone</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/escape-analysis/#some-security-escaped-v8">Some Security Escaped V8</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/escape-analysis/#escape-analysis-with-llvm-backed-languages">Escape Analysis with LLVM-backed languages</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/escape-analysis/#go">Go</a>
+            
+        </li>
+    
+        <li>
+            <a href="/personal_site/escape-analysis/#other-compilers-that-do-escape-analysis">Other Compilers that do Escape Analysis</a>
+            
+        </li>
+    
+    </ul>
+  </div>
+  
 </article>
+<footer>
+  <div class="social-icons">
+    ---
+    <br/>
+    Thanks for reading <3
+    <br/>
+    I'm generally open to being contacted, find/contact me via:
+    <a class="icon-link" href="https://twitter.com/kipperrii">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a class="icon-link" href="https://github.com/kipply">
+      <i class="fab fa-github"></i>
+    </a>
+    <a class="icon-link" href="https://www.instagram.com/kipperrii/">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a class="icon-link" href="mailto:hello@carolchen.me">
+      <i class="fas fa-envelope"></i>
+    </a>
+  </div>
+</footer>
   </main>
 
   <script>

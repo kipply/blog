@@ -3,6 +3,10 @@ title = "How JIT Compilers are Implemented and Fast: Pypy, LuaJIT, Graal and Mor
 date = 2020-07-04
 weight = 1
 path = "jits-impls"
+
+
+[extra]
+show_toc = true
 +++
 
 This post goes into details of 5+ JITs and various optimization strategies and discuss how they work with different JITs. Information in this blog post is more *depth-first*, thus there are many important concepts that may be skipped. That also means that this blogpost is *not enough information* to draw meaningful conclusions on any comparisons of implementations/languages.
@@ -13,16 +17,6 @@ For background on JIT compilers see [A Deep Introduction to JIT Compilers: JITs 
 
 > I will often describe an optimization behaviour and claim that it probably exists in some other compiler. Though I don't always check if an optimization exists in another JIT (it's sometimes ambiguous), I'll always state explicitly if I know it’s there.
 > I will also provide code examples to show where an optimization might occur, however the optimization may not necessarily occur for that code because another optimization will take precedence. There may also be some general oversimplifications, but not more than I think exists in most posts like these.
-
-## Table of Contents / Highlights
-
- - [How meta-tracing in Pypy works](#wait-but-you-said-meta-tracing)
- - [How GraalVM languages support C extensions](#interpreting-c)
- - [Deoptimisation](#go-back-to-the-interpreted-code-it-ll-be-faster)
- - [Inlining and OSR](#wet-code-is-fast-code-inlining-and-osr)
- - [Seas of Nodes](#what-if-instead-of-instruction-based-ir-like-everyone-else-we-had-a-big-graph-and-also-it-modifies-itself)
- - [Tiering JITs](#yay-jit-compiled-code-let-s-compile-it-again-and-again)
-
 # (Meta)Tracing
 
 LuaJIT employs a method called tracing. Pypy does meta-tracing, which involves using a system to generate tracing interpreters and JITs. Pypy and LuaJIT are not the reference implementations of Python or Lua, but projects on their own. I would describe LuaJIT as shockingly fast, and it describes itself as one of the fastest dynamic language implementations -- which I buy fully.
@@ -347,7 +341,7 @@ JavaScript Core tiers even harder! In fact, it has _three JITs_. JSC's interpret
 
 The Baseline JIT kicks in by 100 executions and the DFG JIT kicks in at about 1000 executions (with exceptions) which means that the JIT gets compiled code much more quickly than say Pypy (which took about 3000 executions). The tiering strategy enables the JIT to try to match the amount of time spent executing the code with the amount of time spent optimizing the code. There are a whole bunch more handy tricks as to which kind of optimizations (inlining, type inferencing, etc) are done at which tier and why that's optimal!
 
-## Related Readings
+# Related Readings
 
 In vague order of how they're related to the blog post.
 
@@ -386,8 +380,4 @@ In vague order of how they're related to the blog post.
   - [Benchmarking correctly is hard by Julia Evans](https://jvns.ca/blog/2016/07/23/rigorous-benchmarking-in-reasonable-time/)
 
 
-## Upcoming Blog Post: Allocation Optimizations for JITs
-When I started writing this post it wasn't for public consumption but to help me model my information. Thus, there are still a few thousand more words I have! I expect this post to be released in mid-July 2020.
-
-The next post will illustrate the basics of garbage collection, dynamics of allocations in compilers and describe some implementations of how JITs improve the cost of allocations (or remove them completely). The topic is hugely important to JITs, as a compiled program can rarely make assumptions about where, if and how some allocated data will be used. Writing to registers is orders of magnitude faster than malloc-ing and eliminating allocations can save the garbage collector time.
 
