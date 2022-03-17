@@ -126,4 +126,8 @@
         <loc>/blog/tf-go/</loc>
         <lastmod>2021-03-06</lastmod>
     </url>
+    <url>
+        <loc>/blog/transformer-inference-arithmetic/</loc>
+        <lastmod>2020-04-20</lastmod>
+    </url>
 </urlset>
