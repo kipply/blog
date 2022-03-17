@@ -144,7 +144,7 @@ The weights loosely consist of the following, per each layer:</p>
 <tr><td>GPU Memory Bandwidth</td><td>1555GB/s</td><td>2039GB/s</td></tr>
 <tr><td>Communication Bandwidth</td><td>300GB/s</td><td>300GB/s</td></tr>
 </tbody></table>
-<p>For now we only need to pay attention to capacity. The numbers are pulled from <a href="https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf">this doc</a>, where the communication bandwidth is marked as 300GB/s instead of 600GB/s because 600GB/s is bidirectional, which we don't use. It's also worth noting that these are all absolute best case scenarios, and in practice this performance should not be expected (though you should be close!)</p>
+<p>For now we only need to pay attention to capacity. The numbers are pulled from <a href="https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf">this doc</a>, where the communication bandwidth is marked as 300GB/s instead of 600GB/s because Nvidia is adding up 300 GB/s into each chip and 300 GB/s out of each chip rather than presenting a bidirectional number.</p>
 <p>Given the parameter count, we can multiply by two to get bytes. So to calculate the size of the weights for a 52B model.</p>
 <script type="math/tex;mode=display">52,076,478,464 \cdot 2 = 104,152,956,928 \text{bytes} \approx 104\text{GB}\\</script>
 <p>Oh no! This doesn't fit in one GPU! In practice, people can't really get access to the 80GB GPUs yet (see <a href="https://web.archive.org/web/20220316203021/https://cloud.google.com/compute/docs/gpus">GCP</a> and <a href="https://docs.aws.amazon.com/dlami/latest/devguide/gpu.html">AWS</a> GPU offerings). So for the 40GB GPUs, we'd need at least three GPUs just to have all the weights loaded in (will discuss how to use the GPUs together in the next section). That leaves us \(120-104 = 16GB\) left for our kv cache. Is that enough? Back to our equation for kv cache cost per token, again with a 52B model;</p>
@@ -270,7 +270,7 @@ B   \geqslant   208 \\</script>
 </li>
 </ul>
 <blockquote>
-<p>todo: add layer norm</p>
+<p>todo: add layer norm, logits calculation at the end</p>
 </blockquote>
 <p>Adding up all the flops!</p>
 <script type="math/tex;mode=display">F = n_{layers} \cdot ({d_{model}}^2 \cdot 2 \cdot 3 + 11 \cdot d_{model} + 2 \cdot {d_{model}}^2 + 16 \cdot {d_{model}}^2 + 6\cdot d_{model} + 6 \cdot d_{model})\\

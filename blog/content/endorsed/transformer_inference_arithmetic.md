@@ -89,7 +89,7 @@ Given the number of parameters, and the amount of kv cache we need to store, we 
 | GPU Memory Bandwidth     | 1555GB/s      | 2039GB/s      |
 | Communication Bandwidth  | 300GB/s       | 300GB/s       |
 
-For now we only need to pay attention to capacity. The numbers are pulled from [this doc](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf), where the communication bandwidth is marked as 300GB/s instead of 600GB/s because 600GB/s is bidirectional, which we don't use. It's also worth noting that these are all absolute best case scenarios, and in practice this performance should not be expected (though you should be close!)
+For now we only need to pay attention to capacity. The numbers are pulled from [this doc](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf), where the communication bandwidth is marked as 300GB/s instead of 600GB/s because Nvidia is adding up 300 GB/s into each chip and 300 GB/s out of each chip rather than presenting a bidirectional number.
 
 Given the parameter count, we can multiply by two to get bytes. So to calculate the size of the weights for a 52B model.
 {% katex(block=true) %}
@@ -249,7 +249,7 @@ The following calculations are per token, per layer. I describe \\(W_q, W_k, W_v
     - Different transformers have fairly different ways of giving position-data, which is why I wanted to consider it separately. But loosely, an addition across a token embedding matrix should be \\(d_{model}\\), though some other minor operations also happen so I'll approximate to \\(6 \cdot d_{model}\\)
     - Flop count: \\(6 \cdot d_{model}\\)
 
-> todo: add layer norm
+> todo: add layer norm, logits calculation at the end
 
 Adding up all the flops!
 
