@@ -40,9 +40,9 @@ P = 12 * n_\text{layers} \cdot {d_\text{model}}^2\\
 = 51,539,607,552
 {% end %}
 
-This is not *quite* 52B. It's probably cheating to round up by half a billion parameters, but we can account for them! The equation above is most of the parameters, but we're missing token embeddings. Anthropic uses a 65536 vocab size, so we get \\(n_\text{tokens} * d_\text{model} = 536,870,912 \\). Adding \\(536,870,912 + 51,539,607,552 = 52,076,478,464\\).
+This is not *quite* 52B. It's probably cheating to round up by half a billion parameters, but we can account for them! The equation above is most of the parameters, but we're missing token embeddings. Anthropic uses a 65536 vocab size, so we get \\(n_\text{tokens} * d_\text{model} = 536,870,912 \\). Adding \\(536,870,912 + 51,539,607,552 = 52,076,478,464\\). We acutally have that half a billion tokens twice for the unembeddings, which leads us to about 52.5B tokens.
 
-We're also missing biases that are attached to all the weights, unembeddings, as well as layernorm. Biases should be approximately zero, and layer norm is \\(2\cdot d_\text{model}\\), otherwise known as zero. Transformers also have positional encoding mechanisms, which for GPT-2 and the original transformer is \\(n_\text{ctx}\cdot d_\text{model}\\) (aka, zero) but Gopher 280B there's some 20B weights spent on the relative positional encoding method presented in the [Transformer XL paper](https://arxiv.org/abs/1901.02860).
+We're also missing biases that are attached to all the weights, as well as layernorm. Biases should be approximately zero, and layer norm is \\(2\cdot d_\text{model}\\), otherwise known as zero. Transformers also have positional encoding mechanisms, which for GPT-2 and the original transformer is \\(n_\text{ctx}\cdot d_\text{model}\\) (aka, zero) but Gopher 280B there's some 20B weights spent on the relative positional encoding method presented in the [Transformer XL paper](https://arxiv.org/abs/1901.02860).
 
 ### kv cache
 For the cases we are considering, transformer inference consists of processing a provided prompt/context (which can happen in parallel), and then sampling additional tokens one by one. The sampling process needs to refer to the context from the prompt and previously sampled tokens for the key and value components of its self-attention layers. This context is provided in matrices known as the kv cache, aka past cache (the open source GPT-2 implementation called it `past`).
@@ -188,13 +188,13 @@ For a small batch, for a total of 27 ms per token generated.
 
 For a large batch of 512, for a total of 62ms per token generated (per batch, so in the 62ms 512 tokens are generated).
 {% katex(block=true) %}
-\text{compute} = B \cdot \frac{2 \cdot P}{N \cdot A_f} = 512 \cdot \frac{2 \cdot 260\text{e}9}{16 \cdot 312\text{e}12} \approx 0.053 \approx 53ms\\
-\text{comms} = B \cdot \frac{n_\text{layers} \cdot 4 \cdot d_\text{model}}{A_c} = 512 \cdot \frac{ 80 \cdot 4 \cdot 16384}{300\text{e}9} \approx 9ms
+\text{compute} = B \cdot \frac{2 \cdot P}{N \cdot A_f} = 512 \cdot \frac{2 \cdot 260\text{e}9}{16 \cdot 312\text{e}12} \approx 0.053 \approx 53\text{ms}\\
+\text{comms} = B \cdot \frac{n_\text{layers} \cdot 4 \cdot d_\text{model}}{A_c} = 512 \cdot \frac{ 80 \cdot 4 \cdot 16384}{300\text{e}9} \approx 9\text{ms}
 {% end %}
 
 As an exercise, try calculating the large batch speed for a 52B on 4xGPUs at batch size 256. The compute should be about 21ms and comms should be about 2ms.
 
-Also note here, that we can't have the comms be greater than the compute! In these calculations I summed the comms and compute time, but logically there is no reason they can't be partially run in parallel (though it's hard). These numbers still land quite close to what should be acquired in practice, and lean towards being an optimal compute case, as it assumes optimal hardware usage and good fusing, plus we didn't factor in a lot of compute like softmaxes, attention and positional encoding. I'd be surprised if someone had an inferencing setup that resulted in numbers lower than what this math comes up with given some core setup details (like int8 would call for different math).
+Also note here, that we don't want the comms to be greater than the compute! In these calculations I summed the comms and compute time, but logically there is no reason they can't be partially run in parallel (though it's hard). These numbers still land quite close to what should be acquired in practice, and lean towards being an optimal compute case, as it assumes optimal hardware usage and good fusing, plus we didn't factor in a lot of compute like softmaxes, attention and positional encoding. I'd be surprised if someone had an inferencing setup that resulted in numbers lower than what this math comes up with given some core setup details (like int8 would call for different math).
 
 ### batch sizes
 In the previous section, we have two calculations for when something memory bandwidth bound versus flops bound. To figure out which is at play we can compare these numbers;
@@ -212,10 +212,9 @@ To calculate when the capacity goes from mostly kv cache to mostly weights is tr
 Previously;
 > We do \\(2\cdot P\\) flops of operations, which can be intuited by the fact that we matmul through all the parameters, and as mentioned earlier, a matrix-vector multiplication is \\(2mn\\) given \\(A \in \mathbb{R}^{m\times n}, b \in \mathbb{R}^{n}\\).
 
+This is correct reasoning, but also incomplete. For complete reasoning, the easiest thing to do is to walk through all the transformer steps and check that we get \\(2P\\).
 
-This is correct reasoning, but also incomplete. For complete reasoning, the easiest thing to do is to walk through all the transformer steps and check that we get \\(2P\\). This will also show the work for our assumuption that things like the attention application, softmaxing, layer norms etc are negligible computations.
-
-To start by is a matmul of a matrix-vector 2mn? These [lecture notes](https://www.stat.cmu.edu/~ryantibs/convexopt-F18/scribes/Lecture_19.pdf) explain that fairly thoroughly, and it also makes sense from there that a matrix-matrix multiplication is \\(2mnp\\) if we multiplied \\(A \in \mathbb{R}^{m\times n}, B \in \mathbb{R}^{n \times p}\\). And then a vector-vector multiplication is just \\(2n\\). (The lecture notes are helpful for explaining the factor of 2).
+To start, why is a matmul of a matrix-vector 2mn? These [lecture notes](https://www.stat.cmu.edu/~ryantibs/convexopt-F18/scribes/Lecture_19.pdf) explain that fairly thoroughly, and it also makes sense from there that a matrix-matrix multiplication is \\(2mnp\\) if we multiplied \\(A \in \mathbb{R}^{m\times n}, B \in \mathbb{R}^{n \times p}\\). And then a vector-vector multiplication is just \\(2n\\). (The lecture notes are helpful for explaining the factor of 2).
 
 > TODO: insert attention + mlp code
 
@@ -226,40 +225,43 @@ The following calculations are per token, per layer. I describe \\(W_q, W_k, W_v
     - Flop count: \\({d_\text{model}}^2 \cdot 2 \cdot 3\\)
 - Calculate z
     - This is \\(\text{softmax}((q\cdot k)\div\sqrt{d_\text{head}}) \cdot v = z\\)
-    - I don't know how to count flops for softmax, so lets pretend it's 6n, where n is the length of the vector and 6 is to account for at least one multiplication operation to mutate the matrix, and say two operations to determine what to multiply by for three operations.
-    - Let's say square root takes 0 FLOPs.
-    - Then the flops are \\((2\cdot d_\text{model}) + (d_\text{model}) + (6\cdot d_\text{model}) + ({2\cdot d_\text{model}})\\) for the (qk multiplication), (divide by scalar), (softmax), (multiply by v).
-    - Flop count: \\(11 \cdot d_\text{model}\\)
-- Merge the head matrices, multiply by the output projection matrix, finishing the self attention layer.
+    - No matrices are multiplied, the number of flops is some factor of \\(d_\text{model}\\).
+- Multiply by the output projection matrix
     - We multiply \\(W_o \in \mathbb{R}^{d_\text{model}\times d_\text{model}}\\), by \\(z \in \mathbb{R}^{d_\text{model}\times1}\\).
     - Flop count:  \\(2 \cdot {d_\text{model}}^2\\)
 - Feed-forward
     - We have our MLP weights \\(W_1, W_2 \in \mathbb{R}^{4\times d_\text{model}} \\).
-    - The MLP is two linear transformations (read: matmul), with a GeLU  in the middle. I yet again do not know how to count GeLU flops, but let's again just give it 6n (which given my understanding of v is probably too much).
-    - Then the flops are \\((2\cdot d_\text{model} \cdot 4\cdot d_\text{model}) + (6\cdot d_\text{model}) + (2\cdot d_\text{model} \cdot 4\cdot d_\text{model})\\) for the linear transform, GeLU and another linear transform.
-    - Flop count:  \\(16 \cdot {d_\text{model}}^2 + 6\cdot d_\text{model}\\)
+    - The MLP is two linear transformations (read: matmul), with a GeLU  in the middle.
+    - Then the flops are \\((2\cdot d_\text{model}  + (6\cdot d_\text{model}) + (2\cdot d_\text{model} \cdot 4\cdot d_\text{model})\\) for the linear transform, GeLU and another linear transform.
+    - Flop count:  \\(16 \cdot {d_\text{model}}^2 \\)
 - Positional encoding
-    - The original transformer has a cosine positional encoding scheme, which is an addition to the token embedding.
-    - Different transformers have fairly different ways of giving position-data, which is why I wanted to consider it separately. But loosely, an addition across a token embedding matrix should be \\(d_\text{model}\\), though some other minor operations also happen so I'll approximate to \\(6 \cdot d_\text{model}\\)
-    - Flop count: \\(6 \cdot d_\text{model}\\)
-- Some other things at the end, like layernorm, unembedding (sometimes called de-embeddings, might as well call it \\(\text{embed}^{-1})\\)
-    - There are typically two layernorms that happen, where the weights there are a vector of length \\(d_\text{model}\\).
-    - The unembeddings
-    - I'm going to skip the flop count for these.
+    - The original transformer has a cosine positional encoding scheme, which is an addition to the token embedding. No matrix multiplies to see here!
+- Some other things
+    - There are typically layernorms that happen after each attention, where the weights there are a vector of length \\(d_\text{model}\\).
+    - There's another linear layer and then a softmax that sits on top, which is our output (token) embedding or unembedding or de-embedding or embedding\\(^{-1}\\.
+
 
 Adding up all the flops!
 
 {% katex(block=true) %}
-F = n_\text{layers} \cdot ({d_\text{model}}^2 \cdot 2 \cdot 3 + 11 \cdot d_\text{model} + 2 \cdot {d_\text{model}}^2 + 16 \cdot {d_\text{model}}^2 + 6\cdot d_\text{model} + 6 \cdot d_\text{model})\\
- = n_\text{layers} \cdot(24\cdot {d_\text{model}}^2 + 23 \cdot d_\text{model})
+F = n_\text{layers} \cdot (2 \cdot 3  \cdot {d_\text{model}}^2  + 2\cdot d_\text{model}^2  + 16\cdot d_\text{model}^2 )\\
+ = n_\text{layers} \cdot 24 \cdot {d_\text{model}}^2
 {% end %}
 Subbing in our 8192 model, we should get about 100B flops;
 
 {% katex(block=true) %}
-F = 64\cdot(2\cdot 8192^2 + 23 \cdot 8192)
- = 103091273728 \text{flops}
+F = 64\cdot(24\cdot 8192^2 + 23 \cdot 8192)
+ = 103079215104 \text{flops}
 {% end %}
 
-103091273728 over two is 51545636864. The extra \\(64 \cdot 23 \cdot 8192\\) is all the intermediate calculations (things that weren't run directly against weights, except for any positional encoding ang token embedding weights) which is only 0.012 billion flops so we can see that those operations are negligible relative to the 100billion flops.
+103079215104 over two is about 51.5B. We're a lil under (we get 51.5B instead of 52B) but if we recall from the parameter counting session, there are 51.5B parameters if we exclude the token embeddings and there is just about half a billion of token embeddings given their 65536 vocab size. It would be reasonable to do the latency calculations with \\(2\cdot 12\cdot n_\text{layers} \cdot {d_\text{model}}^2\\) instead of \\(2\cdot P\\), but it's just about a 2% difference.
 
-We're still under (we get 51.5B instead of 52B) but if we recall from the parameter counting session, there are 51.5B parameters if we exclude the token embeddings and there is just about half a billion of token embeddings given their 65536 vocab size. It would be reasonable to do the latency calculations with \\(2\cdot 12\cdot n_\text{layers} \cdot {d_\text{model}}^2\\) instead of \\(2\cdot P\\), but it is less than a 1% difference.
+
+### leftover latency calculations
+What about all the operations I left out? It is really hard to count these operations! The reported flops is specifically for doing matrix multiplies, as GPUs come with specialised hardware for matmuls, so it would be wrong to try to count the FLOPs in. Though mostly, deciding how many FLOPs a square root needs is a high-knowledge and high-precision endeavor.
+
+How do we count memory bandwidth time into the softmax? It wasn't factored into our memory bandwidth calculation and our memory bandwidth:compute ratio is 208, so softmax will always be bounded by memory bandwidth. Softmax is quite a key component of our compute (and it's a little unfortunate that we optimised our hardware to do a lot of matmul, and now we're asking it to do a lot of softmax). I'll cheat on the "arithmetic" theme and pull up this table from [Data Movement is All You Need, 2021](https://proceedings.mlsys.org/paper/2021/file/c9e1074f5b3f9fc8ea15d152add07294-Paper.pdf).
+
+![](../../img/arithmetic_transformers/dataisall.png)
+
+
