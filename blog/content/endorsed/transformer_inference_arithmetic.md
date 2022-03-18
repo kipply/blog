@@ -206,7 +206,7 @@ In the previous section, we have two calculations for when something memory band
 And it becomes obvious why \\(B\\) is an important factor, as the memory bandwidth is not affected by \\(B\\), while flops is. This is about to be the same calculation we did in the [kv cache](#kv-cache) section (where the difference is that the kv cache is 1/6th of the compute and memory usage) where the min batch size for memory bandwidth bound is \\(A_\text{bw}/A_c = 208\\). This is a handy ratio!
 
 To calculate when the capacity goes from mostly kv cache to mostly weights is trivial, and also isn't a binary in the same way (nothing special happens when your kv cache starts taking up more memory than your weights). But what about comms? For comms we want to see that the rate is higher than \\(A_c\\), like so;
-> TODO Comms calculations, also talk about the flops/communication ratio
+> TODO Comms calculations, also talk about the flops/communication ratio, talk about potentially some steps stuck on comms
 
 ### flops counting
 Previously;
