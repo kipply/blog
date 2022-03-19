@@ -132,7 +132,7 @@
 \text{compute} = n_\text{layers} \cdot 2 \cdot {d_\text{model}}^2\cdot 2 \div 312\text{e}12\\</script>
 <p>None of the model architecture matters anymore — we get a distinct ratio here of 208 given this hardware specification. This means that if we're going to compute kv for one token, it'll take the same amount of time to compute for up to 208 tokens! For 52B this is 11.4 milliseconds (in practice, we'd use four GPUs in parallel so it would actually be under 3 milliseconds, more in following sections). In a following section, we'll learn to calculate that to generate a single token on a 52B on 4 GPUs we need 20ms.</p>
 <blockquote>
-<p>TODO: can i avoid three paragraphs in a row lmao</p>
+<p>TODO: diagram about which operations happen to which parts of the inferencing.</p>
 </blockquote>
 <p>This forwards pass is run on any context tokens, which as we've now discovered is very low relative to the decoding steps. In general, inference is a lot slower than processing these forwards pass (which is similar to the operations we do at training time). Calculating for a kv cache token is exactly 1/6th of the compute of doing a decoding step, but is also divided by a large factor (up to 208) for the parallelism.</p>
 <p>This is not the whole story (given parallelism or overheads and <a href="https://twitter.com/pommedeterre33/status/1491314217370398725?s=21">tradeoffs</a> associated with storing this cache). If we're serving small requests we may be memory bandwidth bound rather than flops, in which case we don't want to try saving flop time, rather we want to use that time.</p>
@@ -152,7 +152,7 @@
  = 2\cdot 64 \cdot 8192 * 2
  = 2,097,152 \text{bytes}
 \approx 0.002 GB</script>
-<p>And then we'd do \(16/0.002 \approx 8000\) tokens can fit into our kv cache with this GPU set up, or that we could do up to a batch size 40 where each item is 200 tokens. For four GPUs, we'd get \(56/0.002 \approx 23000\). In practice (I'll say this a lot) we'd definitely go for the four GPUs, since it's annoying to divide models made out of powers of two into three.</p>
+<p>And then we'd do \(16/0.002 \approx 8000\) tokens can fit into our kv cache with this GPU set up, or that we could do up to a batch size 40 where each item is 200 tokens. For four GPUs, we'd get \(56/0.002 \approx 23000\). In practice (I'll say this a lot) we'd definitely go for the four GPUs, since it's painful to divide models made out of powers of two into three.</p>
 <p>But the capacity goes a bit elsewhere. Though we already account for the weights, there are some other intermediate steps that take capacity, but they should be relatively negligible.</p>
 <p>Maybe we want more GPUs! If we're going to pay the capacity cost of storing weights, we might as well get more processing in. Tradeoffs get tricky here as increasing the batch size isn't free for latency so we'd have to weigh between getting a good speed to finish all our inferencing together and each inference getting completed at the fastest rate possible.</p>
 <blockquote>

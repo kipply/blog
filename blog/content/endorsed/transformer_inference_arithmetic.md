@@ -76,7 +76,7 @@ We'll need to read all the kv weights once. So that would be \\(2 \cdot 2 \cdot 
 
 None of the model architecture matters anymore — we get a distinct ratio here of 208 given this hardware specification. This means that if we're going to compute kv for one token, it'll take the same amount of time to compute for up to 208 tokens! For 52B this is 11.4 milliseconds (in practice, we'd use four GPUs in parallel so it would actually be under 3 milliseconds, more in following sections). In a following section, we'll learn to calculate that to generate a single token on a 52B on 4 GPUs we need 20ms.
 
-> TODO: can i avoid three paragraphs in a row lmao
+> TODO: diagram about which operations happen to which parts of the inferencing.
 
 This forwards pass is run on any context tokens, which as we've now discovered is very low relative to the decoding steps. In general, inference is a lot slower than processing these forwards pass (which is similar to the operations we do at training time). Calculating for a kv cache token is exactly 1/6th of the compute of doing a decoding step, but is also divided by a large factor (up to 208) for the parallelism.
 
@@ -107,7 +107,7 @@ Oh no! This doesn't fit in one GPU! In practice, people can't really get access 
  = 2,097,152 \text{bytes}
 \approx 0.002 GB
 {% end %}
-And then we'd do \\(16/0.002 \approx 8000\\) tokens can fit into our kv cache with this GPU set up, or that we could do up to a batch size 40 where each item is 200 tokens. For four GPUs, we'd get \\(56/0.002 \approx 23000\\). In practice (I'll say this a lot) we'd definitely go for the four GPUs, since it's annoying to divide models made out of powers of two into three.
+And then we'd do \\(16/0.002 \approx 8000\\) tokens can fit into our kv cache with this GPU set up, or that we could do up to a batch size 40 where each item is 200 tokens. For four GPUs, we'd get \\(56/0.002 \approx 23000\\). In practice (I'll say this a lot) we'd definitely go for the four GPUs, since it's painful to divide models made out of powers of two into three.
 
 But the capacity goes a bit elsewhere. Though we already account for the weights, there are some other intermediate steps that take capacity, but they should be relatively negligible.
 
