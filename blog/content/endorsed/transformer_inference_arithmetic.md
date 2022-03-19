@@ -9,6 +9,7 @@ show_toc = true
 +++
 
 This post assumes some prior knowledge about transformers, say at having understood most of [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) but not having internalised all of it. This is entirely focused on decoder-only architectures but can be extrapolated to encoder-decoder or encoder-only architectures. The post is long and verbose, but has many sections of calculations that are trivial to derive or do on your own!
+> TODO: " Also like - what is the point of the article, what should a reader expect to get out of it, why did you write it. First line is prerequisite knowledge but there’s no abstract"
 
 > Would like to extend extremely large amount of credit to [James Bradbury](https://twitter.com/jekbradbury) for his help in teaching me about performance concepts and reviewing the post. Also big thanks to Horace He and Mo Bavarian for iterating with me (i prematurely put names here pls halp), and to Jim Wu for teaching me how to write math notation.
 
@@ -20,7 +21,7 @@ It's useful to break down what these weights are, so that we can understand how 
 The weights loosely consist of the following, per each block (where one block a decoder unit that consists of a self-attention layer and a feedforward layer, though I'll refer to blocks as layers):
 
  - \\( W_q,W_k,W_v \\) matrices, which are each \\(d_\text{model} \cdot n_\text{heads}\cdot d_\text{head} \\) and project the input into the query, key, and value used in self-attention.
- - A, \\( W_o \\) matrix, which is also \\(d_\text{model}\cdot n_\text{heads}\cdot d_\text{head} \\) and used on the output of self-attention, before the MLP layer (the feed-foward neural network that's stacked on the self-attention layer).
+ - A \\( W_o \\) matrix, which is also \\(d_\text{model}\cdot n_\text{heads}\cdot d_\text{head} \\) and used on the output of self-attention, before the MLP layer (the feed-foward neural network that's stacked on the self-attention layer).
  - MLP weights, which are two matrices each of \\({d_\text{model}}^2 \cdot 4\\)
 
 
@@ -113,16 +114,12 @@ But the capacity goes a bit elsewhere. Though we already account for the weights
 
 Maybe we want more GPUs! If we're going to pay the capacity cost of storing weights, we might as well get more processing in. Tradeoffs get tricky here as increasing the batch size isn't free for latency so we'd have to weigh between getting a good speed to finish all our inferencing together and each inference getting completed at the fastest rate possible.
 
-> TODO: can i avoid three paragraphs in a row lmao
-
 At some point, we'll also get closer to flop bound, in that adding another item to the batch won't be faster than sending them in separate batches (though this is hard to get in practice because of capacity, and giving small models too many GPUs causes the communication costs to go up quickly).
 
 ### model parallelism
 I'm not going to build up full understanding of model parallelism and all the implementation details, because [HuggingFace has done a great job](https://huggingface.co/docs/transformers/parallelism), but here's a description of it that's particularly relevant for inferencing.
 
 We have all these computations we'd like to do. All these matmuls on big matrices are expensive! Our model has limited memory bandwidth, and we have to pass all our weights through to complete a single decoding step! Wouldn't it be nice to insert more GPUs to start dividing that compute cost by an arbitrarily large number (which in practice, is 16 GPUs attached to one machine, but maybe AWS can only do 8 [I haven't found evidence that they offer 16]).
-
-> TODO: diagram here?
 
 The answer, is that it's tricky — how do we split up our weights? We have to pay some latency to communicate between the models — when does it occur, how often and how much?
 
@@ -141,16 +138,15 @@ For our inferencing this happens at;
 There are some other optimisations that can go on and nontrivial implementation details that go into tensor parallelism which are not in scope!
 
 ### latency calculations
+We've discussed the capacity fairly thoroughly, mapped out comms in the model parallelism section and discussed general compute steps.
+
 ![](../../img/arithmetic_transformers/batchsize.png)
-This is a useful little guide for thinking about transformer inference. We've discussed the capacity fairly thoroughly, mapped out comms in the model parallelism section and discussed general compute steps.
 
 For memory bandwidth, the cost we pay is the time it takes to run all our weights through the bandwidth as we do compute on them. If we run our computations slower than we can load the weights, then we are flops bound and the memory bandwidth isn't a factor in latency calculations. If we have a small number of multiplies to do per parameter, then maybe we'll be throttled by memory bandwidth. How many flops we spend per parameter is then equal to the batch size.
 
-> TODO: can i avoid three paragraphs in a row lmao
-
 For comms, it's not about boundedness, but rather about adding a latency term and a throughput term (the 300GB/s on an A100). Something tricky about the latency side of this figure is that it's not reported, so the best I can do is guess "approximately small" for which some experienced people told me that 10 microseconds is a good bet.
 
-Because of the compute factors, to calculate the latency of a single token decoding step we'd have two formulas - one for memory bandwidth bound (small batch; also meaning most communication time is latency) and another for flops bound (large batch; also meaning most communication time is throughput).
+Because of the compute factors, to calculate the latency of a single token decoding step we'd have two formulas - one for memory bandwidth bound (small batch; also meaning most communication time is latency) and another for flops bound (large batch; also meaning most communication time is throughput). For large batch, we'll drop the latency factor. In practice, we'd want to profile to find out.
 
 Equations for a small batch (say 1, so we can drop the batch factor) would be; (where \\(N\\) is the number of accelerators)
 {% katex(block=true) %}
@@ -194,7 +190,9 @@ For a large batch of 512, for a total of 62ms per token generated (per batch, so
 
 As an exercise, try calculating the large batch speed for a 52B on 4xGPUs at batch size 256. The compute should be about 21ms and comms should be about 2ms.
 
-Also note here, that we don't want the comms to be greater than the compute! In these calculations I summed the comms and compute time, but logically there is no reason they can't be partially run in parallel (though it's hard). These numbers still land quite close to what should be acquired in practice, and lean towards being an optimal compute case, as it assumes optimal hardware usage and good fusing, plus we didn't factor in a lot of compute like softmaxes, attention and positional encoding. I'd be surprised if someone had an inferencing setup that resulted in numbers lower than what this math comes up with given some core setup details (like int8 would call for different math).
+Also note here, that we don't want the comms to be greater than the compute! In these calculations I summed the comms and compute time, but logically there is no reason they can't be partially run in parallel (though it's hard).
+
+These numbers still land quite close to what should be acquired in practice, and lean towards being an optimal compute case, as it assumes optimal hardware usage, doesn't factor in softmaxes, assumes zero comms latency and ignores many other smaller factors. I'd be surprised if someone had an inferencing setup that resulted in numbers lower than what this math comes up with given some core setup details (like int8 would call for different math).
 
 ### batch sizes
 In the previous section, we have two calculations for when something memory bandwidth bound versus flops bound. To figure out which is at play we can compare these numbers;
@@ -260,8 +258,4 @@ F = 64\cdot(24\cdot 8192^2 + 23 \cdot 8192)
 ### leftover latency calculations
 What about all the operations I left out? It is really hard to count these operations! The reported flops is specifically for doing matrix multiplies, as GPUs come with specialised hardware for matmuls, so it would be wrong to try to count the FLOPs in. Though mostly, deciding how many FLOPs a square root needs is a high-knowledge and high-precision endeavor.
 
-How do we count memory bandwidth time into the softmax? It wasn't factored into our memory bandwidth calculation and our memory bandwidth:compute ratio is 208, so softmax will always be bounded by memory bandwidth. Softmax is quite a key component of our compute (and it's a little unfortunate that we optimised our hardware to do a lot of matmul, and now we're asking it to do a lot of softmax). I'll cheat on the "arithmetic" theme and pull up this table from [Data Movement is All You Need, 2021](https://proceedings.mlsys.org/paper/2021/file/c9e1074f5b3f9fc8ea15d152add07294-Paper.pdf).
-
-![](../../img/arithmetic_transformers/dataisall.png)
-
-
+How do we count memory bandwidth time into the softmax? It wasn't factored into our memory bandwidth calculation and our memory bandwidth to compute ratio is 208, so softmax will very probably be bounded by memory bandwidth. Softmax is
