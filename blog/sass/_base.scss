@@ -359,6 +359,9 @@ hr {
   max-width: 60%;
   margin: 0 auto 0;
   margin-bottom: 10%;
+  @media only screen and (max-width: 900px) {
+    max-width: 95%;
+  }
 }
 .article {
   display: flex;
@@ -366,12 +369,6 @@ hr {
 
 .page-body {
   width: 100%;
-  // max-width: 69%;
-  margin: 0 auto 0;
-  margin-bottom: 10%;
-  @media only screen and (max-width: 900px) {
-    max-width: 85%;
-  }
 }
 
 .sidebar{
