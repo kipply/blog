@@ -5,14 +5,12 @@ weight = 1
 path = "transformer-param-count"
 +++
 
-### parameter counting
 Each weight or parameter is a float that was tuned during training and is usually two bytes as most training is done half-precision now([bfloat16](https://en.wikipedia.org/wiki/Bfloat16_floating-point_format)). Not everything is trained/served bfloat16, but it's at least half-precision (at least since [the GPT-3 Paper](https://arxiv.org/pdf/2005.14165.pdf) in 2020) which gets us the two bytes.
-
-It's useful to break down what these weights are, so that we can understand how the components are used for inferencing later.
 
 The weights loosely consist of the following, per each block (where one block a decoder unit that consists of a self-attention layer and a feedforward layer, though I'll refer to blocks as layers):
 
  - \\( W_q,W_k,W_v \\) matrices, which are each \\(d_\text{model} \cdot n_\text{heads}\cdot d_\text{head} \\) and project the input into the query, key, and value used in self-attention.
+    - These are technically
  - A \\( W_o \\) matrix, which is also \\(d_\text{model}\cdot n_\text{heads}\cdot d_\text{head} \\) and used on the output of self-attention, before the MLP layer (the feed-foward neural network that's stacked on the self-attention layer).
  - MLP weights, which are two matrices each of \\({d_\text{model}}^2 \cdot 4\\). You might also see this referred to by feedforward or linear layers.
 
