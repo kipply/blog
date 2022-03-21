@@ -3,10 +3,6 @@ title = "How JIT Compilers are Implemented and Fast: Pypy, LuaJIT, Graal and Mor
 date = 2020-07-04
 weight = 1
 path = "jits-impls"
-
-
-[extra]
-show_toc = true
 +++
 
 This post goes into details of 5+ JITs and various optimization strategies and discuss how they work with different JITs. Information in this blog post is more *depth-first*, thus there are many important concepts that may be skipped. That also means that this blogpost is *not enough information* to draw meaningful conclusions on any comparisons of implementations/languages.

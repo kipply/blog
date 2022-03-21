@@ -28,27 +28,28 @@
       {{ macros::polish(content=page.content) }}
     </section>
   </div>
-  {% if page.extra.show_toc %}
-  <div class="sidebar">
-    <ul class="sidebar-ul">
-    {% for h1 in page.toc %}
-        <li>
-            <a href="{{ h1.permalink | safe }}">{{ h1.title }}</a>
-            {% if h1.children %}
-                <ul>
-                    {% for h2 in h1.children %}
-                        <li>
-                            <a href="{{ h2.permalink | safe }}">{{ h2.title }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </li>
-    {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
 </article>
+{% if page.extra.show_toc %}
+<div class="sidebar">
+  <ul class="sidebar-ul">
+  {% for h1 in page.toc %}
+      <li>
+          <a href="{{ h1.permalink | safe }}">{{ h1.title }}</a>
+          {% if h1.children %}
+              <ul>
+                  {% for h2 in h1.children %}
+                      <li>
+                          <a href="{{ h2.permalink | safe }}">{{ h2.title }}</a>
+                      </li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+      </li>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
 <footer>
   <div class="social-icons">
     ---

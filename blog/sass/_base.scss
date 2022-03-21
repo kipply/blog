@@ -97,7 +97,7 @@ ul {
 
 .sidebar-ul {
  li:before {
-    content: "|";
+    content: "";
     padding-right: 0;
   }
   li {
@@ -181,16 +181,6 @@ img {
 
 hr {
   border: 0.5px solid rgba($primary, 0.5);
-}
-
-.main {
-  width: 96%;
-  max-width: 60%;
-  margin: 0 auto 0;
-  margin-bottom: 10%;
-  @media only screen and (max-width: 900px) {
-    max-width: 85%;
-  }
 }
 
 .header {
@@ -354,9 +344,7 @@ hr {
     width: 100%;
   }
 }
-.article {
-  display: block;
-}
+
 .katex {
   font-size: 2rem!important;
   overflow: scroll;
@@ -367,20 +355,32 @@ hr {
   line-height: 3.5rem!important;
 }
 
+.main {
+  max-width: 60%;
+  margin: 0 auto 0;
+  margin-bottom: 10%;
+}
 .article {
   display: flex;
 }
+
 .page-body {
-  max-width: 100%;
+  width: 100%;
+  // max-width: 69%;
+  margin: 0 auto 0;
+  margin-bottom: 10%;
+  @media only screen and (max-width: 900px) {
+    max-width: 85%;
+  }
 }
 
 .sidebar{
   padding-left: 10px;
-  position: -webkit-sticky; /* for Safari */
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  min-width: 20vw;
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  text-align: right;
+  max-width: 15%;
   @media only screen and (max-width: 900px) {
     display: none;
     min-width: 0;
