@@ -8,11 +8,11 @@ path = "transformer-inference-from-few-principles"
 show_toc = true
 +++
 
-This article serves as low-principles reasoning for thinking about large language model inference performance. I started putting this together to be able to make better predictions, form better explanations and more easily identify problem points for my work at [Cohere](https://os.cohere.ai/).
+This article serves as low-principles reasoning for thinking about large language model inference performance, with no experiments or difficult math (a previous title for this was "Transformer Inference Performance Arithmetic"). There is an impressive amount of understanding that can be acquired this way! It's helped me make better predictions, form better explanations and more easily identify problem points for [work](https://os.cohere.ai/).
 
 This post assumes some prior knowledge about transformers, say at having understood most of [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) but not having internalised all of it. Familiarity with this [parameter counting](/transformer-param-count/) post which I developed along with this one would also be useful.
 
-This is entirely focused on decoder-only architectures but can be extrapolated to encoder-decoder or encoder-only architectures. There is a lovely amount of understanding that can be developed without difficult math/accelerator knowledge or even experiments!
+This is entirely focused on decoder-only architectures but can be extrapolated to encoder-decoder or encoder-only architectures.
 
 ### kv cache
 For sampling, transformer inference consists of processing a provided prompt/context (which can happen in parallel), and then sampling additional tokens one by one. The process needs to refer to the context from the prompt and previously sampled tokens for the key and value components of its self-attention layers. This context is provided in matrices known as the kv cache, aka past cache (the open source GPT-2 implementation called it `past`).
