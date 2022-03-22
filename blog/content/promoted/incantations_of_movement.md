@@ -21,7 +21,7 @@ so how do you know when you’re successfully executing the incantation? do you 
 
 sometimes i just feel it, the movement feels good, different, productive. with my spine lengthening, i actually could see it.
 
-![](../../img/movement/upsidedown.png)
+![](../img/movement/upsidedown.png)
 
 the photo on the right was taken before i took a second to lengthen my spine. a lot of this is in my shoulders, but the differences in the way my back looks is also noticeable. when i invert my abs and shoulders are tensed, my lower abs especially are working to hollow out my back. when i relax into this and let my spine be pulled, i am more symmetrical
 

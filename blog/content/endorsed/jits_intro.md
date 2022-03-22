@@ -110,7 +110,7 @@ The simplicity of this kind of jitting makes it easy for Julia to also supply AO
 
 Julia is actually the jittiest JIT I'll discuss, but not the most interesting as a JIT. It compiles code right before the code needs to be used -- just in time. Most JITs however (Pypy, Java, JS Engines), are not at all about compiling code just-in-time, but compiling _optimal code_ at an optimal time. In some cases that time is never. In other cases, compilation occurs more than once. In many cases where code is compiled, it doesn't occur until after the source code has been executed numerous times, and the JIT will stay in an interpreter as the overhead to compilation is too high to be valuable.
 
-![](../../img/jits/jitbrr.jpg)
+![](../img/jits/jitbrr.jpg)
 
 The other aspect at play is generating _optimal code_. Assembly instructions are not created equal, and compilers will put a lot of effort into generating well-optimized machine code. Usually, it is possible for a human to write better assembly than a compiler (though it would take a fairly smart and knowledgeable human), because the compiler cannot dynamically analyze your code. By that, I mean things like knowing the possible range of your integers or what keys are in your map, as these are things that a computer could only know after (partially) executing your program. A JIT compiler can do those things because it interprets your code first and gathers data from the execution. Thus, JITs are expensive in that they interpret, and add compilation time to execution time, but they make it up in highly optimised compiled code. With that, the timing of compilation is also dependent on whether the JIT has gathered enough valuable information.
 
@@ -123,7 +123,7 @@ The cool part about JITs is that I was sort of lying when I said a JIT implement
 
 JITs have a concept of warming up. Because intepretation and profiling time is expensive, JITs will start by executing a program slowly and then work towards "peak performance". For JITs with interpreted counterparts like Pypy, the JIT without warmup performs much worse at the beginning of execution due to the overhead of profiling. It's also the reason that JITs will consume signifcantly more memory.
 
-![](../../img/jits/warmingup.png)
+![](../img/jits/warmingup.png)
 
 Warmup adds complexity to measuring efficiency of a JIT! It's fine if you're measuring the performance of generating the mandelbrot set, but becomes painful if you're serving a web application and the first N requests are painfully slow. It means that Javascript is relatively less performant as a command line tool than it is for a webserver. It’s complicated by the fact that the performance doesn’t strictly increase. If Pypy decides it needs to compile many things all at once after JITs compiling some functions, then you might have a slow-down in the middle. It also makes benchmark results more ambiguous, as you have to check if the jitted languages were given time to warmup, but you’d also want to know if it took an unseemly amount of time to warmup. Optimizing your compiled code *and* warmup speed is unfortunately zero-sum(or at least small-sum) by nature. If you try to get your code to compile sooner, less data will be available, the compiled code will not be as efficient and peak performance will be lower. Aiming for higher peak performance of course, often means higher profiling costs.
 

@@ -30,7 +30,7 @@ I often hear sentiments that resemble "wow these VCs are taking a chance on me I
 VCs are not evil people trying to take advantage of you (actually they might be, but let's assume they're not), but they are not the ones at risk. For them, 150k or a few million is not a huge risk. Seed-stage returns will be from a very small percentage of investments, thus VCs can afford to have comically high error rates as long as they get the few that matter. If you're SoftBank you can do even worse and still have so much money! They make decisions carefully, they care about your success for various reasons, and are generally caring people (in most of my experiences) but in larger abstractions, your startup means nothing to them.
 
 They're not shy about it either, the entire reason they're investing in you is because they think you're more valuable than you cost.
-![](../../img/founding/paul.png)
+![](../img/founding/paul.png)
 
 Your risk is years of your life, blood, sweat, and tears. The next few years (provided your startup lasts till then) will somewhat be in service to these VCs. The VCs are your "bosses" as you answer to them (though *much* less than a regular "boss") and to the ones you hope to raise capital from in the future.
 
