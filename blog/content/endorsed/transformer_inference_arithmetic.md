@@ -12,7 +12,9 @@ This article serves as low-principles reasoning for thinking about large languag
 
 This post assumes some prior knowledge about transformers, say at having understood most of [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) but not having internalised all of it. Familiarity with this [parameter counting](/transformer-param-count/) post which I developed along with this one would also be useful.
 
-This is entirely focused on decoder-only architectures but can be extrapolated to encoder-decoder or encoder-only architectures.
+This is entirely focused on decoder-only architectures but can be extrapolated to encoder-decoder. It's the same as encoder-only, though those aren't used for sampling so many parts won't be applicable.
+
+> TODO: do a pass to assume less prior knowledge, general flops vibes, why we always deal with per token, boundedness. also jsut a pass because i wrote this not in order
 
 ### kv cache
 For sampling, transformer inference consists of processing a provided prompt/context (which can happen in parallel), and then sampling additional tokens one by one. The process needs to refer to the context from the prompt and previously sampled tokens for the key and value components of its self-attention layers. This context is provided in matrices known as the kv cache, aka past cache (the open source GPT-2 implementation called it `past`).
@@ -33,23 +35,27 @@ To calculate compute for just \\(\text{k}\\) we multiply \\(t_\text{e}\\) by \\(
 
 This means for a 52B parameter model (taking [Anthropic's](https://arxiv.org/pdf/2112.00861.pdf), where \\(d_\text{model} = 8192\\) and \\(n_\text{layers} = 64\\)). The flops are;
 {% katex(block=true) %}
-64 \cdot 2 \cdot 8192^2\cdot 2 = 17,179,869,184
+2 \cdot 2 \cdot 64 \cdot 8192^2 = 17,179,869,184
 {% end %}
 
-We only need to read all the kv weights once. So that would be \\(2 \cdot 2 \cdot n_\text{layers} \cdot {d_\text{model}}^2\\) bytes. Say we have an [A100 GPU](](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf)), where we do \\(312\text{e}12\\) flops per second and \\(1.5\text{e}12\\) bytes per second of memory bandwidth.
+We only need to read all the weights once for our context tokens as we do them in parallel. Say we have an [A100 GPU](](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf)), where we do \\(312\text{e}12\\) flops per second and \\(1.5\text{e}12\\) bytes per second of memory bandwidth. The following are numbers for just the kv weights and computations.
 
 {% katex(block=true) %}
 \text{memory} = 2 \cdot 2 \cdot n_\text{layers} \cdot {d_\text{model}}^2 \div 1.5\text{e}12\\
 \text{compute} = 2 \cdot 2 \cdot n_\text{layers} \cdot {d_\text{model}}^2 \div 312\text{e}12\\
 {% end %}
 
-None of the model architecture matters anymore — we get a distinct ratio here of 208 given this hardware specification. This means that if we're going to compute kv for one token, it'll take the same amount of time to compute for up to 208 tokens! For 52B this is 11.4 milliseconds (in practice, we'd use four GPUs in parallel so it would actually be ~3 milliseconds, more in following sections). In contrast, it takes 20ms to generate a single token for a 52B model on 4 GPUs, which we'll learn to calculate in later sections.
+None of the model architecture matters anymore — we get a distinct ratio here of 208 given this hardware specification. This means that if we're going to compute kv for one token, it'll take the same amount of time to compute for up to 208 tokens! It also means if we used the rest of our weights to do a full forwards pass on our context, it's also 208 (both the numerator and denominator get a factor of 6 added). This will be reasoned thoroughly in future sections.
 
-> TODO: diagram about which operations happen to which parts of the inferencing.
+For a 52B model full forwards pass, that's \\(12\cdot 2 \cdot n_\text{layers} \cdot {d_\text{model}}^2  / 1.5\text{e}12 \approx 69\\) milliseconds for up to 208 tokens (in practice, we'd use four GPUs in parallel so it would actually be ~17 milliseconds, more in following sections). What if we had more than 208 tokens? In that case, the flops would take longer than the memory (flops bound). Say we had 416 (double). \\(416\cdot12\cdot 2 \cdot n_\text{layers} \cdot {d_\text{model}}^2  / 312\text{e}12 \approx 137\\)ms, double time!
 
-Calculating for a kv cache token is exactly 1/6th of the compute of doing a decoding step, but is also divided by a large factor (up to 208) for the parallelism. In general, these forwards passes (what we experience in getting logits, embeddings and training) are very cheap because of that parallelism.
+![](../../img/arithmetic_transformers/kvdiagram.png)
 
-This is not the whole story (given overheads and [tradeoffs](https://twitter.com/pommedeterre33/status/1491314217370398725?s=21) associated with storing this cache). If we're serving small requests we may be memory bandwidth bound rather than flops, in which case we don't want to try saving flop time, rather we want to use that time to get the weights through our memory.
+Calculating for a kv cache token is exactly 1/6th of the compute of passing the token through the model. For the context tokens it's also divided by a large factor (up to 208) for the parallelism. In general, these forwards passes (what we experience in getting logits, embeddings and training) are very cheap because of that parallelism.
+
+This doesn't mean that 1/6th of the time is saved! Let's assume we are flops bound. Then at each sample step, we save \\(2 \cdot 2 \cdot n_\text{tokens} \cdot n_\text{layers} \cdot {d_\text{model}}^2 \div 312\text{e}12\\) flops while the decoding steps costs \\(2 \cdot 12 \cdot n_\text{layers} \cdot {d_\text{model}}^2 \div 312\text{e}12\\). So at each step we save 1/6 of the time multiplied by the number of tokens — which increases as we sample tokens.
+
+This is not the whole story (given overheads and [tradeoffs](https://twitter.com/pommedeterre33/status/1491314217370398725?s=21) associated with storing this cache). If we're serving small batches we may be memory bandwidth bound rather than flops, in which case we won't even want to use the past cache and will instead happily do recomputations and spend the flops (we'll already be paying the memory cost to do our sampling).
 
 ### capacity
 Given the number of parameters, and the amount of kv cache we need to store, we can start worrying about how much space is on our accelerators to do that! Now is a good time to put up a table of our accelerators — for this post we'll only work with Nvidia A100 GPUs (which are generally speaking, the best GPUs we can get for inference).
@@ -82,26 +88,25 @@ And then we'd do \\(16/0.002 \approx 8000\\) tokens can fit into our kv cache wi
 There's some extra space used by intermediate calculation steps, but they're negligible.
 
 ### model parallelism
-I'm not going to build up full understanding of model parallelism and all the implementation details, because [HuggingFace has done a great job](https://huggingface.co/docs/transformers/parallelism), but here's a description of it that's particularly relevant for inferencing.
+I'm not going to build up full understanding of model parallelism and all the implementation details, because [many](https://huggingface.co/docs/transformers/parallelism) [have](https://arxiv.org/pdf/1909.08053.pdf) [done](https://timdettmers.com/2014/11/09/model-parallelism-deep-learning/) [so](https://www.deepspeed.ai/tutorials/megatron/). But we will build out the parts of the understanding that is useful to figure out the communication overhead!
 
-We have all these computations we'd like to do. All these matmuls on big matrices are expensive! Our model has limited memory bandwidth, and we have to pass all our weights through to complete a single decoding step! Wouldn't it be nice to insert more GPUs to start dividing that compute cost by an arbitrarily large number (which in practice, is 16 GPUs attached to one machine, but maybe AWS can only do 8 [I haven't found evidence that they offer 16]).
+The outcome of model parallelism, is that the cost of passing all the weights through through memory and the flops are all divided over the degree (number of accelerators we use Google offers up to 16 GPUs attached to one machine, but AWS can only do 8 [I haven't found evidence that they offer 16]).
 
-The answer, is that it's tricky — how do we split up our weights? We have to pay some latency to communicate between the models — when does it occur, how often and how much?
+How do we split up our weights and run all the computations we need? We have to pay some latency to communicate between the models — when does it occur, how often and how much?
 
-We will assume Tensor Parallel (also sometimes called model parallel) where we will split down the middle of the model. In pipeline parallel we would split the layers across GPUs, in tensor parallel, we vertically cut through the layer stack. So that means that for some operations one accelerator can run the computations for the shard it has, and the communication doesn't have to occur until a computation needs to be done with all the previous steps.
+We will assume Tensor Parallel (also sometimes called model parallel) where we will split down the middle of the model. Each accelerator will execute as much as it can with its shards of the weights and will communicate whenever synchronisation is required. A more naive way is pipeline parallel, where each GPU will hold onto a fraction of the layers. This does successfully even out the weight loading cost, but has the obvious silly that all but one GPU will be idling! In training you could pipeline through it (as the first batch moves onto the next GPU, start on a new batch on the first GPU) but it doesn't work out for sampling.
 
-> TODO: explain why we don't pipeline parallel, doesn't use bw, explain how multiplies can be slpit. also can defo make a better diagram
+The only place where pipeline parallel does better is communications. A pipeline parallel model would communicate \\(d_\text{model}\\) per accelerator, while a model parallel does \\(N\cdot d_\text{model}\\) per layer where \\(N\\) is the number of accelerators.
 
-For our inferencing this happens at;
-- once for our qkv, as we can compute the qkv on respective hosts, then do the qk multiplication + division and then communicate to do the softmax.
-- once after computing the output projection, to do a layer norm.
-- once after the layer norm
-- once after the MLP layer to do the softmax
+![](../../img/arithmetic_transformers/mp.png)
 
-> TODO: reason through why and why not all the comms
+In this diagram, we start at the yellow where we insert our token embeddings into the bottom on the model. The purple boxes outline how our weights would be split across the accelerators, and we work with an extremely tiny model so we can draw everything to scale. A general idea is that if we have two matrices \\(X\\) and \\(Y\\) we can shard both of them and multiply the shards. This doesn't actually complete the matmul of \\(X\cdot Y\\), and an easy way to tell (other than our ability to multiply matrices) is that if we concatenated the result of multiplying the shards, we get too big of a matrix. Instead, we would want to communicate, compute a shard sum, communicate that sum back out and then concatenate for the output of \\(X \cdot Y\\).
 
-There are some other optimisations that can go on and nontrivial implementation details that go into tensor parallelism which are not in scope!
+For attention the parallelism is intuitive from the fact that we have multiple heads. We go through most of the attention layer without communication because our attention heads are in fact concatenated before we multiply by \\(W_o\\). After we multiply by \\(v\\), we multiply our shard by our shard of \\(W_o\\) to get a shard of \\(o_s \in \mathbb{R}^{d_\text{model}\times n_\text{heads}/N}\\). Then each accelerator will communicate its own shard to all the others, and all the others will communicate their shards back. This is \\((N-1)d_\text{model}/N\\) of comms cost (because our constant for comms speed is bidirectional). I let this round to just \\(d_\text{model}\\) for simplicity. Each accelerator will do its share of the addition to get the output project, then do the same communication they did last time and the individual hosts will do the concatenation.
 
+The MLP layer is by nature very similar! Just like we have \\(W_o\\) to project our multi-headed attention results back down to a vector of length \\(d_\text{model}\\), we have \\(W_1\in \mathbb{R}^{4\times d_\text{model}}\\) and \\(W_2\in \mathbb{R}^{d_\text{model}\times 4}\\). The same two communications are done at the end of the MLP.
+
+There are some things missed like LayerNorm (which is a linear operation, easy to shard) or ReLU that all don't incur communication cost.
 ### latency calculations
 We've discussed the capacity fairly thoroughly, mapped out comms in the model parallelism section and discussed general compute steps.
 
@@ -188,7 +193,7 @@ This is correct reasoning, but also incomplete. For complete reasoning, the easi
 
 To start, why is a matmul of a matrix-vector 2mn? These [lecture notes](https://www.stat.cmu.edu/~ryantibs/convexopt-F18/scribes/Lecture_19.pdf) explain that fairly thoroughly. A matrix-matrix multiplication is \\(2mnp\\) if we multiplied \\(A \in \mathbb{R}^{m\times n}, B \in \mathbb{R}^{n \times p}\\). And then a vector-vector multiplication is just \\(2n\\).
 
-The following calculations are per token, per layer. I describe \\(W_q, W_k, W_v \in \mathbb{R}^{d_\text{model}\times d_\text{model}}\\) where it's more accurate to say we have \\(W_q^i, W_k^i, W_v^i \in \mathbb{R}^{d_\text{model}\times d_\text{head}}\\), where \\(i\\) goes up to \\(n_\text{heads}\\). But for the sake of calculating latency, I simplify \\(W_q, W_k, W_v\\) to include all the heads.
+The following calculations are per token, per layer. I describe \\(W_q, W_k, W_v \in \mathbb{R}^{d_\text{model}\times d_\text{model}}\\) where it's more accurate to say we have \\(W_q^i, W_k^i, W_v^i \in \mathbb{R}^{d_\text{model}\times d_\text{head}}\\), where \\(i\\) goes up to \\(n_\text{heads}\\). But for the sake of calculating latency, I simplify \\(W_q, W_k, W_v\\) to include all the heads. We also don't care about the rotation of the matrices here.
 
 - Computing qkv
     - Let \\(t_e\\) be our token embedding. Then we multiply \\(t_e \in \mathbb{R}^{1\times d_\text{model}}\\) by \\(W_q, W_k, W_v \in \mathbb{R}^{d_\text{model}\times d_\text{model}}\\). We do that multiplication three times for each of \\(q, k, v\\).
@@ -255,9 +260,23 @@ So using the optimisations in that paper, a 52B model inference latency would be
 ### exercises
 1. How would one serve a Gopher sized model? What would the expected latencies be?
 
+2. In the [kv cache](#kv-cache) section we discuss the savings of the cache and introduce the concept of flops vs memory boundedness. We know that in small batches where we are memory bound, the kv cache doesn't offer speedups. Given batch size, context length and next_n, how can we calculate the savings of using kv cache?
+
+2. What overheads does the kv cache add in memory time?
+
+2. Can we be memory bound on our forwards pass but flops bound at each sampling step?
+
 2. In the [capacity](#capacity) section, we discuss a bit the number of accelerators we'd like to give a model. Given understanding about communication bandwidth, flops vs memory boundedness and how batch sizes affect latency, what tradeoffs and calculations should we consider for using _more_ GPUs than is necessary for capacity?
 
-3. In the [batch sizes](#batch-sizes) section, we went a bit off topic and talked about the flops per byte of communication. What are the tradeoffs if we had an embedding dimension size of 512?
+2. We came up with formulas to calculate time to predict one token. How would be calculate the time to do an entire sample, from doing the forwards pass on the context to predicting all the tokens requested?
+
+3. In the [capacity](#capacity) section, I say the memory of intermediate calculations are negligble. How small are they exactly?
+
+4. In the [batch sizes](#batch-sizes) section, we went a bit off topic and talked about the flops per byte of communication. What are the tradeoffs if we had an embedding dimension size of 512?
+
+5. We assume GPUs attached to the same host here, but could communicate GPUs between hosts like we do in training. [AWS has 100gbps](https://aws.amazon.com/blogs/aws/new-ec2-p3dn-gpu-instances-with-100-gbps-networking-local-nvme-storage-for-faster-machine-learning-p3-price-reduction/), is that worth using?
+
+6. In [model parallelism](#model-parallelism), we could in practice communicate all the shards and then have each accelerator do all the addition, instead of just a share of their addition. What are the latency implications here?
 
 ### acknowledgements
 Would like to extend extremely large amount of credit to [James](https://scholar.google.com/citations?user=GprA5UsAAAAJ&hl=en) [Bradbury](https://twitter.com/jekbradbury) for his help in teaching me about performance concepts and being around for many iterations of this post in a very short time. To Jim Wu for teaching me how to write math notation and reviewing. Feedback from [Mohammad](https://scholar.google.com/citations?user=uMg7CEAAAAAJ&hl=en) [Bavarian](https://bavarian.dev/) and [Taylor Rogalski](https://tay.ro/) has been incorporated into this post for your enjoyment and benefit!
