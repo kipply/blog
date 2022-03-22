@@ -109,25 +109,31 @@
             {% set pages = section.pages %}
         {% endif %}
         {% for page in pages %}
+          {% if not page.extra.secret %}
           <article class="c-article p-list-article">
             {{ macros::title(page=page) }}
           </article>
+          {% endif %}
         {% endfor %}
       </div>
       <div class="col">
         <h1>endorsed</h1>
           {% set section = get_section(path="endorsed/_index.md") %}
           {% for page in section.pages %}
-          <article class="c-article p-list-article">
-            {{ macros::title(page=page) }}
-          </article>
+            {% if not page.extra.secret %}
+            <article class="c-article p-list-article">
+              {{ macros::title(page=page) }}
+            </article>
+            {% endif %}
           {% endfor %}
         <h1>promoted</h1>
           {% set section = get_section(path="promoted/_index.md") %}
           {% for page in section.pages %}
-          <article class="c-article p-list-article">
-            {{ macros::title(page=page) }}
-          </article>
+            {% if not page.extra.secret %}
+            <article class="c-article p-list-article">
+              {{ macros::title(page=page) }}
+            </article>
+            {% endif %}
           {% endfor %}
       </div>
     </div>

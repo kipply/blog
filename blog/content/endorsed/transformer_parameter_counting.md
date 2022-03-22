@@ -3,6 +3,10 @@ title = "LLM Parameter Counting"
 date = 2020-04-20
 weight = 1
 path = "transformer-param-count"
+
+[extra]
+show_toc = true
+secret = true
 +++
 
 Each weight or parameter is a float that was tuned during training and is usually two bytes as most training is done half-precision now([bfloat16](https://en.wikipedia.org/wiki/Bfloat16_floating-point_format)). Not everything is trained/served bfloat16, but it's at least half-precision (at least since [the GPT-3 Paper](https://arxiv.org/pdf/2005.14165.pdf) in 2020) which gets us the two bytes.

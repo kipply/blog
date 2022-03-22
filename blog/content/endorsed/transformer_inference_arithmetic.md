@@ -6,6 +6,7 @@ path = "transformer-inference-from-few-principles"
 
 [extra]
 show_toc = true
+secret = true
 +++
 
 This article serves as low-principles reasoning for thinking about large language model inference performance, with no experiments or difficult math (a previous title for this was "Transformer Inference Performance Arithmetic"). There is an impressive amount of understanding that can be acquired this way! It's helped me make better predictions, form better explanations and more easily identify problem points for [work](https://os.cohere.ai/).
