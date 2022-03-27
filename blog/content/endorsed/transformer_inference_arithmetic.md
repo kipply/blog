@@ -1,15 +1,15 @@
 +++
-title = "Transformer Inference Performance From Few Principles"
+title = "Transformer Inference Arithmetic"
 date = 2020-04-20
 weight = 1
-path = "transformer-inference-from-few-principles"
+path = "transformer-inference-arithmetic"
 
 [extra]
 show_toc = true
 secret = true
 +++
 
-This article presents detailed few-principles reasoning about large language model inference performance, with no experiments or difficult math (a previous title for this was "Transformer Inference Performance Arithmetic"). There is an impressive amount of understanding that can be acquired this way! It's helped me make better predictions, form better explanations and more easily identify problem points for [work](https://os.cohere.ai/).
+This article presents detailed few-principles reasoning about large language model inference performance, with no experiments or difficult math. There is an impressive amount of understanding that can be acquired this way! It's helped me make better predictions, form better explanations and more easily identify problem points for [my work](https://os.cohere.ai/).
 
 This post assumes some prior knowledge about transformers, say at having understood most of [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) but not having internalised all of it. Familiarity with this [parameter counting](/blog/transformer-param-count/) post which I developed along with this one may also be useful.
 
@@ -51,7 +51,7 @@ Say we have an [A100 GPU](](https://www.nvidia.com/content/dam/en-zz/Solutions/D
 
 > **Flops vs Memory Boundedness**
 
-> Flops vs memory boundedness is something we deal with a lot for transformer inference, but [also in deep learning optimisation in general](https://horace.io/brrr_intro.html). To do the computations we do, we need to load weights which costs [memory bandwidth](https://en.wikipedia.org/wiki/Memory_bandwidth). We assume (correctly, this has been very well optimised) that we can start the computations while we load the weights. Flop bound would then mean that there is time when nothing is being passed through memory, and memory bound would mean that no floperations are occuring. Nvidia uses the term [math bandwidth](https://docs.nvidia.com/deeplearning/performance/dl-performance-gpu-background/index.html#gpu-arch) which I find really cute.
+> Flops vs memory boundedness is something we deal with a lot for transformer inference, but [also in deep learning optimisation in general](https://horace.io/brrr_intro.html). To do the computations we do, we need to load weights which costs [memory bandwidth](https://en.wikipedia.org/wiki/Memory_bandwidth). We assume (correctly, this has been very well optimised) that we can start the computations while we load the weights. Flop bound would then mean that there is time when nothing is being passed through memory, and memory bound would mean that no floperations are occuring. Nvidia uses the term [math bandwidth](https://docs.nvidia.com/deeplearning/performance/dl-performance-gpu-background/index.html#gpu-arch) which I find really cute. Technically, this delineation exist per kernel but can be abstracted to exist for groups of operations.
 
 None of the model architecture matters anymore — we get a distinct ratio here of 208 given this hardware specification. This means that if we're going to compute kv for one token, it'll take the same amount of time to compute for up to 208 tokens! Anything below, we're memory bandwidth bound. Above, flops bound. If we used the rest of our weights to do a full forwards pass (run the rest of the transformer) on our context, it's also 208 (both the numerator and denominator get a factor of 6 added). This will be reasoned thoroughly in future sections.
 
@@ -97,19 +97,19 @@ The outcome of model parallelism, is that the cost of passing all the weights th
 
 How do we split up our weights and run all the computations we need? We have to pay some latency to communicate between the models — when does it occur, how often and how much?
 
-We will assume tensor parallel (also sometimes [poorly] dubbed model parallel) where we will split down the middle of the model. Each accelerator will execute as much as it can with its shards of the weights and will communicate whenever synchronisation is required. A more naive way is pipeline parallel, where each GPU will hold onto a fraction of the layers. This does successfully even out the weight loading cost, but has the obvious silly that all but one GPU will be idling! In training you could pipeline through it (as the first batch moves onto the next GPU, start on a new batch on the first GPU) but it doesn't work out for sampling.
+We will assume tensor parallel (model parallel) where we will split down the middle of the model. Each accelerator will execute as much as it can with its shards of the weights and will communicate whenever synchronisation is required. A more naive way is pipeline parallel, where each GPU will hold onto a fraction of the layers. This does successfully even out the weight loading cost, but has the obvious silly that all but one GPU will be idling! In training you could pipeline through it (as the first batch moves onto the next GPU, start on a new batch on the first GPU) but it doesn't work out for a single sample request (though you could still do it for multiple requests). Pipeline also doesn't exhaust the memory bandwidth, which is actually ok if you're flops bound anyway. The only place where pipeline parallel does better is communications. A pipeline parallel model would communicate \\(d_\text{model}\\) per accelerator, while a model parallel does \\(N\cdot d_\text{model}\\) per layer where \\(N\\) is the number of accelerators.
 
-The only place where pipeline parallel does better is communications. A pipeline parallel model would communicate \\(d_\text{model}\\) per accelerator, while a model parallel does \\(N\cdot d_\text{model}\\) per layer where \\(N\\) is the number of accelerators. Here we introduce the last constant for our [A100 GPUs](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf) which is a communication bandwith of 300GB/s. The doc marks it as 600GB/s because Nvidia is adding up 300GB/s into each chip and 300GB/s out simultaneously rather than using a bidirectional number (which will be more intuitive for our calculations).
+Here we introduce the last constant for our [A100 GPUs](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/a100-80gb-datasheet-update-nvidia-us-1521051-r2-web.pdf) which is a communication bandwith of 300GB/s. The doc marks it as 600GB/s because Nvidia is adding up 300GB/s into each chip and 300GB/s out simultaneously rather than using a bidirectional number (which will be more intuitive for our calculations).
 
 ![](../img/arithmetic_transformers/mp.png)
 
-In this diagram, we start at the yellow where we insert our token embeddings into the bottom on the model. The purple boxes outline how our weights would be split across the accelerators, and we work with an extremely tiny model so we can draw everything to scale. A general idea is that if we have two matrices \\(X\\) and \\(Y\\) we can shard both of them and multiply the shards. This doesn't actually complete the matmul of \\(X\cdot Y\\), and an easy way to tell (other than our ability to multiply matrices) is that if we concatenated the result of multiplying the shards, we get too big of a matrix. Instead, we would want to communicate, compute a shard sum, communicate that sum back out and then concatenate for the output of \\(X \cdot Y\\).
+In this diagram, we start by following the yellow brick road where we insert our token embeddings into the bottom of the model. The purple boxes outline how our weights would be split across the accelerators, and we work with an extremely tiny model so we can draw everything to scale. A general idea is that if we have two matrices \\(X\\) and \\(Y\\) we can shard both of them and multiply the shards. This doesn't actually complete the matmul of \\(X\cdot Y\\), and an easy way to tell (other than our ability to multiply matrices) is that if we concatenated the result of multiplying the shards, we get too big of a matrix. Instead, we would want to communicate, compute a shard sum, communicate that sum back out and then concatenate for the output of \\(X \cdot Y\\).
 
 For attention the parallelism is intuitive from the fact that we have multiple heads. We go through most of the attention layer without communication because our attention heads are concatenated to multiply by \\(W_o\\). After we multiply by \\(v\\), we multiply the result by our shard of \\(W_o\\) to get a shard of \\(o_s \in \mathbb{R}^{d_\text{model}\times n_\text{heads}/N}\\). Then each accelerator will communicate its own shard to all the others, and all the others will communicate their shards back. This is \\((N-1)d_\text{model}/N\\) of comms cost. Each accelerator will do an even share of the addition to get the output project, then do the same communication they did last time and the individual hosts will do the concatenation (which is instant).
 
 The MLP layer is by nature very similar! Just like we have \\(W_o\\) to project our multi-headed attention results back down to a vector of length \\(d_\text{model}\\), we have \\(W_1\in \mathbb{R}^{4\times d_\text{model}}\\) and \\(W_2\in \mathbb{R}^{d_\text{model}\times 4}\\). The same two communications are done at the end of the MLP.
 
-There are some things missed like LayerNorm (which is a linear operation, easy to shard) or ReLU that all don't incur communication cost. Ultimately we do \\(4 \cdot (N - 1)d_\text{model}/N\\) bytes of communication.
+There are some things missed like layernorm which does another lil communication of a scalar. Ultimately we do \\(4 \cdot (N - 1)d_\text{model}/N\\) bytes of communication.
 ### latency calculations
 We've discussed the capacity fairly thoroughly, mapped out comms in the model parallelism section and discussed general compute steps.
 
@@ -117,44 +117,48 @@ We've discussed the capacity fairly thoroughly, mapped out comms in the model pa
 
 Our latency calculations are mostly about the flops vs memory boundedness. If we have a small number of multiplies to do per parameter, then maybe we'll be throttled by memory bandwidth. Flops are increased by both batch size and number of parameters, while memory is only increased by number of parameters.
 
-For comms, it's not about boundedness, but rather about adding a latency term and a throughput term (the 300GB/s). Something tricky about the latency side of this figure is that it's not reported, so the best I can do is guess "approximately small", which we'll approximate to 10 microseconds.
+For comms, it's not about boundedness, but rather about adding a latency term and a throughput term (the 300GB/s). Something tricky about the latency side of this figure is that it's not reported, so the best I can do is guess "approximately small", which is approximately 8 microseconds per message sent as found in this [Citadel paper](https://arxiv.org/pdf/1804.06826.pdf) but it's for V100 NLink.
 
-Because of the compute factors, to calculate the latency of a single token decoding step we'd have two formulas - one for memory bandwidth bound (small batch) and another for flops bound (large batch). For large batch, we'll drop the latency factor for communications, in practice, we'd want to profile to find out.
+Because of the compute factors, to calculate the latency of a single token decoding step we'd have two formulas - one for memory bandwidth bound (small batch) and another for flops bound (large batch). For large batch, we'll drop the latency factor for communications. Also someone has tried [clearing out this time](https://arxiv.org/pdf/1911.02150.pdf).
 
 Equations for a small batch (say 1, so we can drop the batch factor) would be; (where \\(N\\) is the number of accelerators)
 {% katex(block=true) %}
 \text{compute} = \frac{2 \cdot P}{N \cdot A_\text{bm}}\\
-\text{comms} =  4 \cdot n_\text{layers} \cdot 10\mu\text{s}
+\text{comms} =  4 \cdot n_\text{layers} \cdot 8\mu\text{s}
 {% end %}
-There is \\(2 \cdot P\\) because we need to pass all the parameters through the memory, and each parameter is two bytes. \\(A_\text{bm}\\) is the accelerator memory bandwidth, and this cost is split across accelerators. For comms, we have \\( 4 \cdot n_\text{layers} \\) and then the 10 microseconds that we made up. It leaves out a bunch of factors, but I'm happy throwing them away for simplicity as the latency is guessed anyway (and comms is small relative to compute, which we'll see in a bit).
+There is \\(2 \cdot P\\) because we need to pass all the parameters through the memory, and each parameter is two bytes. \\(A_\text{bm}\\) is the accelerator memory bandwidth, and this cost is split across accelerators. For comms, we have \\( 4 \cdot n_\text{layers} \\) communications per layer, and the latency per each request. It leaves out the two scalar communications for layernorm, but we're going to round those off. Comms will usually come out to be relatively small so for the compute bound case we won't need to pay attentiont to it anyway. There's also a throughput cost in comms which also rounds off.
+
+There's another large factor here which is the read time for the kv cache, which I'll leave out of the equation now since it depends on number of context tokens, which can even vary within a batch and total number of tokens we want to sample. This would be calculated as memory bandwidth time.
 
 For large batches (say 512), where \\(B\\) is the batch size;
 
 {% katex(block=true) %}
 \text{compute} = B \cdot \frac{2 \cdot P}{N \cdot A_f}\\
-\text{comms} = B \cdot  \frac{n_\text{layers} \cdot 4 \cdot d_\text{model}}{A_c}
+\text{comms} = B \cdot  \frac{2\cdot n_\text{layers} \cdot 4 \cdot d_\text{model}}{A_c}
 {% end %}
 
 Where \\(A_f\\) is the flops of the accelerator and \\(A_c\\) is the comms bandwidth. We do \\(2\cdot P\\) flops of operations, which can be intuited by the fact that we matmul through all the parameters, and as mentioned earlier, a matrix-vector multiplication is \\(2mn\\) given \\(A \in \mathbb{R}^{m\times n}, b \in \mathbb{R}^{n}\\).
 
-For comms, we see the four (I'll round that \\(N-1\\) factor to \\(N\\)) communications each of a  \\(d_{model}\\) size vector per layer as explained in the model parallelism section. Then it's all divided by the comms bandwidth.
+For comms, we see the four (I'll round that \\(N-1\\) factor to \\(N\\)) communications each of a \\(d_{model}\\) size vector per layer as explained in the model parallelism section. We swapped out the latency calculation for a throughput one. Then it's all divided by the comms bandwidth.
 
 Let's play with a larger model, a Gopher sized 260B model on 16 GPUs..
-For a small batch, it's 27 ms per token generated.
+For a small batch, it's 22 ms per token generated. The throughput cost for the comms which we can calculate with the equation for large batch is approximately 35 microseconds, assuring us that it was safe to drop.
+
 {% katex(block=true) %}
 \text{compute} = \frac{2 \cdot P}{N \cdot A_\text{bm}} = \frac{2 \cdot 260\text{e}9}{16\cdot 1.5\text{e}12} \approx 0.0217 \approx 22\text{ms} \\
-\text{comms} = 4 \cdot n_\text{layers} \cdot 10\mu\text{s}= 4 \cdot 128\cdot 10\mu\text{s} = 5120\mu\text{s} \approx 5\text{ms}
+\text{comms} = 2 \cdot 4 \cdot n_\text{layers} \cdot 8\mu\text{s}= 4 \cdot 80\cdot 8\mu\text{s} = 2560\mu\text{s} \approx 3\text{ms}
 {% end %}
 
-For a large batch of 512, for a total of 62ms per token generated (per batch, so in the 62ms 512 tokens are generated).
+For a large batch of 512, for a total of 53 ms per token generated (per batch, so in the 62ms 512 tokens are generated). The latency cost on comms here would've also been 3ms (latency is not multiplied by batch as the message can be prepared together) which is somewhat significant to drop but it's fine since we're assuming parallel comms and compute.
+
 {% katex(block=true) %}
 \text{compute} = B \cdot \frac{2 \cdot P}{N \cdot A_f} = 512 \cdot \frac{2 \cdot 260\text{e}9}{16 \cdot 312\text{e}12} \approx 0.053 \approx 53\text{ms}\\
-\text{comms} = B \cdot \frac{4 \cdot n_\text{layers} \cdot d_\text{model}}{A_c} = 512 \cdot \frac{ 4 \cdot 80 \cdot 16384}{300\text{e}9} \approx 9\text{ms}
+\text{comms} = B \cdot \frac{2\cdot 4 \cdot n_\text{layers} \cdot d_\text{model}}{A_c} = 512 \cdot \frac{ 8 \cdot 80 \cdot 16384}{300\text{e}9} \approx 18\text{ms}
 {% end %}
 
-Also note here, that we don't want the comms to be greater than the compute! In these calculations I summed the comms and compute time, but logically there is no reason they can't at least be greater than thepartially run in parallel (though it's hard).
+The higher value between the comms and compute is taken as we're assuming that [it's parallel]((http://www.netlib.org/lapack/lawnspdf/lawn96.pdf)). We want to avoid cases where comms is higher than compute. It's not guaranteed that all systems will do this in parallel, and certainly not *perfectly* in parallel.
 
-These numbers still land quite close to what should be acquired in practice, and lean towards being an optimal compute case, as it assumes optimal hardware usage, doesn't factor in softmaxes, assumes zero comms latency, the comms should be \\(1/N\\) percent slower and ignores many other smaller factors. I'd be surprised if someone had an inferencing setup that resulted in numbers lower than what this math comes up.
+These numbers are definitely much lower than what we can get with real sand, as it assumes optimal hardware usage, doesn't factor in softmaxes, assumes zero comms latency and ignores many other smaller factors. My experience with GPU performance is limited and I would want to do some profiling to find out where the differences are. Nonetheless, all the reasoning behind this math is useful for thinking about where to go optimise performance what deltas incoming optimisations will cause.
 
 ### batch sizes
 In the previous section, we have two calculations for when something memory bandwidth bound versus flops bound. To figure out which is at play we can compare these numbers;
@@ -165,9 +169,9 @@ In the previous section, we have two calculations for when something memory band
 
 We're dealing with the same ratio we found in the [kv cache](#kv-cache) section. The min batch size for memory bandwidth bound is \\(A_\text{bw}/A_c = 208\\). This is a handy ratio!
 
-To calculate when the capacity goes from mostly kv cache to mostly weights is trivial, and also isn't a binary in the same way (nothing special happens when your kv cache starts taking up more memory than your weights). Nothing special really happens with comms either. At some point in increasing the batch size, the throughput starts dwarfing the latency so we dropped that factor.
+To calculate when the capacity goes from mostly kv cache to mostly weights is trivial, and also isn't a binary in the same way (nothing special happens when your kv cache starts taking up more memory than your weights). Nothing special really happens with comms either. At some point in increasing the batch size, the throughput starts dwarfing the latency so we dropped that factor. As observed previously, the latency becomes insignificant much later (our 512 batch on 52B communication cost was still 11% latency).
 
-Something oversimplified about comms is that it happens at four different steps, which means we don't just want our compute time to be longer than our comms time, we want it to be the case at each step. For that, we have a weirder ratio: flops per byte of comms. Here's a nice chart of our computations, which will also be useful in the section below.
+Something oversimplified about comms is that it happens at four different steps, which means we don't just want our compute time to be longer than our comms time, we want it to be the case at each step (if we can parallelise the compute and comms). For that, we have a weirder ratio: flops per byte of comms. Here's a nice chart of our computations, which will also be useful in the section below.
 
 |                | \\(q, k, v\\)   | \\(o\\)   | \\(w_1\\)   | \\(w_2\\)   |
 |----------------|-------|------|-------|-------|
@@ -198,7 +202,7 @@ The following calculations are per token, per layer. I describe \\(W_q, W_k, W_v
     - We have our MLP weights \\(W_1 \in \mathbb{R}^{4\times d_\text{model}}, W_2 \in \mathbb{R}^{d_\text{model}\times 4} \\) for two linear transformations (there's a ReLU in the middle, which small).
     - Flop count:  \\(2\cdot 8 \cdot {d_\text{model}}^2 \\)
 - Some other things
-    - There are typically layernorms that happen after each attention, where the weights there are a vector of length \\(d_\text{model}\\).
+    - There are typically layernorm that happen after each attention, where the weights there are a vector of length \\(d_\text{model}\\).
     - There's another linear layer and then a softmax that sits on top, which is our output (token) embedding or unembedding or de-embedding or embedding\\(^{-1}\\).
     - The original transformer has a cosine absolute positional encoding scheme, which is an addition operation on the token embedding.
 
@@ -220,10 +224,10 @@ F = 64\cdot 24\cdot 8192^2
 
 What about the the calculation of \\(z\\) and all the other steps I didn't count? Those are all vector-vector (or even vector-scalar) operations, so they are built around a factor of \\(d_\text{model}\\) rather than \\({d_\text{model}}^2\\). Even if we had 100 of these operations, it would come out to a hundred million flops, which is 0.1% of the number of flops we counted.
 
-### the other calculations
+### the real world
 [Data Movement Is All You Need](https://arxiv.org/pdf/2007.00072.pdf) has a nice way of classifying operations. We have tensor contractions, which are the big matmuls we've mostly cared about (including the linear layers). Then there are statistical normalisations, the softmax and layernorm. Finally, which this post has completely ignored till now are element-wise operators, which are things like biases, dropouts and activations.
 
-The reported flops on our hardware is [specificially for the multiply-add operations](https://docs.nvidia.com/deeplearning/performance/dl-performance-gpu-background/index.html) so it would not be right to count it in there even if we could count the flops. Further more, it's probably going to cost memory to do the softmax read/writes and we're going to be memory bandwidth bound as that's what the bandwidth to flops ratio favours. Large batch sizes can't save us here as the read would have to occur for each item in the batch.
+The reported flops on our hardware is [specificially for the multiply-add operations](https://docs.nvidia.com/deeplearning/performance/dl-performance-gpu-background/index.html) so it would not be right to count it in there even if we could count the flops. Further more, it's probably going to cost memory to do the softmax read/writes and we're going to be memory bandwidth bound as that's what the bandwidth to flops ratio favours. Large batch sizes can't save us here as the read would have to occur for each item in the batch. In fact, we have a linearly scaling latency factor that we haven't considered yet!
 
 I'm going to break character on the first-principles aspect of this and discuss Table A.1 from the [Data Movement Is All You Need](https://arxiv.org/pdf/2007.00072.pdf) paper. Here we see that the latency for softmax is actually slightly higher than the calculations for qkv. This is a little concerning!
 
@@ -231,7 +235,7 @@ I'm going to break character on the first-principles aspect of this and discuss 
 
 There's even more latency that hasn't been factored in, for the same reason the softmax is memory bound, so is the multiplication of qk. The ReLU and dropout are also quite expensive.
 
-We can also tell the softmax here is not perfectly fused by counting the number of read-writes we should need. In theory it can just be one read and one write (the standard is uh, [four](https://arxiv.org/pdf/1805.02867.pdf) so I'm bullying a bit). For qk, it would be two reads and one write (in practice, the two reads can probably be saved). The three to one ratio then, indicates that the softmax is doing more memory passes than is optimal.
+We can also tell the softmax here is not perfectly fused by counting the number of read-writes we should need. In theory it can just be one read and one write (the standard is uh, [four](https://arxiv.org/pdf/1805.02867.pdf) so I'm bullying a bit). For qk, it would be two reads and one write (the two reads can probably be saved). The three to one ratio then, indicates that the softmax is doing more memory passes than is optimal.
 
 It's also worth noting that the percentage of time these operations take gets smaller quickly as model size increases as the memory will increase on the order of \\(d_\text{model}\\) while the flops increase on the order of \\({d_\text{model}}^2\\) — per layer. The paper is a 336M param model, \\(d_\text{model} = 1024, n_\text{layers} = 24\\).
 
@@ -243,7 +247,25 @@ The duration of these memory bound intermediate operations will take 8 times lon
 0.43\cdot 8 \div(1\cdot64) = 0.05375
 {% end %}
 
-So using the optimisations in that paper, a 52B model inference latency would be about 5% of these intermediate calculations we didn't factor into latency. But these numbers are from real runs! They include things that aren't perfect, and we can't have that in our arithmetic!
+So using the optimisations in that paper, a 52B model inference latency would be about 5% of these intermediate calculations we didn't factor into latency.
+
+---
+
+I work at a language modelling company that has its own infrastructure and existing benchmarks but uh, IP is hard. There is a sadly small number of public benchmarks available for model parallel inferencing? It seems like the only public engines for this are [Nvidia FasterTransformer](https://github.com/NVIDIA/FasterTransformer) and [Microsoft Deepspeed](https://www.microsoft.com/en-us/research/blog/deepspeed-accelerating-large-scale-model-inference-and-training-via-system-optimizations-and-compression/) with other benchmarks probably scattered in papers I don't know exist. Anywho, we can verify against these public benchmarks to some extent! I'll work with FasterTransformer, because Deepspeed hasn't published very thorough benchmarks. Also note that running Eleuther models will probably be slower than FasterTransformer but I would want to benchmark on TPU as well.
+
+FasterTransformer [publishes a benchmark](https://github.com/NVIDIA/FasterTransformer#gpt-performance) a 175B model on 8 GPUs, 96 layers, 12288 embedding dim. It comes out to under [1719.96](https://github.com/NVIDIA/FasterTransformer/blob/main/docs/gpt_guide.md#performance-of-gpt-175b) to generate 32 tokens and do the forwards pass on 512 tokens with A100s. I'll approximate the forwards pass to take the same time as one decoding step, which is should be as it should read through weights once and distribute the 512 tokens over the GPUs to stay memory bandwidth bound. Also in this graph you can observe that when memory bandwidth bound, the latency still creeps up because the intermediate steps will also do roundtrips through memory (this can in theory be fused away) which is why I use the batch size 1 results.
+
+Our formula gets us that one decoding step is 29ms of memory time and 4 ms of comms, which is uhh way lower than FT which thinks it should take 1719/33 = 52ms.
+
+This doesn't mean that FasterTransformer is doing particularly poorly, it's probably quite close to anything anyone has gotten. We haven't counted memory time to access/write to kv yet, which for a 175B model is a 2.5GB read for 512 + a small write. This is another 2ms per decoding step.
+
+Based on the table, the difference between batch 16 and batch 1 is 1986 milliseconds, meaning 1986/(15*33)=4ms thats lost to memory time on intermediate computations (things like softmax, layernorm that happen cause memory-bounded compute time per batch). It's cool to note in the table, that FasterTransformer offers more speedup as batch size increases, showing that it's doing a lot of fusing for those ops we just talked about! 4/57=7%, which is higher than what we'd project with the previous section (4%), but of course a bunch of the conditions here are different.
+
+The next step is then to account for the time to actually do the *sampling*. We get to the end of the model with a vector of our embedding dimension, then we have to multiply it by a vocabsize by embeddingdim vector. Then we have to store that output (our logits). This is going to be memory bound so 50257x12288x2/1.5e12=0.8ms. Then we have to do some sampling operation (either [top-k or top-p]((https://towardsdatascience.com/how-to-sample-from-language-models-682bceb97277)) operation, which is probably more than one pass? Both of these methods require a sort, which is probably log(n) reads, which is 4.7 for the 50k vocab size. That's another 4.7*0.8=4ms.
+
+I defer again to Citadel's [microbenchmarking](https://arxiv.org/pdf/1804.06826.pdf) where they only get 83.3% of the memory bandwidth, but that's for Volta. The microbenchmarks for A100 are hidden in [this less informational video](https://www.nvidia.com/en-us/on-demand/session/gtcspring21-s33322/) where they get 96%, which finds us another 2ms, though they're benchmarking for *as much of the theoretical bandwidth* as they can get, which is not the opreation we're doing here. Their bandwidth operations are results of a "benchmark which loads data from a global array and stores it into another global array."
+
+Of the extra things we can count, we get 29ms + 2ms for kv read + 4ms for memory time of intermediate calculations + 5ms for getting the token + 2ms for the measured memory bandwidth = 42ms accounted for. There are some other known factors like comms|compute parallelisation, [granularity](https://en.wikipedia.org/wiki/Granularity_(parallel_computing)), concats+copies or other missing counts/optimisations but I won't speculate further from here. I'll update this section once I get a profile! Meanwhile, 80% accounted for is acceptable I think.
 
 ### exercises
 1. Given batch size, context length and next_n, how can we calculate the savings of using [kv cache](#kv-cache)?
@@ -260,17 +282,28 @@ So using the optimisations in that paper, a 52B model inference latency would be
 
 4. In the [batch sizes](#batch-sizes) section, we went a bit off topic and talked about the flops per byte of communication. What are the tradeoffs if we had an embedding dimension size of 512?
 
-5. We assume GPUs attached to the same host here, but could communicate GPUs between hosts like we do in training. [AWS has 100gbps](https://aws.amazon.com/blogs/aws/new-ec2-p3dn-gpu-instances-with-100-gbps-networking-local-nvme-storage-for-faster-machine-learning-p3-price-reduction/), is that worth using?
+5. We assume GPUs attached to the same host here, but could communicate GPUs between hosts like we do in training. [AWS has 400gb/s](https://aws.amazon.com/ec2/instance-types/p4/). What about it!
 
 6. In [model parallelism](#model-parallelism), we could in practice communicate all the shards and then have each accelerator do all the addition, instead of just a share of their addition. What are the latency implications there?
 
-7. Try calculating the large batch speed for a 52B on 4xGPUs at batch size 256. The compute should be about 21ms and comms should be about 2ms.
+7. Try calculating the large batch speed for a 52B on 4xGPUs at batch size 256. The compute should be about 21ms and comms should be about 4ms.
+
 
 ### acknowledgements
-Would like to extend extremely large amount of credit to [James](https://scholar.google.com/citations?user=GprA5UsAAAAJ&hl=en) [Bradbury](https://twitter.com/jekbradbury) for his help in teaching me about performance concepts and being around for many iterations of this post in a very short time. To Jim Wu for teaching me how to write math notation and reviewing. Feedback from [Mohammad](https://scholar.google.com/citations?user=uMg7CEAAAAAJ&hl=en) [Bavarian](https://bavarian.dev/) and [Taylor Rogalski](https://tay.ro/) has been incorporated into this post for your enjoyment and benefit!
+Would like to extend credit and thanks to people who make a positive impact on this post in varying capacities. [James](https://scholar.google.com/citations?user=GprA5UsAAAAJ&hl=en) [Bradbury](https://twitter.com/jekbradbury), [Taylor Rogalski](https://tay.ro/), [Julian Schrittwieser](https://www.furidamu.org/), Jim Wu, [Mohammad](https://scholar.google.com/citations?user=uMg7CEAAAAAJ&hl=en) [Bavarian](https://bavarian.dev/), [Tudor Brindus](https://tbrindus.ca/) and [Adrien Morisot](https://www.linkedin.com/in/adrien-morisot-045236173/?originalSubdomain=ca) with James leading by a long shot.
 
+---
 
->_spin me in weight space <br>
-> paint me in half precision <br>
->we're best in chaos_
+> > hey kipply you should better understand our big model inferencing latency<br>
 
+> yes that's a great idea i'll look into it!<br>
+
+> > cool i'd love to see the profile <br>
+
+> if i sit in a dark room by myself long enough i think i can explain all the milliseconds
+
+> > 😳<br>
+
+<br>
+
+> The architectures and latencies expressed in this post are those of publicly known or theoretical models and benchmarks and do not necessarily reflect the architectures or latencies of my employer's models.
