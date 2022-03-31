@@ -1,11 +1,9 @@
 +++
 title = "Breakdown of H100s for Transformer Inferencing"
-date = 2020-04-20
+date = 2022-03-30
 weight = 1
 path = "h100-inferencing"
 
-[extra]
-secret = true
 +++
 
 This new Nvidia [GPU](https://www.nvidia.com/en-us/data-center/h100/) just dropped! This post will analyse what it offers for transformer inferencing.
@@ -29,14 +27,14 @@ There's another relevant spec in here, where "up to 256 H100s can be connected t
 
 ### how to get the 30x
 
-Nvidia claims 30x higher than A100s for the 530B model. Let's see if we can decipher how they get that number, and where the speedups come from (none of the specs change that much!). Deriving estimation equations from [this post](/blog/transformer-inference-arithmetic/#latency-calculations), starting with large batch sizes. A large batch size means a number higher than the hardware ratio of flops to memory bandwidth. On the 40GB A100s that's 208 and for the H100 SXM (by default, when I say H100 I'll mean the SXM) it's 333. We care about the large batch size because we will be flop bound instead of memory bound. The comms is thoughput + latency, but we'll drop the latency which is small. These equations measure running one token through all the blocks in the model.
+Nvidia claims 30x higher than A100s for the 530B model ("Up to 30X Higher AI Inference Performance on Largest Models", "H100 to A100 comparison"). Let's see if we can decipher how they get that number, and where the speedups come from (none of the specs change that much!). Deriving estimation equations from [this post](/blog/transformer-inference-arithmetic/#latency-calculations), starting with large batch sizes. A large batch size means a number higher than the hardware ratio of flops to memory bandwidth. On the 40GB A100s that's 208 and for the H100 SXM (by default, when I say H100 I'll mean the SXM) it's 333. We care about the large batch size because we will be flop bound instead of memory bound. The comms is thoughput + latency, but we'll drop the latency which is small. These equations measure running one token through all the blocks in the model.
 
 {% katex(block=true) %}
 \text{compute} = B \cdot \frac{2 \cdot P}{N \cdot A_f}\\
 \text{comms} = B \cdot  \frac{2\cdot n_\text{layers} \cdot 4 \cdot d_\text{model}}{A_c}
 {% end %}
 
-We calculate two numbers because we have a sense of compute vs communication bound. Sometimes we might add these numbers together, but for this post we'll assume we have something implemented for that to be done in parallel. There's a factor of 2 in comms that will get dropped for 8-bit formats.
+We calculate two numbers because we have a sense of compute vs communication bound. Sometimes we might add these numbers together, so for this post we'll consider both. There's a factor of 2 in comms that will get dropped for 8-bit formats.
 
 The Megatron arch is 105 layers, 20480 embedding dimension. We'll start with batch size 512 to get us flop bound.
 
@@ -58,11 +56,17 @@ The Megatron arch is 105 layers, 20480 embedding dimension. We'll start with bat
 \text{comms} = 512 \cdot \frac{105 \cdot 4 \cdot 20480}{450\text{e}9} = 10\text{ms}\\
 {% end %}
 
+{% katex(block=true) %}
+\textbf{64 H100s, 8-bit}\\
+\text{compute} = 512 \cdot \frac{2 \cdot 530\text{e}9}{64 \cdot 2000\text{e}12} = 4\text{ms}\\
+\text{comms} = 512 \cdot \frac{105 \cdot 4 \cdot 20480}{450\text{e}9} = 10\text{ms}\\
+{% end %}
+
 Technically nothing stops us from 8-bit on A100s, but F8 is going to be a lot easier to use than [INT8 quantisation](https://www.mathworks.com/company/newsletters/articles/what-is-int8-quantization-and-why-is-it-popular-for-deep-neural-networks.html) so I think it's reasonable to include the speedup from that availability. We can't use 32 A100s because we don't have the hardware to communicate between that many A100s quickly.
 
-To attribute all the speedup: 1.7x from going from 16 to 32 chips (not double because it gets comms bounded, though maybe it's higher because we overestimate latency). 3x from flops difference. 2x from going to 8-bit. Note that the 2x from going to 8-bit might not be exhausted, as we may not want to 8-bit everything to keep model quality up. Also because maybe the practical bandwidth (compared to the theoretical ones, which is whats in the spec) of the 8-bit is lower than the 16?
+To attribute all the speedup: 1.7x from going from 16 to 32 chips if we do overlapped comms and compute. 3x from flops difference. 2x from going to 8-bit. Note that the 2x from going to 8-bit might not be exhausted, as we may not want to 8-bit everything to keep model quality up. Also because maybe the practical bandwidth (compared to the theoretical ones, which is whats in the spec) of the 8-bit is lower than the 16?
 
-And here we get a 10x speedup, so we're missing something! Nvidia doesn't give that much spec as to how the benchmark was run, other than
+And here we get a 11x speedup for overlapped comms|compute and 9x for synchronous comms|compute, so we're missing something! Nvidia doesn't give that much spec as to how the benchmark was run, other than
 
 > Projected performance subject to change. Inference on Megatron 530B parameter model based chatbot for input sequence length=128, output sequence length =20 | A100 cluster: HDR IB network | H100 cluster: NVLink Switch System, NDR IB
 
@@ -70,17 +74,24 @@ I think they're also comparing against different batch sizes like they [do here]
 
 We need at least 16 A100 GPUs for a 530B model, as the weights in BF16 will take about a terabyte (we need the 16x80=1280). It does mean that we only have 1280-530x2=220GB remaining. For F8 on 32 GPUs, we have 80x32-530=2TB remaining. When we sample from large language models, we [store kv](/blog/transformer-inference-arithmetic/#kv-cache) per token, and the benchmark has them doing 148 tokens.
 
-For 16-bit, thats 2x2x105x20480x148 = 1.27 GB per request. For 8-bit it's half, for 0.64GB per request. What this says is that our 220GB remaining only fits 170 requests, while the 2TB can fit somewhere in the thousands. Then, they're probably comparing for the time to complete the same number of requests, but the A100 would have to do it in two batches. Because the 170 is under 208, it also means that our A100 inference is memory bandwidth bound as opposed to flops bound. But it's also probably much less than 170! A bunch of weights might be duplicated across GPUs (eg, a 1GB of layernorms), and some software has to be installed on the GPUs (having TF load a 40GB A100, TF thinks there's only 38.4GB available). So maybe only 190GB remains and we fit ~150 requests.
+For 16-bit, thats 2x2x105x20480x148 = 1.27 GB per request. For 8-bit it's half, for 0.64GB per request. What this says is that our 220GB remaining only fits 170 requests, while the 2TB can fit somewhere in the thousands. Then, they're probably comparing for the time to complete the same number of requests, but the A100 would have to do it in two batches. Because the 170 is under 208, it also means that our A100 inference is memory bandwidth bound as opposed to flops bound. But it's also probably much less than 170! A bunch of weights might be duplicated across GPUs, and software loses some memory (having TF load a 40GB A100, TF thinks there's only 38.4GB available). So maybe only 190GB remains and we fit ~150 requests.
 
 For convienence, lets say we're doing time to complete 450 requests. I'll leave out comms on the 16 A100s and assume compute bound. There's no factor of batch in the compute anymore because at memory bound, we only count time for loading weights.
 
 {% katex(block=true) %}
 \textbf{16 A100s, 16-bit}\\
 \text{compute} = \frac{2 \cdot 530\text{e}9}{16 \cdot 1.5\text{e}12} = 44\text{ms}\\
+
 {% end %}
 
 {% katex(block=true) %}
 \textbf{32 H100s, 8-bit}\\
+\text{compute} = 450 \cdot \frac{2 \cdot 530\text{e}9}{32 \cdot 2000\text{e}12} = 7\text{ms}\\
+\text{comms} = 450 \cdot \frac{105 \cdot 4 \cdot 20480}{450\text{e}9} = 9\text{ms}\\
+{% end %}
+
+{% katex(block=true) %}
+\textbf{64 H100s, 8-bit}\\
 \text{compute} = 450 \cdot \frac{2 \cdot 530\text{e}9}{32 \cdot 2000\text{e}12} = 7\text{ms}\\
 \text{comms} = 450 \cdot \frac{105 \cdot 4 \cdot 20480}{450\text{e}9} = 9\text{ms}\\
 {% end %}
@@ -103,7 +114,7 @@ But the compute time here does go up! Just not by twelve times. For a half-model
 
 ![](../img/arithmetic_transformers/tp.png)
 
-For that, when the first batch is processing on the second gpu, then the second batch can start processing on the first gpu, hence the "tensor parallel". All in all, three batches would take 176ms. 176/9=19.5 again (it's the same effect we get when we bully with the number of requests we're measuring).
+For that, when the first batch is processing on the second gpu, then the second batch can start processing on the first gpu, hence the "tensor parallel". All in all, three batches would take 176ms. 176/9=19.5 again (it's the same effect we get when we bully with the number of requests we're measuring). I'm not going to calculate it, since it'll be a similar order of magnitude, but there's also a different speedup associated with doing the compute and comms synchronously (in this case, we could insert 128 H100 GPUs).
 
 The intermediate calculations + kv cache reads that we don't factor in are somewhat significant. We don't know what the paralellism setup is, or if they factored in the in-practice bandwidth of F8 vs F16, or how much this Transformer Engine uses F8 vs F16 but I think I've at least exhausted all the major mechanisms through which the 30x speedup can be acquired.
 
