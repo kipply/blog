@@ -20,7 +20,7 @@ For obvious reasons, having a nude model be the face of all image processing has
 
 ![](../img/cs_images/cornellbox.png)
 
-Anyone who has taken a graphics course has seen this box as it was first presented at a SIGGRAPH in 1984. It consists of five planes, an overhead light, a rectangular prism and cube. Variations are often seen with spheres of different materials such as dielectrics (glass),  and metals instead of lambertians (the matte texture).
+Anyone who has taken a graphics course has seen this box as it was first presented at a SIGGRAPH in 1984. It consists of five planes, an overhead light, a rectangular prism and cube. Variations are often seen with spheres of different materials such as dielectrics (glass), and metals instead of lambertians (the matte texture).
 
 For a raytracer (or pathtracer) this tests a lot of important features. The shadowing of the rectangle onto the wall, contrasting wall colours that should emit some colour onto the white (this is called diffuse reflection).
 
@@ -62,7 +62,7 @@ Anywho, this is likely the shield because it prevents any blurring of "execution
 
 LALR is a type of parser (look ahead left to right) that is simpler than an LR parser (left to right, rightmost derivation) but more powerful than LL parsers (left to right, leftmost derivation). Parser generators greatly improve the pains of writing a parser. GCC started off with a parser generated (it's handwritten as of 2004), CPython makes their own LL* parser generator (*it's a bit variant, CPython devs may correct me), Haskell+OCaml+Ruby are on LALR generators.
 
-Writing a nice parser that works, is fast *and* surfaces nice syntax errors is a difficult design task, and a bit tedious after designed! Hence the dragon will be slayed by a LALR parser generator (YACC is taught in the book).
+Writing a nice parser that works, is fast _and_ surfaces nice syntax errors is a difficult design task, and a bit tedious after designed! Hence the dragon will be slayed by a LALR parser generator (YACC is taught in the book).
 
 #### Data Flow Analysis
 
@@ -84,7 +84,7 @@ Many (but not all) of the Python books have snakes, Rust has a crab, OCaml has a
 
 #### Oracle Bugs
 
-"Oracle Essentials" has a cicada, "Oracle Regular Expressions" have spiders, "Oracle 8i Internal Services" has a bumblebee, dragonfly, dung beetle, lady bug, lantern fly, leaf insect, ants, praying mantis, etc. *Very* consistently bugs. The speculation is often "oracle software bad" but its likely just a meaningless theme (with each animal having a deep meaning) and not meant to piss off Oracle. It is special as even Python is not consistently snakes, and other groups of books like Google, Regular Expressions, Javascript, etc, do not have any themes.
+"Oracle Essentials" has a cicada, "Oracle Regular Expressions" have spiders, "Oracle 8i Internal Services" has a bumblebee, dragonfly, dung beetle, lady bug, lantern fly, leaf insect, ants, praying mantis, etc. _Very_ consistently bugs. The speculation is often "oracle software bad" but its likely just a meaningless theme (with each animal having a deep meaning) and not meant to piss off Oracle. It is special as even Python is not consistently snakes, and other groups of books like Google, Regular Expressions, Javascript, etc, do not have any themes.
 
 #### Perl Camel
 
@@ -102,7 +102,7 @@ MacOS has always had some iconic wallpapers, especially of California views so t
 
 Apple explicitly scrubs EXIF data, which is all that microchip tracking metadata that are automatically attached to your images for location, time, device, shutter speeds, etc. The one time the EXIF was leaked on one image it had a bunch of nitpicking notes like "fill in this area close to the edge with more tree so it doesn’t create awkward negative shapes" and "darken some of the stars that are a bit smaller and darker, so there is a little more difference in the starfield" which I guess could be expected for the quality of the Apple wallpapers and the anxiety that comes with being the photographer for a MacOS wallpaper.
 
-Spoiler alert, I didn't actually figure out if these were generated or photographed, but I did figure out *how* one would generate/photograph them, and that they are *very* probably photographed. Here is the precedence: photographed ethereal Apple productions.
+Spoiler alert, I didn't actually figure out if these were generated or photographed, but I did figure out _how_ one would generate/photograph them, and that they are _very_ probably photographed. Here is the precedence: photographed ethereal Apple productions.
 
 ![](../img/cs_images/applefancy.png)
 
@@ -117,7 +117,5 @@ As expected, making these powder explosions would be a pain. One must first have
 The general approach is to start with a sphere, create some noise outwards like a spiky ball. Turn those vectors into dots going out, then configure those dots to create more particles in the direction of the velocity. Wind and air drag simulations are built into most animation software.
 
 ### End
-
-Please send me more lore at hello@carolchen.me
 
 Have a nice day <3

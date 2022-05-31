@@ -49,6 +49,10 @@
         "destination": "/projects/copywrite.html"
       },
       {
+        "source": "/testing",
+        "destination": "/projects/testing.html"
+      },
+      {
         "source": "/blog/**",
         "destination": "/blog/404.html"
       },

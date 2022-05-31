@@ -14,19 +14,19 @@ Escape Analysis is a technique that determines the behaviour of how a variable (
 
 > I'm writing this away from family during (Canadian) Thanksgiving so thank you kind and curious friends for coming to read this!
 >
-> Also thanks to [Chris Seaton](https://chrisseaton.com) who was my intern mentor back when I actually worked on compilers and taught me sooo much, and [JF Bastien](https://jfbastien.com/) who showed me how to look into `clang` and has just been generally helpful. Props to [Alberto](https://alberto.donizetti.eu/) who fixed a bug  in Go I ran into while investigating escape analysis in Go in a matter of hours after I opened an issue, and thanks to [Leo White](https://blog.janestreet.com/author/lwhite/) who answered my question about the lack of escape analysis in OCaml.
+> Also thanks to [Chris Seaton](https://chrisseaton.com) who was my intern mentor back when I actually worked on compilers and taught me sooo much, and [JF Bastien](https://jfbastien.com/) who showed me how to look into `clang` and has just been generally helpful. Props to [Alberto](https://alberto.donizetti.eu/) who fixed a bug in Go I ran into while investigating escape analysis in Go in a matter of hours after I opened an issue, and thanks to [Leo White](https://blog.janestreet.com/author/lwhite/) who answered my question about the lack of escape analysis in OCaml.
 
-For a little background on how programming languages work, skim through my post [A Deep Introduction to JIT Compilers: JITs are not very Just-in-time](https://carolchen.me/blog/jits-intro).
+For a little background on how programming languages work, skim through my post [A Deep Introduction to JIT Compilers: JITs are not very Just-in-time](https://kipp.ly/blog/jits-intro).
 
 ### Pypy Escapes Boxing
 
-Pypy puts a lot of work into minimizing *boxing*, which is done through escape analysis. Boxing is when a primitive is boxed into an object wrapper type, such as an `int` to `Integer` in Java. Object oriented language implementations often utilize boxing (sometimes called auto-boxing), including JavaScript, C#, Haskell and others! Computers natively understands types like booleans and integers, but not objects, and unfortunately many languages need to store most of their data as an object and not the primitive. For example, `314` as a constant can be stored as a primitive on the stack, but when `314.toString()` is executed, `314` has to be boxed so that the method can be run on the object. Unboxing is performed to extract the value.
+Pypy puts a lot of work into minimizing _boxing_, which is done through escape analysis. Boxing is when a primitive is boxed into an object wrapper type, such as an `int` to `Integer` in Java. Object oriented language implementations often utilize boxing (sometimes called auto-boxing), including JavaScript, C#, Haskell and others! Computers natively understands types like booleans and integers, but not objects, and unfortunately many languages need to store most of their data as an object and not the primitive. For example, `314` as a constant can be stored as a primitive on the stack, but when `314.toString()` is executed, `314` has to be boxed so that the method can be run on the object. Unboxing is performed to extract the value.
 
 Boxing and unboxing is an expensive operation, with .NET citing 20x the time for boxed assignment and 4x the time for unboxing assignment (when you explicitly cast back). Pypy also has expensive boxing operations, as it's not just assigning/computing more values but organizing them into a heap structure.
 
 Pypy considers this to be its second most important problem, and uses "virtual objects", also called virtualisation. It's a fancy term that means they avoid creating the entire heap structure, store the primitive value (not on the heap) and mock any object-operations that need to happen. While the virtual object is used in some applicable scope, read and writes are done to the virtual object without the expense of boxing/unboxing. Even more computation is saved as since the virtual object exists and no guards need to exist to verify information about the value in the object, whereas guards are usually in place to check the class after loading a value.
 
-Pypy will virtualise onto the stack optimistically and then allocate later should it become necssary. Escape analysis is really powerful in JITs mostly because jitted langauges tend to be more dynamic, but also because they can very aggressively stack allocate.  Languages that compile once have to be completely confident that the escape analysis is valid (or also compile code in case of failure) *and* make decisions about how far it should look to determine a scope. JITs can kind of just hope it'll work and then actually do the allocation if it doesn't -- and remember what happened for next time (though that makes it sound a lot easier than it actually is).
+Pypy will virtualise onto the stack optimistically and then allocate later should it become necssary. Escape analysis is really powerful in JITs mostly because jitted langauges tend to be more dynamic, but also because they can very aggressively stack allocate. Languages that compile once have to be completely confident that the escape analysis is valid (or also compile code in case of failure) _and_ make decisions about how far it should look to determine a scope. JITs can kind of just hope it'll work and then actually do the allocation if it doesn't -- and remember what happened for next time (though that makes it sound a lot easier than it actually is).
 
 For example;
 
@@ -57,11 +57,11 @@ The most complex question about escape analysis (other than maybe "how do I impl
 
 ```javascript
 function bar(o) {
-  return Math.sqrt(o.x*o.x + o.y*o.y)
+  return Math.sqrt(o.x * o.x + o.y * o.y);
 }
 
 function foo(i) {
-  return bar({x: i, y: i})
+  return bar({ x: i, y: i });
 }
 ```
 
@@ -71,7 +71,7 @@ One might not expect anything to allocate even without escape analysis, but when
 
 In most languages that box, essentially everything gets a box (except `null` and `undefined` types, though `NaN` in Javascript is boxed into a `Number` so terms and conditions may apply). LuaJIT is smarter off the bat and manages to not box floats and is good at not allocating (when I say "allocate", I mean to the heap) constants.
 
-LuaJIT's does something called [*Allocation Sinking*](http://wiki.luajit.org/Allocation-Sinking-Optimization), which is based on escape analysis and the result is very powerful allocation removals, doing things that even the age-old Hotspot can't do. Pypy implemented a vast majority of the things that LuaJIT did (see this [2012 paper](http://www1.maths.lth.se/matematiklth/vision/publdb/reports/pdf/ardo-bolz-etal-dls-12.pdf)) though I'd want to describe some of these optimizations in the context of LuaJIT rather than Pypy because LuaJIT gave me free examples.
+LuaJIT's does something called [_Allocation Sinking_](http://wiki.luajit.org/Allocation-Sinking-Optimization), which is based on escape analysis and the result is very powerful allocation removals, doing things that even the age-old Hotspot can't do. Pypy implemented a vast majority of the things that LuaJIT did (see this [2012 paper](http://www1.maths.lth.se/matematiklth/vision/publdb/reports/pdf/ardo-bolz-etal-dls-12.pdf)) though I'd want to describe some of these optimizations in the context of LuaJIT rather than Pypy because LuaJIT gave me free examples.
 
 When data is allocated, there's typically a "store" and then a "load" later on. Store-to-load forwarding is what it sounds like, getting the subsequent "load" function to receive data directly from the location of storing. This is used to have powerful allocation sinking, more commonly called "code motion" (or specifically, loop-invariant code motion as JITs tend to be concerned with loop optimizations). These examples do not use executable Lua code.
 
@@ -110,7 +110,7 @@ for i=1,1000 do
 end
 ```
 
-Here, LuaJIT defers the write and *forwards* the data to the read. As a result, the allocation and read are very much removed. The forwarding destination is the point of escape, which is where the escape analysis comes in.
+Here, LuaJIT defers the write and _forwards_ the data to the read. As a result, the allocation and read are very much removed. The forwarding destination is the point of escape, which is where the escape analysis comes in.
 
 LuaJIT has an explicit mark-and-sweep pass to do sinks. For an example that highlights the allocation sinking, LuaJIT performed on par with C++ and 700x faster than Lua. Specifically (taken from the [LuaJIT Blog](http://wiki.luajit.org/Allocation-Sinking-Optimization#implementation[)):
 
@@ -299,9 +299,9 @@ A key to stack allocation for Golang is that you have to know the lifetime of th
 
 ### Other Compilers that do Escape Analysis
 
-Lisp (and dialects) do escape analysis, and a lot of the papers about escape analysis will be about Lisp and Scheme (earliest paper I could find on the subject is 1990). This means almost nothing because there are so many lisp dialects and implementations of each of them, but here is an article about [Kildall's Algorithm for Escape Analysis on a Lisp Compiler](https://bike.github.io/posts/kildall.html). [Stalin](https://en.wikipedia.org/wiki/Stalin_(Scheme_implementation)), a Scheme compiler used a lot of data-flow analysis and advertises very powerful escape analysis.
+Lisp (and dialects) do escape analysis, and a lot of the papers about escape analysis will be about Lisp and Scheme (earliest paper I could find on the subject is 1990). This means almost nothing because there are so many lisp dialects and implementations of each of them, but here is an article about [Kildall's Algorithm for Escape Analysis on a Lisp Compiler](https://bike.github.io/posts/kildall.html). [Stalin](<https://en.wikipedia.org/wiki/Stalin_(Scheme_implementation)>), a Scheme compiler used a lot of data-flow analysis and advertises very powerful escape analysis.
 
-GraalVM will of course run Escape Analysis for any Truffle language. They call it "partial escape analysis", which is what was described in Pypy where the allocation is delayed, or only run at the point of escape. See [the paper on this](http://www.ssw.uni-linz.ac.at/Research/Papers/Stadler14/Stadler2014-CGO-PEA.pdf ).
+GraalVM will of course run Escape Analysis for any Truffle language. They call it "partial escape analysis", which is what was described in Pypy where the allocation is delayed, or only run at the point of escape. See [the paper on this](http://www.ssw.uni-linz.ac.at/Research/Papers/Stadler14/Stadler2014-CGO-PEA.pdf).
 
 Hotspot (Java compiler) of course also does escape analysis, though I get the impression that it's not as "partial" as newer JITs (this may be biased since I can find papers about newer JITs going "haha i am better than hotspot" but not Hotspot going "excuse me my escape analysis is actually great"). One could probably run some tests with JVM backed languages like Java or Scala.
 
@@ -314,4 +314,3 @@ let foo p x =
     r := do_something !r
   done
 ```
-

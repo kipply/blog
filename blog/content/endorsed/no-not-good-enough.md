@@ -5,6 +5,8 @@ weight = 3
 path = "no-not-good-enough"
 +++
 
+> Some important context to this is that there is in fact one narrative that I started working as a programmer in high school, and it was clear to  me at the time of college applications that education was not *vital*. At the time, I still believed it to be beneficial and applied. I was accepted only to a small school in Ottawa. The narrative I live is that I wasn't good enough to go to school. Different strokes for different folks applies strongly here.
+
 This is a pro-not-going-to-college post in the context of people around the tech industry. It is mostly for people who are entertaining no-college as something that might be good for them. It is not about why or if dropping out is a good idea, and more to air out the idea that not going to school requires some level of skill -- a notion probably brought forth by prolific dropouts.
 
 Most messaging with not going to school along the lines of "there are more important things to work on", "you can learn faster outside of school", "why wait for a degree when you can start working now", or "you could be running a kickass startup instead". All of these are great reasons to not go to school, but they have an implication that you have to be skilled to a certain degree (haha, "degree"). Good enough to have the opportunities to work on more important things. Good enough that school isn't already challenging your learning. Good enough to get a job. Good enough to run a startup.
@@ -31,7 +33,10 @@ Not going to college definitely put me behind in a lot of things. When working o
 
 So yeah, falling behind is a thing. One path is to just accept it with the other less-measurable experiences you have achieved, another is to convince yourself that it's not quite as real as one might think.
 
-Once you get out of school, the different axis on which you can succeed grows quickly. Some may end up caring only about their salary, others on their social lives, others on their ability to start a family. It gets drastically harder to compare who is more successful, if you were even worried about that in the first place. The farther I get away from the school-scene the more apparent it is that I am not behind on valuable experiences.
+Once you get out of school, the number of different axes on which you can succeed grows quickly. Some may end up caring only about their salary, others on their social lives, others on their ability to start a family. It gets drastically harder to compare who is more successful, if you were even worried about that in the first place. The farther I get away from the school-scene the more apparent it is that I am not behind on valuable experiences.
+
+### Joy affects your success
+I wish I could point to some source here, but hopefully you already believe me a bit? If you enjoy your work, you can be better at it. That means that if you think you're good at school and not that great at having a job, but also you hate school - you might have a better chance than you think.
 
 ----
 

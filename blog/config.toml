@@ -8,16 +8,14 @@ default_language = "en"
 
 compile_sass = true
 
+generate_feed = true
+feed_filename = "atom.xml"
+
 [markdown]
 highlight_code = true
 highlight_theme = "dracula"
 
 # Whether to generate a RSS feed automatically
-generate_feed = true
-
-# The number of articles to include in the RSS feed. Will include all items if
-# not set (the default).
-feed_limit = 20
 
 # Whether to copy or hardlink files in static/ directory. Useful for sites
 # whose static files are large. Note that for this to work, both static/ and

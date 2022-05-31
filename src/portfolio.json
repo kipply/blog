@@ -351,23 +351,15 @@
       "points": [
         {
           "toggle": [2, 3, 4, 5],
-          "content": "Too lazy (prideful?) to maintain a full failure resume, so there's a brief recap of my top failures!"
-        },
-        {
-          "toggle": [2, 3, 4, 5],
           "content": "I have been rejected by 24 schools (closer to 30 if you count schools that admit programs separately)."
         },
         {
-          "toggle": [4, 5],
-          "content": "I applied for two years with similar test scores (35 ACT, good subject tests) and higher grades the second time around. Reason of rejection is grades and being international with need."
+          "toggle": [2, 3, 4, 5],
+          "content": "Thiel Fellowship Rejected x2, Neo Fellowship x1, Miss World Canada x1"
         },
         {
           "toggle": [2, 3, 4, 5],
-          "content": "Thiel Fellowship Rejected x2, Neo (Fellowship|Program|Club) x1, Miss World Canada x1 (they were unwilling to waive my entrance fee on merit)"
-        },
-        {
-          "toggle": [2, 3, 4, 5],
-          "content": "Internship Rejections: Mozilla, Citadel, Docker, Pagerduty, Square, etc. Full-time Job Rejections: Square, Amazon."
+          "content": "Jobs: Mozilla, Citadel, Docker, Pagerduty, Square, Square, Amazon"
         }
       ]
     },
@@ -530,7 +522,7 @@
         },
         {
           "toggle": [3, 4, 5],
-          "content": "It's very all-over-the-place, but I wrote a loosely related <a href='https://carolchen.me/blog/2020/02/24/Python-History-Since-the-Fifteenth-Century/'>blog post</a>."
+          "content": "It's very all-over-the-place, but I wrote a loosely related <a href='https://kipp.ly/blog/2020/02/24/Python-History-Since-the-Fifteenth-Century/'>blog post</a>."
         }
       ]
     },

@@ -5,15 +5,15 @@ weight = 1
 path = "jits-intro"
 +++
 
-*If you are familiar with how JITs generally work (if you get what the title is referring to), I recommend skimming this or going straight to reading [How JIT Compilers are Implemented and Fast: Julia, Pypy, LuaJIT, Graal and More](https://carolchen.me/blog/jits-impls)*
+_If you are familiar with how JITs generally work (if you get what the title is referring to), I recommend skimming this or going straight to reading [How JIT Compilers are Implemented and Fast: Julia, Pypy, LuaJIT, Graal and More](https://kipp.ly/blog/jits-impls)_
 
 My mentor, [Chris](https://chrisseaton.com/), who took me from “what is a JIT” to where I am now once told me that compilers were just bytes in bytes out and not at all low-level and scary. This is actually fairly true, and it's fun to learn about compiler internals and often useful for programmers everywhere!
 
-This blog post gives background on how programming languages are implemented and how JITs work. It'll introduce the implementation details of the Julia language, though it won't talk about specific implementation details or optimizations made by more traditional JITs. Check out [How JIT Compilers are Implemented and Fast: Julia, Pypy, LuaJIT, Graal and More](https://carolchen.me/blog/jits-impls) to read about how meta-tracing is implemented, how Graal supports C extensions, the relationship of JITs with LLVM and more!
+This blog post gives background on how programming languages are implemented and how JITs work. It'll introduce the implementation details of the Julia language, though it won't talk about specific implementation details or optimizations made by more traditional JITs. Check out [How JIT Compilers are Implemented and Fast: Julia, Pypy, LuaJIT, Graal and More](https://kipp.ly/blog/jits-impls) to read about how meta-tracing is implemented, how Graal supports C extensions, the relationship of JITs with LLVM and more!
 
 ## How Programming Languages are Implemented
 
-When we run a program, it’s either interpreted or compiled in some way. The compiler/interpreter is sometimes referred to as the "implementation" of a language, and one language can have many implementations. You may have heard things like "Python is interpreted", but that really means the reference(standard/default) implementation of Python is an interpreter. Python is a language specification and *CPython* is the interpreter and implementation of Python.
+When we run a program, it’s either interpreted or compiled in some way. The compiler/interpreter is sometimes referred to as the "implementation" of a language, and one language can have many implementations. You may have heard things like "Python is interpreted", but that really means the reference(standard/default) implementation of Python is an interpreter. Python is a language specification and _CPython_ is the interpreter and implementation of Python.
 
 An interpreter is a program that directly executes your code. Well-known interpreters are usually written in C. Ruby, Python and PHP are written in C. Below is a function that loosely models how interpreters work:
 
@@ -69,7 +69,7 @@ function multiply(x, y)
 end
 ```
 
-Here is an example of a Julia function, which could be used to multiply integers, floats, vectors, strings etc (Julia allows operator overloading). Compiling out the machine code for *all* these cases is not very productive for a variety of reasons, which is what we'd have to do if we wanted Julia to be a compiled language. Idiomatic programming means that the function will probably only be used by a few combinations of types and we don't want to compile something that we don't use yet since that's not very jitty (this is not a real term).
+Here is an example of a Julia function, which could be used to multiply integers, floats, vectors, strings etc (Julia allows operator overloading). Compiling out the machine code for _all_ these cases is not very productive for a variety of reasons, which is what we'd have to do if we wanted Julia to be a compiled language. Idiomatic programming means that the function will probably only be used by a few combinations of types and we don't want to compile something that we don't use yet since that's not very jitty (this is not a real term).
 
 If I were to code `multiply(1, 2)`, then Julia will compile a function that multiplies integers. If I then wrote `multiply(2, 3)`, the already-compiled code will be used. If I added `multiply(1.4, 4)`, another version of the function will be compiled. We can observe what the compilation does with `@code_llvm multiply(1, 1)`, which generates LLVM Bitcode (not quite machine code, but a lower-level Intermediate Representation).
 
@@ -83,7 +83,7 @@ top:
 }
 ```
 
-And with `multiply(1.4, 4)`, you can see how complicated it can get to compile even one more function. In AOT compiled Julia, all* of these combinations would have to live in the compiled code even if only one was used, along with the control flow to delegate.
+And with `multiply(1.4, 4)`, you can see how complicated it can get to compile even one more function. In AOT compiled Julia, all\* of these combinations would have to live in the compiled code even if only one was used, along with the control flow to delegate.
 
 ```haskell
 define double @julia_multiply_17042(double, i64) {
@@ -117,6 +117,7 @@ The other aspect at play is generating _optimal code_. Assembly instructions are
 The cool part about JITs is that I was sort of lying when I said a JIT implementation of C could not be faster than existing compiled implementations. It would not be feasible to try, but jit-compiling C in the way I just described is not a strict superset of compiling a language and thus it is not logically impossible to compile code fast enough to make up for the compile+profile+interpreting time. If I "JIT compiled" C similarly to how Julia does it (statically compile each function as it's called), it would be impossible to make it faster than compiled-C as the compile-time is non-negative and the generated machine code is essentially the same.
 
 > ## Pogo
+>
 > Though jitting C is not feasible, one can find a middle ground through Profile Guided Optimization (PGO, cutely [and uncommonly] pronounced “pogo”). Instead of profiling while executing, you compile a program with PGO profiling, run that program and then recompile the original program with profiled data passed in. This is effective at reducing compiled-code size and improving branch prediction.
 
 ### Warm it up
@@ -125,11 +126,11 @@ JITs have a concept of warming up. Because intepretation and profiling time is e
 
 ![](../img/jits/warmingup.png)
 
-Warmup adds complexity to measuring efficiency of a JIT! It's fine if you're measuring the performance of generating the mandelbrot set, but becomes painful if you're serving a web application and the first N requests are painfully slow. It means that Javascript is relatively less performant as a command line tool than it is for a webserver. It’s complicated by the fact that the performance doesn’t strictly increase. If Pypy decides it needs to compile many things all at once after JITs compiling some functions, then you might have a slow-down in the middle. It also makes benchmark results more ambiguous, as you have to check if the jitted languages were given time to warmup, but you’d also want to know if it took an unseemly amount of time to warmup. Optimizing your compiled code *and* warmup speed is unfortunately zero-sum(or at least small-sum) by nature. If you try to get your code to compile sooner, less data will be available, the compiled code will not be as efficient and peak performance will be lower. Aiming for higher peak performance of course, often means higher profiling costs.
+Warmup adds complexity to measuring efficiency of a JIT! It's fine if you're measuring the performance of generating the mandelbrot set, but becomes painful if you're serving a web application and the first N requests are painfully slow. It means that Javascript is relatively less performant as a command line tool than it is for a webserver. It’s complicated by the fact that the performance doesn’t strictly increase. If Pypy decides it needs to compile many things all at once after JITs compiling some functions, then you might have a slow-down in the middle. It also makes benchmark results more ambiguous, as you have to check if the jitted languages were given time to warmup, but you’d also want to know if it took an unseemly amount of time to warmup. Optimizing your compiled code _and_ warmup speed is unfortunately zero-sum(or at least small-sum) by nature. If you try to get your code to compile sooner, less data will be available, the compiled code will not be as efficient and peak performance will be lower. Aiming for higher peak performance of course, often means higher profiling costs.
 
 Java and Javascript engines are examples of JITs that have put really good care into warmup time, but you may find that languages built for academic uses have monstrous warmup times in favour of snazzy peak performances.
 
-### > More JITs: [How JIT Compilers are Implemented and Fast: Julia, Pypy, LuaJIT, Graal and More](https://carolchen.me/blog/technical/jits-impls)
+### > More JITs: [How JIT Compilers are Implemented and Fast: Julia, Pypy, LuaJIT, Graal and More](https://kippl.y/blog/technical/jits-impls)
 
- - Talks about implementation of tracing JITs and meta-tracing JITs, specifically LuaJIT and Pypy
- - Introduces GraalVM, Hotspot and goes deeper into Javascript Engines. Goes through Tiering, Seas of Nodes, deoptimization and inlining.
+- Talks about implementation of tracing JITs and meta-tracing JITs, specifically LuaJIT and Pypy
+- Introduces GraalVM, Hotspot and goes deeper into Javascript Engines. Goes through Tiering, Seas of Nodes, deoptimization and inlining.

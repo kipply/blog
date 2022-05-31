@@ -6,7 +6,7 @@ Here is a list of topics I hope to cover, why I want to and how I'll do it. Or a
 
 ## Compilers
 
-I like compilers! I probably want to be employed working on them again, they're helpful to know about when working with lower level software, and are the cutest pieces of software. I did work on a Graal language before and I'm [familiar with JITs](https://carolchen.me/blog/jits-impls/) and interpreters, but I'd like to do the rest of the things.
+I like compilers! I probably want to be employed working on them again, they're helpful to know about when working with lower level software, and are the cutest pieces of software. I did work on a Graal language before and I'm [familiar with JITs](https://kipp.ly/blog/jits-impls/) and interpreters, but I'd like to do the rest of the things.
 
 I would like to work on that in a university course, here are things I think I would want:
 
@@ -33,21 +33,18 @@ This is an area where there is a comical amount of support through blogs, tutori
 
 ## Maths
 
-
 ## Graphics
-
 
 ## Operating Systems
 
-
 ## Distributed Systems
 
-
 ## Things I Don't Want To Do
+
 Some courses are sort of useful, but I probably never actually want to do them and the reasons why are supposedly informative.
 
-*Concurrency*
+_Concurrency_
 Though concurrency courses seem much harder than the amount of concurrency the average programmer practices in a year which makes it maybe fun but I think it's something better learned on the job as it's a problem solving skill that is best developed through doing exercises. I think maybe there's a good concurrency course (or just a set of exercises) that teaches it in contexts of operating systems, networking or distributed systems.
 
-*Databases*
+_Databases_
 Similar vein to concurrency regarding better learned on the job, with an addition that databases are thoroughly uninteresting to many and the ways in which they are interesting are very specific to certain technologies which makes it hard to create resources for. It's also hard to work on those interesting aspects unless you work at a company large enough for those things to arise.

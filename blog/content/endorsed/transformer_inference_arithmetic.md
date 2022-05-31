@@ -52,7 +52,7 @@ This means for a 52B parameter model (taking [Anthropic's](https://arxiv.org/pdf
 2 \cdot 2 \cdot 64 \cdot 8192^2 = 17,179,869,184
 {% end %}
 
-Say we have an [A100 GPU](](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf)), which does \\(312\text{e}12\\) flops per second and \\(1.5\text{e}12\\) bytes per second of memory bandwidth. The following are numbers for just the kv weights and computations.
+Say we have an [A100 GPU](https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf), which does \\(312\text{e}12\\) flops per second and \\(1.5\text{e}12\\) bytes per second of memory bandwidth. The following are numbers for just the kv weights and computations.
 
 {% katex(block=true) %}
 \text{memory} = 2 \cdot 2 \cdot n_\text{layers} \cdot {d_\text{model}}^2 \div 1.5\text{e}12\\
@@ -311,7 +311,7 @@ For the one gpu, some of the missing time should just be kv storing. Looking at 
 
 8. Consider the operation of taking the vector out of the last layer and multiplying it by the unembedding matrix, storing the logits and then doing top-k or top-p sampling (which requires a sort). How long should this take for a 52B model, and what can we parallelise here?
 
-9. How can we shard the token embeddings? Layernorms? What extra communication does this incur?
+9. How can we shard the token embeddings? Would shard the input token embeddings differently from the unembeddings? Layernorms? What extra communication does this incur?
 
 ### acknowledgements
 Would like to extend credit and thanks to people who make a positive impact on this post in varying capacities. [James](https://scholar.google.com/citations?user=GprA5UsAAAAJ&hl=en) [Bradbury](https://twitter.com/jekbradbury), [Eric Zhang](https://www.ekzhang.com), [Taylor Rogalski](https://tay.ro/),  [Horace He](https://horace.io/), [Julian Schrittwieser](https://www.furidamu.org/), Reiner Pope, Jim Wu, [Mohammad](https://scholar.google.com/citations?user=uMg7CEAAAAAJ&hl=en) [Bavarian](https://bavarian.dev/), [Tudor Brindus](https://tbrindus.ca/) and [Adrien Morisot](https://www.linkedin.com/in/adrien-morisot-045236173/?originalSubdomain=ca) with James leading by a long shot.

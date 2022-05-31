@@ -6,7 +6,7 @@ weight = 4
 
 > All code examples can be found in [this repo](https://github.com/kipply/tf-serving-cpp). If you know what you're looking for and can extract the value you need from that repository, the following post may be pretty useless.
 
-Tensorflow doesn't yet have support for TF Serving clients. For Golang, I opted to [compile the protobufs once and put the generated client in the codebase](https://carolchen.me/blog/technical/tf-go/). For a Bazel C++ project, I had two other reasonable options. One was to build tensorflow/serving with my project and use the build target that tensorflow set up for me. I tried that (as another blog post on the internet recommended) and bad things happened. For one, tensorflow/serving relies on tensorflow/tensorflow which has a whole bunch of shit going on (namely long build times) and dependencies on parts of cuda. And two, they had dependencies that clashed with some of the other items in my `WORKSPACE` and it seems that they might still rely on bazel 3.7.0 and I would like to use 5.0.0. So I went with the copy the protos in your project then do the build (which someone else did [for CMake](https://github.com/andrew-k-21-12/tf-serving-client-cpp)).
+Tensorflow doesn't yet have support for TF Serving clients. For Golang, I opted to [compile the protobufs once and put the generated client in the codebase](https://kipp.ly/blog/technical/tf-go/). For a Bazel C++ project, I had two other reasonable options. One was to build tensorflow/serving with my project and use the build target that tensorflow set up for me. I tried that (as another blog post on the internet recommended) and bad things happened. For one, tensorflow/serving relies on tensorflow/tensorflow which has a whole bunch of shit going on (namely long build times) and dependencies on parts of cuda. And two, they had dependencies that clashed with some of the other items in my `WORKSPACE` and it seems that they might still rely on bazel 3.7.0 and I would like to use 5.0.0. So I went with the copy the protos in your project then do the build (which someone else did [for CMake](https://github.com/andrew-k-21-12/tf-serving-client-cpp)).
 
 Reference Links: [gRPC](https://grpc.io/) || [Protocol Buffers C++](https://developers.google.com/protocol-buffers/docs/cpptutorial) || [Tensorflow Serving](https://www.tensorflow.org/tfx/serving/serving_basic) || [Bazel Protocol Buffer Rules](https://docs.bazel.build/versions/main/be/protocol-buffer.html)
 
@@ -23,6 +23,7 @@ If you put them in a different folder, you'll probably need to rename the import
 The protos don't build themselves, and the compilation setup is 200 lines of Starlark (I'm doing ok here, tensorflow/serving uses 450 lines). copy them [here](https://raw.githubusercontent.com/kipply/tf-serving-cpp/main/BUILD) and leave out the last ten lines that builds a main file.
 
 In your `WORKSPACE` file you'll want the following;
+
 ```python
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
@@ -116,4 +117,3 @@ int main(int argc, char** argv) {
 ```
 
 A thing about tensorflow/serving is that you specify dimensions, and you don't model your data as any kind of multi-dimensional tensor. Instead you just `add_dtype_val` until you've filled your specified dimensions. [Here is the link to the full script](https://github.com/kipply/tf-serving-cpp/blob/main/main.cc) which also contains an example to get metadata from tensorflow/serving and is executable in bazel with `bazel run :main_lib`.
-
