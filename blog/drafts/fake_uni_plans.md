@@ -1,12 +1,12 @@
 # i have university at home.
 
-Long story short, I never started university, I never will! Last time I considered going to school it was for Waterloo CS, and I was thinking so hard about it that I picked all my courses for all four years. Having not gone to college, it's hard to establish my authority as someone who knows the nature of specific college courses though I believe to know them reasonably well, having talked to many people about the specifics of their education (primarily UofT/Waterloo and many of the elite US schools).
+Long story short, I never started university, I never will! Last time I considered going to school it was for Waterloo CS, and I was thinking so hard about it that I picked all my courses for all four years. Having not gone to college, it's hard to establish my authority as someone who knows the nature of specific college courses though I believe to know them reasonably well through talking to a lot of different people (basically entirely Waterloo, UofToronto and elite US schools in that order).
 
-Here is a list of topics I hope to cover, why I want to and how I'll do it. Or at least, all the CS-related ones (there are a bunch of liberal arts and language courses I would've been happy about as well).
+Here is a list of topics I hope to cover, why I want to and how I'll do it. Or at least, all the CS related ones.
 
 ## Compilers
 
-I like compilers! I probably want to be employed working on them again, they're helpful to know about when working with lower level software, and are the cutest pieces of software. I did work on a Graal language before and I'm [familiar with JITs](https://kipp.ly/blog/jits-impls/) and interpreters, but I'd like to do the rest of the things.
+I like compilers! I probably want to be employed working on them again, they're helpful to know about when working with lower level software, and are the most elegant pieces of software. I did work on a Graal language before and I'm [familiar with JITs](https://kipp.ly/blog/jits-impls/) and interpreters, but I'd like to do the rest of the things.
 
 I would like to work on that in a university course, here are things I think I would want:
 
@@ -27,9 +27,7 @@ Most networking courses have things I'd want to learn, I hope to find a few vide
 
 ## Machine Learning
 
-I work at an AI company, so this one I picked up in a really specialised way, where I could learn more than plenty in a course and not have it improve my ability to my job or the jobs of ML Researchers at the company (we specifically train large transformer language models, so I [for example] lack a lot of RL background that people in my field often have).
-
-This is an area where there is a comical amount of support through blogs, tutorials, documentation and tweets that is not quite true for some of the other topics in here. It's also something one might want to do more for specialisation than to pick up some background knowledge so my recommendations for doing this are a collection of exercises/readings that aren't quite courses.
+I'm actually coming here explicitly to say I would never take a machine learning course! Never!!!!
 
 ## Maths
 

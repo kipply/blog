@@ -116,3 +116,7 @@ I am excited to be shown up in various and many ways, and of course excited for 
 
 > if i find a way to change, if i step into the light</br>
 > then i'll never be the same, and it all will fade to white
+
+---
+
+Happy to chat about how to think about job searches, big life decisions and being extremely emotionally attached to your startup. Also to pitch you on Blue Rose, Anthropic and Adept! Please do not ask me for interviewing advice.

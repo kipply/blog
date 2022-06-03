@@ -10,7 +10,7 @@ Tensorflow doesn't yet have support for TF Serving clients. For Golang, I opted 
 
 Reference Links: [gRPC](https://grpc.io/) || [Protocol Buffers C++](https://developers.google.com/protocol-buffers/docs/cpptutorial) || [Tensorflow Serving](https://www.tensorflow.org/tfx/serving/serving_basic) || [Bazel Protocol Buffer Rules](https://docs.bazel.build/versions/main/be/protocol-buffer.html)
 
-### Copy Pasting the Protos
+1the Protos
 
 You don't need to copy all of the protos in tensorflow/serving and certainly not in tensor/tensorflow as you probably only plan on using the `PredictionService` (as opposed to classify or regress, in which case you'll have to do some of your own proto copying).
 
