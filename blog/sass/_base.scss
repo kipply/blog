@@ -65,16 +65,13 @@ p {
   font-size: 1.6rem;
 }
 
+
 a {
   color: $primary;
   text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
-  @media (prefers-color-scheme: dark) {
-    color: saturate(lighten($primary, 10%), 10%);
-  }
 }
+
+
 ul {
   list-style: none;
   margin-left: 0;
@@ -190,12 +187,15 @@ hr {
   font-size: 4.4rem;
   a {
     padding: 3px;
+
     text-transform: lowercase;
     &:hover {
       color: white;
       transition: all 0.25s;
       background: linear-gradient(120deg, adjust-hue($primary, 25deg),  adjust-hue($primary, -25deg));
       text-decoration: none;
+      -webkit-background-clip: none;
+      -webkit-text-fill-color: none;
       @media (prefers-color-scheme: dark) {
         background: linear-gradient(120deg, saturate(lighten(adjust-hue($primary, 25deg), 10%), 10%),  saturate(lighten(adjust-hue($primary, -25deg), 10%), 10%));
         color: $color-title;
@@ -243,6 +243,29 @@ hr {
       @media (prefers-color-scheme: dark) {
         color: $color-title;
         background-color: white;
+      }
+    }
+  }
+}
+
+
+.article-body {
+  a{
+    &:hover,
+    &:focus {
+        background: -webkit-linear-gradient(45deg, lighten($primary, 30%), lighten(adjust-hue($primary, 90deg), 30%));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    @media (prefers-color-scheme: dark) {
+      color: lighten($primary, 10%);
+    }
+    @media (prefers-color-scheme: light) {
+      &:hover,
+      &:focus {
+        background: -webkit-linear-gradient(45deg, darken($primary, 20%), darken(adjust-hue($primary, 90deg), 20%));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
       }
     }
   }
