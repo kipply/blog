@@ -5,11 +5,9 @@ weight = 3
 path = "founding-bad"
 +++
 
-I had a brief run with a startup (literally a month) and was faced with the decision of going into a YC Cohort (W20). In that fiasco, I also spent at least twelve hours trying to convince other people to go. It's been half a year, and I've had a lot more time to reflect on reasons as to why one might want to run a startup. As you might've guessed, I decided not to do it and I genuinely believe that running a startup seems like a bad idea for the majority of people I meet who want to become founders, which seems to be a shocking number of people.
+I had a brief run with a startup and was faced with the decision of going into a YC Cohort (W20). In that fiasco, I also spent at least twelve hours actively in conversations trying to convince other another to take my spot. It's been half a year, and I've had a lot more time to reflect on reasons as to why one might want to run a startup. As you might've guessed, I decided not to do it and I genuinely believe that running a startup seems like a bad idea for the majority of people I meet who want to become founders, which seems to be a shocking number of people.
 
-This post definitely will not apply to everyone, but I'd hope there's some valuable thinking in here. Also, note that this is fairly oriented towards technical founders.
-
-Edit: This post also has a very limited scope as it's based off the thinking from my decision to continue interning at Shopify or to go to YC. It's very focused on the Silicon Valley "startup" where you get a VC to give you money and get big in a year, etc etc
+This post definitely will not apply to everyone, but I'd hope there's some valuable thinking in here. Also, note that this is fairly oriented towards technical founders in a very Silicon Valley startup world (VCs give you money, you grow faste, etc). 
 
 # Ways Being a Founder is Unexpectedly Bad
 

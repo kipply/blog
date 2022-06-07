@@ -10,32 +10,62 @@ import meImg5 from './img/me5.jpg';
 const meImages = [meImg, meImg2, meImg3, meImg4, meImg5];
 
 const Landing = () => (
-  <div style={{display:'block'}}>
-    <section className="panels" id="home" style={{overflow: 'hidden'}}>
+  <div style={{ display: 'block' }}>
+    <section className="panels" id="home" style={{ overflow: 'hidden' }}>
       <Row className="landing-row">
-        <Col sm={4} md={4} >
-          <img src={meImages[Math.floor(Math.random() * meImages.length)]} className="img-responsive img-circle"/>
+        <Col sm={4} md={4}>
+          <img src={meImages[Math.floor(Math.random() * meImages.length)]} className="img-responsive img-circle" alt="kipply" />
         </Col>
-        <Col sm={8} md={8} style={{paddingLeft: '50px'}} id="intro-text">
-          <h2 className="section-heading">hi i'm kipply (carol)</h2>
+        <Col sm={6} md={6} style={{ paddingTop: '20px' }}>
+          <h2 className="section-heading">hi i&apos;m kipply (carol)</h2>
+          <div id="links">
+            <a href="/blog" target="_blank" rel="noredirect no referrer noreferrer">very good blog</a>
+            <br />
+            <a href="mailto:hello@carolchen.me" target="_blank" rel="noredirect no referrer noreferrer">email me</a>
+            <br />
+            <a href="https://twitter.com/kipperrii" target="_blank" rel="noredirect no referrer noreferrer">tweets (tweet at me?)</a>
+          </div>
+        </Col>
+        <Col xs={12} sm={12} md={12} id="intro-text">
           <p>
-            I am currently occupied at Cohere AI where I've been living since we were a team of six! We're building an NLP toolkit and I work on serving our transformer models.
+            I am currently funemployed until I start at
+            <a href="https://www.anthropic.com/" target="_blank" rel="noredirect no referrer noreferrer"> Anthropic</a>
+            .
           </p>
           <p>
-            Most of my thoughts are about my friends, work, effective altruism, my bunny and non-work related programming (in order, mostly)
+            Most of my thoughts are about my friends, effective altruism, my bunny,
+            <a href="/blog/transformer-inference-arithmetic/" target="_blank" rel="noredirect no referrer noreferrer"> AI performance </a>
+            (speed, not quality), and various other programming knick-knacks.
           </p>
           <p>
-            My main hobby is socializing, never hesitate to reach out to me (preferably via email).
+            I have been slowly learning to read, and I plan on learning to drive cars, do
+            live-coding and solve all the New York Times crossword puzzles! I also enjoy
+            pole dance + aerial arts, dance dance revolution and writing for my blog.
+            My current residence is in San Francisco, though I&apos;ve spent some time in New
+            York City and grew up in Richmond Hill, Ontario and also lived in Toronto.
           </p>
-        <div id="links">
-          <h3 className="section-heading">links</h3>
-          <a href="https://kipp.ly/blog" target="_blank" rel="noredirect no referrer">very good blog</a> // <a href="mailto:hello@carolchen.me" target="_blank" rel="noredirect no referrer">email me</a> // <a href="https://twitter.com/kipperrii" target="_blank" rel="noredirect no referrer">tweets</a> // <a href="https://github.com/kipply" target="_blank" rel="noredirect no referrer">github</a> // <a href="https://kipp.ly/resume" target="_blank" rel="noredirect no referrer">button for recruiters, click me if you dare</a>
-        </div>
+          <p>
+            You may know me from one of my previous lives, like when I worked at
+            <a href="/blog/real-good-things-about-internships/" target="_blank" rel="noredirect no referrer noreferrer"> Shopify</a>
+            <a href="https://shopify.engineering/optimizing-ruby-lazy-initialization-in-truffleruby-with-deoptimization" target="_blank" rel="noredirect no referrer noreferrer"> on TruffleRuby </a>
+            and subsequently thought
+            <a href="/blog/jits-intro/" target="_blank" rel="noredirect no referrer noreferrer"> a lot</a>
+            <a href="/blog/jits-impls/" target="_blank" rel="noredirect no referrer noreferrer"> about</a>
+            <a href="/blog/escape-analysis/" target="_blank" rel="noredirect no referrer noreferrer"> jit compilers</a>
+            . Maybe from when I attended Hackathons and also organised a few of them.
+            Some other lives you probably don&apos;t know me from include working on edtech at
+            <a href="https://www.hatchcoding.com/" target="_blank" rel="noredirect no referrer noreferrer"> Hatch Coding</a>
+            ,
+            <a href="https://www.sugarlabs.org/" target="_blank" rel="noredirect no referrer noreferrer"> Sugar Labs </a>
+            and teaching at Ski Lakeridge or from the small town of
+            <a href="https://dmoj.ca/"> contest programming </a>
+            where I learned to code.
+          </p>
         </Col>
       </Row>
     </section>
   </div>
-)
+);
 
 
 export default Landing;

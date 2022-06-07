@@ -48,8 +48,11 @@ I got them these stickers (they were almost called Persimmon AI Labs) and showed
 
 This is a place for my feelings, but I also happen to have thought and investigated pretty hard about whether they will be very successful + a great place to work, and the answer is approximately yes. You should [apply](https://jobs.lever.co/adeptailabs), I'll be jealous if you go.
 
-> to tell me who I am, who I was</br>
-> uncertainty enveloping my mind
+> to tell me who i am, who i was</br>
+> uncertainty enveloping my mind</br></br>
+> maybe it's a dream, maybe nothing else is real
+> but it wouldn't mean a thing if i told you how i feel
+
 
 ### Jane Street
 
@@ -57,7 +60,7 @@ I was unconfident if I wanted to stay in ML. It was for bad reasons, like I thou
 
 I'm _very_ picky about where I'm willing to work, in that I refuse to work anywhere that I'm not very familiar with. I've partied with the Blue Rose people, the OAI team I angled for had a friend I'd known for over half a decade and I had gotten to know the Adept team (and grilled their past coworkers). There are also other standards like having fun problems and good people which of course Jane Street meets.
 
-My history with Jane Street started when I was in high school and a little stranded in Waterloo because of a snow storm. A then-former Jane Street intern now-fulltimer fed me, called my mom and made sure I made it home. Several of my friends from high school and previous internships went on to work at Jane Street, including a few of my former partners and best friends. It sounds a little bit capitalist dystopia, but my many years of having many friends at there and living in the unmistakable and beloved Jane Street culture resulted in me forming a very sentimental relationship with this proprietary trading firm.
+My history with Jane Street started when I was in high school and a little stranded in Waterloo because of a snow storm. A then-former Jane Street intern now-fulltimer fed me, called my mom and made sure I made it home. Several of my friends from high school and previous internships went on to work at Jane Street, including a few of my former partners and best friends. It sounds a little bit capitalist dystopia, but my many years of having many friends there and living in the unmistakable and beloved Jane Street culture resulted in me forming a very sentimental relationship with this proprietary trading firm.
 
 Jane Street represented moving back to New York City to me. I moved to San Francisco in January with my former partner because he was leaving Jane Street for Anthropic, and I still probably prefer NYC for a lot of things. It made this job feel like going home, back to the old and evolving habits, hobbies, friends and culture I had brought to NYC with me from Toronto. I had only been in NYC for half a year! I was barely getting started with my life there. This is a jpg of me visiting the office for the first time in 2018, which was also the first time I visited and fell in love with NYC.
 
@@ -65,18 +68,16 @@ Jane Street represented moving back to New York City to me. I moved to San Franc
 
 The two things I'd really like to communicate is 1. that the culture is wonderful. People really enjoy working there, it's not a big scary evil bank that's going to drain your soul and hours while providing no fun (I think they have an immense amount of fun!). Secondly, they had hands-down _the best_ technical interviews.
 
-They were better than I thought possible and impressively staffed at two people per interview. I went through five fantastic interview problems, not algorithmic or LeetCode like in nature and very representative of possible work people might do. They opened room for collaboration, and tested skills of problem solving, thinking about edge cases and implementation. I believe most "interview with real-world problems" questions don't do the full cognitive testing I would want in a process but Jane Street really nailed it.
-
-> For reference, my team at Cohere did a debugging interview + implementation heavy (not algorithmic) interview + system design interview which covers skill testing well. It works well for Cohere because we need the sys design as we filter for experience at interview-time a bit more than Jane Street does.
+They were better than I thought possible and impressively staffed at two people per interview. I went through five fantastic interview problems, not algorithmic or LeetCode like in nature and very representative of possible work people might do. They opened room for collaboration, and tested skills of problem solving, thinking about edge cases and implementation. I believe most "interview with real-world problems" questions are better than algorithmic ones, but are genuinely much harder to design but Jane Street really nailed it. 
 
 I'm a little sad I didn't finally get my chance to learn functional programming. Uh, sometime after the AGI I guess.
 
-> if I opened up my eyes, </br>
+> if i opened up my eyes, </br>
 > there'd be no more going back
 
 ### Cohere
 
-_There's a funky thing that happens here where this section is the only one where I will say anything particularly negative which might result in inaccurately negative takeaways regarding my feelings on Cohere_
+> There's a funky thing that happens here where this section is the only one where I will say anything particularly negative which might result in inaccurately negative takeaways about Cohere! My overall sentiment is that I'm extremely glad to have worked there, it was a good place to work and I'm really sad to have left.
 
 Even with offers from companies I'd rather work at, there was a long period of time where I was more sad to leave Cohere than I was excited to go elsewhere. I started at Cohere in May 2020, it was my first full-time job, I had gone in full-steam ahead as this was my redemption from the startup I had founded and abandoned the previous winter. I remember thinking really hard about whether I should stay at Shopify but at this point I don't really remember how I ended up at Cohere. I didn't really know the team well and I certainly didn't know the industry (see: me in 2020 googling "Geoffrey Hinton") but thank goodness I ended up there.
 
@@ -84,33 +85,36 @@ Cohere was a lot of great and important things for me! My first time in startup 
 
 Have to say, one of the funnest parts of Cohere was the success. How we grew from a scrappy team having meetings on the floor about product ideas that were in hindsight, wildly stupid to this large well resourced operation feels unreal. There were ups and downs and deep moments of doubts and attentively following our competitors wondering if we would ever be good enough, and all of that felt good.
 
-Startups should be about [Type 0 fun](https://www.rei.com/blog/climb/fun-scale): fun in anticipation. Startups should be the most fun when you're anticipating and waiting and working for it to become successful, not as a triumphant success you look back on in satisfaction. For this, Cohere was an immense amount of fun, but it is also over for me.
+Startups should be about [Type 0 fun](https://www.rei.com/blog/climb/fun-scale): fun in anticipation. Startups should be the most fun when you're anticipating and waiting and working for it to become successful, not as a triumphant success you look back on in satisfaction. For this, Cohere was an immense amount of fun. 
 
-Some number of years ago I thought about why I thought running a startup was a bad idea in many cases. A key point I missed in startups' favor is that authority goes a really long way when it comes to people who are primarily motivated by manifesting vision -- which is what startup founders should be doing. Outside of Cohere, I was never a vision manifester and in thinking of my future, it's also not what I'm currentyl out to do. Cohere made me a localised vision manifester, probably because I had so much room to decide what to do in the pre-product days and I had my hands in so many quickly changing things.
+Some number of years ago I [thought about](/founding-bad/) why I thought running a startup was a bad idea in many cases. A key point I missed in startups' favor is that authority goes a really long way when it comes to people who are primarily motivated by manifesting vision -- which is what startup founders should be doing. Outside of Cohere, I was never a vision manifester but at Cohere I was, probably because I had so much room to decide what to do in the pre-product days and I had my hands in so many rapidly developing things.
 
-The first time I realised I might not be a successful vision manifester was when we came out of stealth in May 2021 and I believed (and still believe) that some of the marketing content we were planning to put out was dishonest but could not get it stricken before release. It was eventually removed for being so, which was a really strong "ah shit I can't do things here" moment. As an intern at Shopify I _definitely_ couldn't do things, but apparently I cared about Shopify a lot less than Cohere!
+The first time I realised I might not be a successful vision manifester was when we came out of stealth in May 2021 and I believed (and still believe) that some of the marketing content we were planning to put out was dishonest but could not get it stricken before release. It was eventually removed for being so, which was a really strong "ah shit I can't do things here" moment. As an intern at Shopify I definitely couldn't do things, but apparently I cared about Shopify a lot less than Cohere!
 
-At some point I burnt out and stopped being a vision manifester, mostly because my standards are high, we were deeply deeply poorly staffed, and maybe because I had a lot of things on my plate. The nature of the burnout wasn't exhaustion, but defeat. Not "I'm tired", but "I've tried so hard and it's not going to work".
+At some point I burnt out and my investment in Cohere fell off a cliff, because we were deeply poorly staffed and I didn't have sufficient authority (not even in a way where people would disagree with me, but in a way where I couldn't do enough things to make something happen). The nature of the burnout wasn't exhaustion, but defeat. Not "I'm tired", but "I've tried so hard and it's not going to work".
 
-There were some other things I did that were good and fun, and hopefully successful! There were many joys that existed outside of that pesky vision-manifester-value. I spent a lot of effort giving interns a good experience, planned their intern retreat, got them referrals to future internships. In the recent months I poured everything into a technical project, and lived my dreams of performance work, learned C++ and finally got to practice navigating team-level politics.
+There were some other things I did that were good and fun, and hopefully successful! I spent a lot of effort giving interns a good experience, planned their intern retreat, got them referrals to future internships. In the recent months I poured everything into a technical project, and lived my dreams of performance work, learned C++ and finally got to practice navigating team-level politics. Cohere was also where I learned a lot about infrastructure (we have an amazing infra team). 
 
-But there was one specific problem for me that got in the way of the good things about Cohere, and that I won't name. Over the span of _months_ I bugged people about this, and kept running into walls of "talk to this person" and "[corporate phrase]" and couldn't talk to someone who would address it in a satisfying way to me. I eventually got an answer in a very civil, respectable and tragic conversation. It was that leadership genuinely didn't believe this was a problem and it turns out the main thing that was making my job unenjoyable was there by design.
+But there was one specific problem for me that got in the way of the good things about Cohere, and that I won't name. Over the span of months I bugged people about this, and kept running into walls of "talk to this person" and "[corporate phrase]" and couldn't talk to someone who would address it in a satisfying way to me. I eventually got an answer in a civil and tragic conversation. It was that leadership genuinely didn't believe this was a problem and it turns out the main thing (as in if this one thing were different, I would've stayed) that was making my job unenjoyable was there by design. 
 
-The emotional significance of leaving a job is deeply underrated. It was a friend leaving who provided me activation energy and that friend felt strongly about me leaving even after having had her last day. I wrote some of this on my flight to Toronto to give notice and some on my flight back to San Francisco and cried in both directions (and of course, over that weekend). But it was time for me to go, because I'm not just upset over what's being left behind but over what it could've been.
+The emotional significance of leaving a job is deeply underrated. I cried during one on ones leading up to quitting, while quitting, on my last day, when my friend left before me (who cried both for both of our exits). I think this is how it should be, I'd be rather concerned if I wasn't upset to leave something I had spent 40 hours (though realistically much more) a week on for the last two years. It's not just what I'm leaving behind, in fact it's probably mostly not that! It's mostly sad because it became a good choice for me to leave. 
 
-> should i stay, or should i go?
+On my last day I learned that I was sharing a last day with an old friend from Jane Street, and was really glad that they shared their sadness with me a bit. That was nice. 
+
+
+> am i hurting am i sad? should i stay, or should i go?
 > ive forgotten how to tell. did i ever even know?
-> can i take another step? i've done everything I can
+> can i take another step? i've done everything i can
 > all the people that i see, they will never understand
 
 ### Anthropic
 
-There's some narrative that's only a little accurate where I was always supposed to go to [Anthropic](https://www.anthropic.com/), that it was inevitable and the right choice for me from the get-go. I'm not really sure what my story with Anthropic is yet, but I don't think it was that easy? Like I said there were some close calls, but here are the two factors on which Anthropic stood out:
+There's some narrative that's only a little accurate where I was always supposed to go to [Anthropic](https://www.anthropic.com/), that it was inevitable and the right choice for me from the get-go. It wasn't that easy? Like I said there were some close calls, but here are the two factors on which Anthropic stood out:
 
-1. I believe that AGI is the most important problem of our time, both because it could be so bad and because we could make it so good. My actual beliefs are a lot more specific than this, and Anthropic (as well as its structural incentives) aligned most. This was captured in really heavy donation matching, not having investors waiting to be paid back, the existing and incoming work and the beliefs of the team there.
-2. I know lots of people at Anthropic, and as mentioned, I care a lot about this. It's really comforting and provides lots of positive signal about what working at the company will be like.
+1. I believe that AGI is the most important problem of our time, both because it could be so bad and because we could make it so good. My actual beliefs are a lot more specific than this, and Anthropic (as well as its structural incentives) aligned most. This is captured in really donation matching, investors with shared values, the existing and incoming work and the beliefs of the team there.
+2. I come to know lots of people at Anthropic, and as mentioned, I care a lot about this. It's really comforting and provides lots of positive signal about what working at the company will be like.
 
-The first time I heard of Anthropic I felt very detached from the AI Alignment scene, which was weird because I had been an EA and subscribed to the "buy lots of malaria nets" part for years. I warmed up to it a little bit and applied in fall of 2021 and got rejected. The things I discussed about alignment back then are very different from my thoughts now, which are also a little different from the ideas I had before I started this interview process (where Adept and Anthropic both moved some needles). That's nice, because this does genuinely seem like a "not a good fit at the time" situation (though it's also true that my interview performance changed a lot) It's also very sweet that Anthropic encouraged me to apply again so soon! I think their hiring ethos is [quite good](https://www.anthropic.com/#careers)
+The first time I heard of Anthropic I felt very detached from the AI Alignment scene, which was weird because I had been an EA for years and at that point had been working in AI for a while. I got myself familiarised, applied in fall of 2021 and got rejected. The things I discussed in the interviews about alignment back then are very different from my thoughts now, which are also a little different from the ideas I had before I started this interview process (where Adept and Anthropic both moved some needles). That's nice, because this does genuinely seem like a "not a good fit at the time" situation (though it's also true that my interview performance changed a lot) It's also very sweet that Anthropic encouraged me to apply again so soon! I think their hiring ethos is [quite good](https://www.anthropic.com/#careers). 
 
 I am excited to be shown up in various and many ways, and of course excited for the growth that'll provide. The end of my recruiting journey doesn't end until I find my place and feel at home at Anthropic, and I can only expect that to be as lovely a process as the rest of it has been. If Anthropic resonates with you as a place to work, [here](https://www.anthropic.com/#job-postings) is where you apply.
 
@@ -119,4 +123,4 @@ I am excited to be shown up in various and many ways, and of course excited for 
 
 ---
 
-Happy to chat about how to think about job searches, big life decisions and being extremely emotionally attached to your startup. Also to pitch you on Blue Rose, Anthropic and Adept! Please do not ask me for interviewing advice.
+Happy to chat about how to think about job searches, big life decisions and being extremely emotionally attached to your startup. Also to pitch you on Blue Rose and Anthropic! Please do not ask me for interviewing advice.

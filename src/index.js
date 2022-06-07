@@ -1,17 +1,22 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import App from './App';
 import EngCalc from './pages/Engcalc';
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container);
+
+root.render(
   (
-    <Router>
+    <BrowserRouter>
       <div>
-        <Route exact path="/" component={App} />
-        <Route exact path="/eng-calc" component={EngCalc} />
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/eng-calc" element={<EngCalc />} />
+        </Routes>
       </div>
-    </Router>
-  ), document.getElementById('root'),
+    </BrowserRouter>
+  ),
 );

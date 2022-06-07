@@ -316,6 +316,11 @@ For the one gpu, some of the missing time should just be kv storing. Looking at 
 ### acknowledgements
 Would like to extend credit and thanks to people who make a positive impact on this post in varying capacities. [James](https://scholar.google.com/citations?user=GprA5UsAAAAJ&hl=en) [Bradbury](https://twitter.com/jekbradbury), [Eric Zhang](https://www.ekzhang.com), [Taylor Rogalski](https://tay.ro/),  [Horace He](https://horace.io/), [Julian Schrittwieser](https://www.furidamu.org/), Reiner Pope, Jim Wu, [Mohammad](https://scholar.google.com/citations?user=uMg7CEAAAAAJ&hl=en) [Bavarian](https://bavarian.dev/), [Tudor Brindus](https://tbrindus.ca/) and [Adrien Morisot](https://www.linkedin.com/in/adrien-morisot-045236173/?originalSubdomain=ca) with James leading by a long shot.
 
+### citation
+Please cite as:
+```
+Chen, Carol. "Transformer Inference Arithmetic", https://kipp.ly/blog/transformer-inference-arithmetic/, 2022.
+```
 ---
 
 > > hey kipply you should better understand our big model inferencing latency<br>

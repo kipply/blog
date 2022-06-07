@@ -1,4 +1,4 @@
-@mixin transition-all($seconds: 0.4s){
+@mixin transition-all($seconds: 0.2s){
     -webkit-transition: all $seconds;
     -moz-transition: all $seconds;
     -ms-transition: all $seconds;
