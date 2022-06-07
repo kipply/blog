@@ -16,7 +16,7 @@ class PortfolioSection extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { slider } = this.state;
+    const { slider } = this.props;
     if (slider !== prevProps.slider) {
       this.setState({
         slider,
@@ -79,7 +79,7 @@ class PortfolioSection extends Component {
 }
 
 PortfolioSection.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
   slider: PropTypes.number.isRequired,
 };
