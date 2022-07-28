@@ -17,11 +17,11 @@ For background on JIT compilers see [A Deep Introduction to JIT Compilers: JITs 
 
 LuaJIT employs a method called tracing. Pypy does meta-tracing, which involves using a system to generate tracing interpreters and JITs. Pypy and LuaJIT are not the reference implementations of Python or Lua, but projects on their own. I would describe LuaJIT as shockingly fast, and it describes itself as one of the fastest dynamic language implementations -- which I buy fully.
 
-To determine when to start tracing, the interpreting loop will look for "hot" loops to trace (the concept of "hot" code is universal to JITS!). Then, the compiler will "trace" the loop, recording executed operations to compile well optimized machine code. In LuaJIT, the compilation is performed on the traces with an instruction-like IR that is unique to LuaJIT.
+To determine when to start tracing, the interpreting loop will look for "hot" loops to trace (the concept of "hot" code is universal to JITs). Then, the compiler will "trace" the loop, recording executed operations to compile well optimized machine code. In LuaJIT, the compilation is performed on the traces with an instruction-like IR that is unique to LuaJIT.
 
 ### **How Pypy Implements Tracing**
 
-Pypy will start tracing a function after 1619 executions, and will compile it after another 1039 executions, meaning a function has to execute around 3000 times for it to start gaining speed. These constants were carefully tuned by the Pypy team (lots of constants are tuned for compilers in general!).
+Pypy will start tracing a function (which is not always a user defined function) after constant number of 1619 executions, and will compile it after another 1039 executions, meaning a function has to execute around 3000 times for it to start gaining speed. These constants were carefully tuned by the Pypy team (lots of constants are tuned for compilers in general!).
 
 Dynamic languages make it hard to optimize things away. The following code could be statically eliminated by a stricter language, as `False` will always be falsy. However, in Python 2, that could not have been guaranteed before runtime.
 
@@ -62,7 +62,7 @@ if random.randint(1, 100) < 20:
 
 ### Wait, but you said Meta-tracing!
 
-The concept behind meta-tracing is “write an interpreter, get a compiler for free!” or more magically, “turn your interpreter into a JIT-compiler!”. This is just obviously a great thing, since writing compilers is hard so if we can get a great compiler for free that’s just a good deal. Pypy "has" an interpreter and a compiler, but there’s no explicit implementation of a traditional compiler.
+The concept behind meta-tracing is “write an interpreter, get a compiler for free!” or more magically, “turn your interpreter into a JIT-compiler!”. This is just obviously a great thing, since writing compilers is hard so if we can get a great compiler for free that’s a good deal. Pypy "has" an interpreter and a compiler, but there’s no explicit implementation of a traditional compiler.
 
 Pypy has a toolchain called RPython (which was built for Pypy). It is a framework program for implementing interpreters. It is a language in that it specifies a subset of the Python language, namely to force things like static typing. It is a language to write an interpreter in. It is not a language to code in typed-Python, since it doesn’t care or have things like standard libraries or packages. Any RPython program is a valid Python program. RPython programs are transpiled to C and then compiled. Thus, the RPython meta-compiler exists as a compiled C program.
 
@@ -121,9 +121,9 @@ for line in code:
 
 Disclaimer: I worked on/with a Graal-based language, [TruffleRuby](https://github.com/oracle/truffleruby) for four months and loved it.
 
-Hotspot (named after looking for _hot_ spots) is the VM that ships with standard installations of Java, and there are actually multiple compilers in it for a tiered strategy. Hotspot is open source, with 250,000 lines of code which contains the compilers, and three garbage collectors. It does an _awesome_ job at being a good JIT, there are some benchmarks that have Hotspot on par with C++ impls (oh my gosh so many asterisks on this, you can Google to find all the debate). Though Hotspot is not a tracing JIT, it employs a similar approach of having an interpreter, profiling and then compiling. There is not a specific name for what Hotspot does, though the closest categorization would probably be a method-based JIT (they optimized by method) or a Tiering JIT.
+Hotspot (named after looking for _hot_ spots) is the VM that ships with standard installations of Java, and there are multiple compilers in it for a tiered strategy. Hotspot is open source, with 250,000 lines of code which contains the compilers, and three garbage collectors. Though Hotspot is not a tracing JIT, it employs a similar approach of having an interpreter, profiling and then compiling. There is not a specific name for what Hotspot does, though the closest categorization would probably be a method-based JIT (they optimized by method) or a Tiering JIT.
 
-Strategies used in Hotspot inspired many of the subsequent JITs, the structure of language VMs and especially the development of Javascript engines. It also created a wave of JVM languages such as Scala, Kotlin, JRuby or Jython. JRuby and Jython are fun implementations of Ruby and Python that compile the source code down to the JVM bytecode and then have Hotspot execute it. These projects have been relatively successful at speeding up languages like Python and Ruby (Ruby more so than Python) without having to implement an entire toolchain like Pypy did. Hotspot is also unique in that it's a JIT for a less dynamic language (though it's technically it's a JIT for JVM bytecode and not Java).
+Strategies used in Hotspot inspired many of the subsequent JITs, the structure of language VMs and especially the development of JavaScript engines. It also created a wave of JVM languages such as Scala, Kotlin, JRuby or Jython. JRuby and Jython are fun implementations of Ruby and Python that compile the source code down to the JVM bytecode and then have Hotspot execute it. These projects have been relatively successful at speeding up languages like Python and Ruby (Ruby more so than Python) without having to implement an entire toolchain like Pypy did. Hotspot is also unique in that it's a JIT for a less dynamic language (though it's technically it's a JIT for JVM bytecode and not Java).
 
 ![](../img/jits/vms.png)
 
@@ -131,7 +131,7 @@ GraalVM is a JavaVM and then some, written in Java. It can run any JVM language 
 
 But wait, there's more! GraalVM also provides Truffle, a framework for implementing languages through building Abstract Syntax Tree (AST) interpreters. With Truffle, there’s no explicit step where JVM bytecode is created as with a conventional JVM language, rather Truffle will just use the interpreter and communicate with Graal to create machine code directly with profiling and a technique called partial evaluation. Partial evaluation is out of scope for this blog post, tl;dr it follows metatracing’s “write an interpreter, get a compiler for free” philosophy but is approached differently.
 
-> TruffleJS, the Truffle implementation of Javascript outperforms the JavaScript V8 engine on select benchmarks which is really impressive since V8 has had numerous more years of development, Google money+resources poured in and some crazy skilled people working on it. TruffleJS is still by no means “better” than V8 (or other JS engines) on most measures but it is a sign of promise for Graal.
+> TruffleJS, the Truffle implementation of JavasScript outperforms the JavaScript V8 engine on select benchmarks which is nifty since V8 has had numerous more years of development, Google money+resources poured in and some crazy skilled people working on it. TruffleJS is still by no means “better” than V8 (or other mainstream JS engines) on most measures but it is a sign of promise for Graal.
 
 # The Unexpectedly Great JIT Compiler Strategies
 
@@ -139,7 +139,7 @@ But wait, there's more! GraalVM also provides Truffle, a framework for implement
 
 A common problem with JIT implementations is support for C Extensions. Standard interpreters such as Lua, Python, Ruby, and PHP have a C API, which allows users to build packages in C, thus making the execution significantly faster. Common packages such as `numpy` or standard library functions such as `rand` are written in C. These C extensions are vital to having these interpreted languages run quickly in practice.
 
-C extension support is hard to support for a variety of reasons, the most obvious being that the API is modelled on internal implementation details. Furthermore, it's easier to support C extensions when the interpreter is written in C as JRuby couldn't support C extensions but has a Java extension API. Pypy recently came out with beta support for C extensions, though I'm not sure how usable it is yet largely due to [Hyrum's Law](https://www.hyrumslaw.com/). LuaJIT does support C extensions, along with additional features in their C extensions (LuaJIT is pretty darn great!)
+C extension support is hard to support for a variety of reasons, the most obvious being that the API is modelled on internal implementation details. It's easier to have C extensions when the interpreter is written in C! JRuby couldn't support C extensions but has a Java extension API. Pypy recently came out with beta support for C extensions, though I'm not sure how usable it is yet largely due to [Hyrum's Law](https://www.hyrumslaw.com/). LuaJIT does support C extensions, along with additional features in their C extensions (LuaJIT is pretty darn great!)
 
 Graal solves the problem with Sulong, an engine that runs LLVM Bitcode on GraalVM by making LLVM Bitcode a Truffle language. LLVM is a toolchain, though all we need to know about it is that C can be compiled into LLVM Bitcode (Julia also has an LLVM backend!). It's a bit weird, but basically the solution is to take a perfectly good 40+ year old compiled language and interpret it! Of course, it's not nearly as fast as properly compiling C, but there are a few wins tucked away in here.
 
@@ -153,7 +153,7 @@ The ability for Graal to work with Sulong is a part of their polyglot features, 
 
 ### Go back to the interpreted code, it'll be faster
 
-We know that JITs come with an interpreter and a compiler, and that they move from the interpreter to the compiler to get faster. Pypy set bridges to take the inverse path, though for Graal and Hotspot, they _deoptimize_. The terms do not refer to strictly different concepts, but deoptimization refers more to transferring back to the interpreter as a deliberate optimization rather than as a solution to the inevitabilities of dynamic languages. Hotspot and Graal both leverage deoptimization aggressively -- Graal especially as engineers have heavy control over the compilation and need more control over the compilation for optimizations (compared to, say, Pypy). Deoptimization is also used in JS Engines such as V8 which I'll discuss a lot as it powers Javascript in Chrome as well as Node.js.
+We know that JITs come with an interpreter and a compiler, and that they move from the interpreter to the compiler to get faster. Pypy set bridges to take the inverse path, though for Graal and Hotspot, they _deoptimize_. The terms do not refer to strictly different concepts, but deoptimization refers more to transferring back to the interpreter as a deliberate optimization rather than as a solution to the inevitabilities of dynamic languages. Hotspot and Graal both leverage deoptimization aggressively -- Graal especially as engineers have heavy control over the compilation and need more control over the compilation for optimizations (compared to, say, Pypy). Deoptimization is also used in JS Engines such as V8 which I'll discuss a lot as it powers JavaScript in Chrome as well as Node.js.
 
 An important component to making deoptimization fast, is to make sure that switch from the compiler to interpreter is as fast as possible. The most naive implementation would result in the interpreter having to “catch up” with the compiler in order to be able to make the deopt. Additional complexity exists in dealing with deoptimizing asynchronous threads. To deoptimize, Graal will recreate the stack frames and use a mapping from generated code to return to the interpreter. For threads, safepoints in Java threads are used which are in place for threads to constantly pause and go “hi garbage collector, do I stop now?” so not much overhead is added to handle threads. It’s a bit rocky, but fast enough to make deoptimization a good strategy.
 
@@ -161,30 +161,32 @@ An important component to making deoptimization fast, is to make sure that switc
 
 Similarly to the Pypy bridging example, monkey patching of functions can be deoptimized. The deoptimization there is actually more elegant, as it's not a deoptimization that occurs when a guard fails, rather the deoptimizing-code is added where monkey patching occurs.
 
-A great example of a JIT deoptimization is conversion overflow, which is not a super official term, but generally refers to when a particular type (say `int32`) is represented/allocated internally but needs to become a `int64`. This is something that TruffleRuby does through deoptimizations, as well as V8.
+A great example of a JIT deoptimization is conversion overflow, which refers to when a particular type (say `int32`) is represented/allocated internally but needs to become a `int64`. This is something that TruffleRuby does through deoptimizations, as well as V8.
 
-Say when you set `var = 0` in Ruby, you get an `int32` (Ruby actually calls it Fixnum and Bignum, but I’ll continue saying `int32` and `int64`). Whenever you perform an operation on `var`, you would then have to check if the resulting value overflows. The check is one thing, however, compiling the code that handles the overflow is expensive, especially given how common numeric operations are.
+Say when you set `var = 0` in Ruby, you get an `int32` (Ruby actually calls it Fixnum and Bignum, but I’ll continue saying `int32` and `int64`). Whenever you perform an operation on `var`, you would then have to check if the resulting value overflows. The check is fine mostly, but compiling the code that handles the overflow is expensive, especially given how common numeric operations are.
 
 Even without looking at compiled instructions, we can see how this deoptimization eases the amount of code it takes to handle.
 
 ```c
+// compiling the check
 int a, b;
 int sum = a + b;
 if (overflowed) {
+  // this would also involve some allocation handling for the cpu
   long bigSum = a + b;
   return bigSum;
 } else {
   return sum;
 }
-
+// doing the deoptimisation
 int a, b;
 int sum = a + b;
 if (overflowed) {
-  Deoptimize!
+  deoptimize! // go back to compiler
 }
 ```
 
-For TruffleRuby, it’s engineered to only deoptimize the first time a specific operation is run, so that the cost of the deopt isn’t spent every time should an operation consistently overflow.
+For Truffle languages, it’s engineered to only deoptimize the first time a specific operation is run, so that the cost of the deopt isn’t spent every time should an operation consistently overflow.
 
 ### Wet code is fast code - Inlining and OSR
 
@@ -204,7 +206,7 @@ It is the final line (`foo(1, 2)`) that triggers the deopt, which is puzzling be
 
 So why the deoptimization? V8 should be smart enough to type inference that the type of `i` is an integer and that the literals passed in are also integers.
 
-I can investigate this by replacing the final line with `foo(i, i +1)`, but I actually still get a deoptimization, though this time the message is “Insufficient type feedback for binary operation”. WHY I ASK WHY IT IS LITERALLY THE SAME OPERATION I RAN IN THE LOOP WITH THE SAME VARIABLES.
+I can investigate this by replacing the final line with `foo(i, i +1)`, but I actually still get a deoptimization, though this time the message is “Insufficient type feedback for binary operation”, which is still strange!
 
 The answer my friend, is ~~blowing in the wind~~ on-stack replacement (OSR). Inlining is a powerful compiler optimization (not just JITs) in which functions stop being functions and instead the contents are expanded at the call site. JITs can inline by changing the code at runtime to make it faster(compiled languages just inline statically).
 
@@ -216,26 +218,26 @@ The answer my friend, is ~~blowing in the wind~~ on-stack replacement (OSR). Inl
 Inlining small function(s) at call site #49:JSCall
 ```
 
-So V8 will compile `foo` and determine it is inline-able and inlines it with  with OSR. However, it only performs this inlining for the code within the loop because it's the hot path and the last line doesn't really exist to the interpreter when this inlining is performed. Thus, V8 still does not have enough type feedback on the function `foo` because it isn’t actually used in the loop -- the inlined version is. If I `--no-use-osr`, then the deoptimization doesn’t happen - whether or not I pass a literal or `i`. Yet without the inlining even a measly million iterations are noticeably slower. JITs really embody "there are no solutions, only tradeoffs". Deoptimizations are expensive but not nearly as much as the cost of method lookup and inlining is much preferred in this case.
+So V8 will compile `foo` and determine it is inline-able and inlines it with  with OSR. However, it only performs this inlining for the code within the loop because it's the hot path and the last line doesn't really exist to the interpreter when this inlining is performed. Thus, V8 still does not have enough type feedback on the function `foo` because it isn’t actually used in the loop -- the inlined version is. If I `--no-use-osr`, then the deoptimization doesn’t happen - whether I pass a literal or `i`. Yet without the inlining, even a measly million iterations are noticeably slower. JITs really embody "there are no solutions, only tradeoffs". Deoptimizations are expensive but not nearly as much as the cost of method lookup and inlining is much preferred in this case.
 
-Inlining is crazy effective! I ran the code above with a couple extra zeroes, and it was 4 times slower with inlining disabled.
+Inlining is more effective than one might otherwise expect! I ran the code above with a couple extra zeroes, and it was 4 times slower with inlining disabled.
 
 ![](../img/jits/inliningbench.png)
 
 Though this is a blog post about JITs, inlining is also really effective for compiled languages. All LLVM languages will inline aggressively (because LLVM will inline), though Julia actually inlines without LLVM because of its jitty nature. JITs can inline with heuristics that come from runtime information, and can switch from not-inlining to inlining with OSR.
 
 > ### A note about JITs and the LLVM
-> A toolchain to consider is LLVM, which provides a ton of tools related to compiler infrastructure. Julia works with LLVM (note that it’s a large toolchain and each language will utilize it differently), as well as Rust, Swift and Crystal. Suffice it to say that it’s a significant and amazing project that of course also supports JITs, yet there hasn’t really been any significant dynamic JITs built with the LLVM. JavaScriptCore’s fourth compiler tier briefly used an LLVM backend but was replaced in less than two years. The LLVM hasn’t been well suited to dynamic JITs generally because it wasn’t made to work with the unique challenges of being dynamic. Pypy has tried about 5 or 6 times, but JSC actually went with it! With the LLVM, allocation sinking and code motion were limited. Powerful JIT features like range-inferencing (like type inference, but also knowing the range of a value) were not possible. Most importantly, LLVM comes with very expensive compile times.
+> A toolchain to consider is LLVM, which provides tools related to compiler infrastructure. Julia works with LLVM (note that it’s a large toolchain and each language will utilize it differently), as well as Rust, Swift and Crystal. Suffice it to say that it’s a significant and amazing project that of course also supports JITs, yet there hasn’t really been any significant dynamic JITs built with the LLVM. JavaScriptCore’s fourth compiler tier briefly used an LLVM backend but was replaced in less than two years. The LLVM hasn’t been well suited to dynamic JITs generally because it wasn’t made to work with the unique challenges of being dynamic. Pypy has tried about 5 or 6 times, but JSC actually went with it! With the LLVM, allocation sinking and code motion were limited. Powerful JIT features like range-inferencing (like type inference, but also knowing the range of a value) were not possible. Most importantly, LLVM comes with expensive compile times, which don't matter as much for compiled languages.
 
 ### What if instead of instruction based IR like everyone else we had a big graph, and also it modifies itself
 
 We've taken a look at LLVM bitcode and Python/Ruby/Java-esque bytecode as IR - and they share the same format of some kind of language that looks like instructions. Hotspot, Graal and V8 have an IR called "Sea of Nodes" (pioneered by Hotspot) which is essentially a lower level AST. One can imagine how Seas of Nodes are effective IR, as much of profiling work is based on a notion of a certain path not being taken often (or being traversed in a particular pattern). Note that these compiler ASTs are distinct from the parser AST.
 
-I'm usually all for "try this at home!" but getting graphs to browse is actually a bit difficult, albeit lots of fun and often very helpful for understanding compiler flows. I for one, cannot read all the graphs not only by limits of knowledge but by the computation power of my brain (which can be mediated with compiler options to get rid of behaviours I don't care about)
+They're also my favourite just to understand my compilation. If you've ever worked with [JAX](https://jax.readthedocs.io/en/latest/notebooks/quickstart.html), you might've found that reading the compile graphs is useful for finding out why the compiled output is not performing the optimisation you expect. The graphs can be hard to approach, we're going to work with some simpler ones.
 
 ![](../img/jits/igvyikes.png)
 
-For V8, you'll need to build V8 and then use the D8 tool with the flag `--print-ast`. For Graal, `--vm.Dgraal.Dump=Truffle:2`. These give you text outputs (formatted such that you can get a graph out of them). I'm not sure how V8 developers generate visual graphs but Oracle provides "Ideal Graph Visualizer", which is used above. I did not have the energy to reinstall IGV so instead I have graphs from Chris Seaton generated with Seafoam which is not currently open sourced.
+Graal and V8 will both give you text outputs (formatted such that you can get a graph out of them). I'm not sure how V8 developers generate visual graphs but Oracle provides "Ideal Graph Visualizer", which is used above. I did not have the energy to reinstall IGV so instead I have graphs from Chris Seaton generated with Seafoam which is not currently open sourced.
 
 Anyway, let us look at a JavaScript AST!
 

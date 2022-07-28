@@ -59,13 +59,13 @@
 }
 #home .img-circle {
   border: 15px solid rgba(38, 198, 218, 0.5);
-  box-shadow: 0 0 0 50px #f6fdfe, 0 0 0 100px #ebfafc, 0 0 0 150px #f6fdfe, 0 0 0 200px #ebfafc, 0 0 0 250px #f6fdfe, 0 0 0 300px #ebfafc, 0 0 0 350px #f6fdfe, 0 0 0 400px #ebfafc, 0 0 0 450px #f6fdfe, 0 0 0 500px #ebfafc, 0 0 0 550px #f6fdfe, 0 0 0 600px #ebfafc;
+  box-shadow: 0 0 0 50px #f6fdfe, 0 0 0 100px #ebfafc, 0 0 0 150px #f6fdfe, 0 0 0 200px #ebfafc;
   position: relative;
 }
 @media (prefers-color-scheme: dark) {
   #home .img-circle {
     border: 15px solid #26C6DA;
-    box-shadow: 0 0 0 50px #1c2324, 0 0 0 100px #1d2b2d, 0 0 0 150px #1c2324, 0 0 0 200px #1d2b2d, 0 0 0 250px #1c2324, 0 0 0 300px #1d2b2d, 0 0 0 350px #1c2324, 0 0 0 400px #1d2b2d, 0 0 0 450px #1c2324, 0 0 0 500px #1d2b2d, 0 0 0 550px #1c2324, 0 0 0 600px #1d2b2d;
+    box-shadow: 0 0 0 50px #1c2324, 0 0 0 100px #1d2b2d, 0 0 0 150px #1c2324, 0 0 0 200px #1d2b2d;
   }
 }
 
@@ -274,19 +274,26 @@ body {
 }
 
 a {
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -ms-transition: all 0.2s;
-  -o-transition: all 0.2s;
-  transition: all 0.2s;
   color: #26C6DA;
 }
 a:hover, a:focus {
-  color: #1e9faf;
+  background: -webkit-linear-gradient(45deg, #7ddde9, #bf7de9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @media (prefers-color-scheme: dark) {
   a {
     color: #52d1e1;
+  }
+}
+@media (prefers-color-scheme: light) {
+  a {
+    color: #26C6DA;
+  }
+  a:hover, a:focus {
+    background: -webkit-linear-gradient(45deg, #1e9faf, #771eaf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 

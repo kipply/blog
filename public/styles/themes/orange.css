@@ -59,13 +59,13 @@
 }
 #home .img-circle {
   border: 15px solid rgba(255, 167, 38, 0.5);
-  box-shadow: 0 0 0 50px #fffbf6, 0 0 0 100px #fff7eb, 0 0 0 150px #fffbf6, 0 0 0 200px #fff7eb, 0 0 0 250px #fffbf6, 0 0 0 300px #fff7eb, 0 0 0 350px #fffbf6, 0 0 0 400px #fff7eb, 0 0 0 450px #fffbf6, 0 0 0 500px #fff7eb, 0 0 0 550px #fffbf6, 0 0 0 600px #fff7eb;
+  box-shadow: 0 0 0 50px #fffbf6, 0 0 0 100px #fff7eb, 0 0 0 150px #fffbf6, 0 0 0 200px #fff7eb;
   position: relative;
 }
 @media (prefers-color-scheme: dark) {
   #home .img-circle {
     border: 15px solid #FFA726;
-    box-shadow: 0 0 0 50px #25221c, 0 0 0 100px #30291d, 0 0 0 150px #25221c, 0 0 0 200px #30291d, 0 0 0 250px #25221c, 0 0 0 300px #30291d, 0 0 0 350px #25221c, 0 0 0 400px #30291d, 0 0 0 450px #25221c, 0 0 0 500px #30291d, 0 0 0 550px #25221c, 0 0 0 600px #30291d;
+    box-shadow: 0 0 0 50px #25221c, 0 0 0 100px #30291d, 0 0 0 150px #25221c, 0 0 0 200px #30291d;
   }
 }
 
@@ -273,20 +273,21 @@ body {
   margin: auto;
 }
 
-a {
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -ms-transition: all 0.2s;
-  -o-transition: all 0.2s;
-  transition: all 0.2s;
-  color: #FFA726;
-}
 a:hover, a:focus {
-  color: #f29000;
+  background: -webkit-linear-gradient(45deg, #ffd08c, #8cff97);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @media (prefers-color-scheme: dark) {
   a {
     color: #ffbc59;
+  }
+}
+@media (prefers-color-scheme: light) {
+  a:hover, a:focus {
+    background: -webkit-linear-gradient(45deg, #f29000, #00f217);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 

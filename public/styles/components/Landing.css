@@ -9,7 +9,7 @@
 #home {
   padding: 40px;
   padding-bottom: 150px;
-  background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05) 50px, rgba(255, 255, 255, 0.09) 50px, rgba(255, 255, 255, 0.09) 100px);
+  background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02) 50px, rgba(255, 255, 255, 0.04) 50px, rgba(255, 255, 255, 0.04) 100px);
 }
 @media (min-width: 650px) {
   #home {
@@ -43,13 +43,13 @@
 }
 #home .img-circle {
   border: 15px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 50px white, 0 0 0 100px white, 0 0 0 150px white, 0 0 0 200px white, 0 0 0 250px white, 0 0 0 300px white, 0 0 0 350px white, 0 0 0 400px white, 0 0 0 450px white, 0 0 0 500px white, 0 0 0 550px white, 0 0 0 600px white;
+  box-shadow: 0 0 0 50px white, 0 0 0 100px white, 0 0 0 150px white, 0 0 0 200px white;
   position: relative;
 }
 @media (prefers-color-scheme: dark) {
   #home .img-circle {
     border: 15px solid #FFF;
-    box-shadow: 0 0 0 50px #252525, 0 0 0 100px #303030, 0 0 0 150px #252525, 0 0 0 200px #303030, 0 0 0 250px #252525, 0 0 0 300px #303030, 0 0 0 350px #252525, 0 0 0 400px #303030, 0 0 0 450px #252525, 0 0 0 500px #303030, 0 0 0 550px #252525, 0 0 0 600px #303030;
+    box-shadow: 0 0 0 50px #212121, 0 0 0 100px #252525, 0 0 0 150px #212121, 0 0 0 200px #252525;
   }
 }
 

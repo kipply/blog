@@ -25,7 +25,7 @@
 #home {
   padding: 40px;
   padding-bottom: 150px;
-  background: repeating-linear-gradient(45deg, rgba(239, 83, 80, 0.05), rgba(239, 83, 80, 0.05) 50px, rgba(239, 83, 80, 0.09) 50px, rgba(239, 83, 80, 0.09) 100px);
+  background: repeating-linear-gradient(45deg, rgba(239, 83, 80, 0.02), rgba(239, 83, 80, 0.02) 50px, rgba(239, 83, 80, 0.04) 50px, rgba(239, 83, 80, 0.04) 100px);
 }
 @media (min-width: 650px) {
   #home {
@@ -59,13 +59,13 @@
 }
 #home .img-circle {
   border: 15px solid rgba(239, 83, 80, 0.5);
-  box-shadow: 0 0 0 50px #fef8f8, 0 0 0 100px #fef0ef, 0 0 0 150px #fef8f8, 0 0 0 200px #fef0ef, 0 0 0 250px #fef8f8, 0 0 0 300px #fef0ef, 0 0 0 350px #fef8f8, 0 0 0 400px #fef0ef, 0 0 0 450px #fef8f8, 0 0 0 500px #fef0ef, 0 0 0 550px #fef8f8, 0 0 0 600px #fef0ef;
+  box-shadow: 0 0 0 50px #fffcfc, 0 0 0 100px #fef8f8, 0 0 0 150px #fffcfc, 0 0 0 200px #fef8f8;
   position: relative;
 }
 @media (prefers-color-scheme: dark) {
   #home .img-circle {
     border: 15px solid #EF5350;
-    box-shadow: 0 0 0 50px #241e1e, 0 0 0 100px #2f2121, 0 0 0 150px #241e1e, 0 0 0 200px #2f2121, 0 0 0 250px #241e1e, 0 0 0 300px #2f2121, 0 0 0 350px #241e1e, 0 0 0 400px #2f2121, 0 0 0 450px #241e1e, 0 0 0 500px #2f2121, 0 0 0 550px #241e1e, 0 0 0 600px #2f2121;
+    box-shadow: 0 0 0 50px #201d1d, 0 0 0 100px #241e1e, 0 0 0 150px #201d1d, 0 0 0 200px #241e1e;
   }
 }
 
@@ -274,19 +274,26 @@ body {
 }
 
 a {
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -ms-transition: all 0.2s;
-  -o-transition: all 0.2s;
-  transition: all 0.2s;
   color: #EF5350;
 }
 a:hover, a:focus {
-  color: #eb2521;
+  background: -webkit-linear-gradient(45deg, #f8afad, #d1f8ad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @media (prefers-color-scheme: dark) {
   a {
     color: #f3817f;
+  }
+}
+@media (prefers-color-scheme: light) {
+  a {
+    color: #EF5350;
+  }
+  a:hover, a:focus {
+    background: -webkit-linear-gradient(45deg, #eb2521, #82eb21);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 

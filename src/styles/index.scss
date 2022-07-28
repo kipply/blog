@@ -22,14 +22,24 @@ body{
 }
 
 a {
-    @include transition-all;
-    color: $primary;
+  color: $primary;
     &:hover,
     &:focus {
-        color: darken($primary, 10%);
+        background: -webkit-linear-gradient(45deg, lighten($primary, 20%), lighten(adjust-hue($primary, 90deg), 20%));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     @media (prefers-color-scheme: dark) {
       color: lighten($primary, 10%);
+    }
+    @media (prefers-color-scheme: light) {
+      color: $primary;
+      &:hover,
+      &:focus {
+        background: -webkit-linear-gradient(45deg, darken($primary, 10%), darken(adjust-hue($primary, 90deg), 10%));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+      }
     }
 }
 

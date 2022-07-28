@@ -181,7 +181,7 @@ In the previous section, we have two calculations for when something memory band
 \text{flops time} = B \cdot \frac{2 \cdot P}{N \cdot A_f}
 {% end %}
 
-We're dealing with the same ratio we found in the [kv cache](#kv-cache) section. The min batch size for memory bandwidth bound is \\(A_\text{bw}/A_c = 208\\). This is a handy ratio! If we have the load to do it, we prefer flops bound as it's more compute efficient. Though it's also the case that if we're flops bound, making the batch size larger doesn't mean anything is getting faster.
+We're dealing with the same ratio we found in the [kv cache](#kv-cache) section. The min batch size for memory bandwidth bound is \\(A_\text{bw}/A_f = 208\\). This is a handy ratio! If we have the load to do it, we prefer flops bound as it's more compute efficient. Though it's also the case that if we're flops bound, making the batch size larger doesn't mean anything is getting faster.
 
 To calculate when the capacity goes from mostly kv cache to mostly weights is trivial, and also isn't a binary in the same way (nothing special happens when your kv cache starts taking up more memory than your weights). Nothing special really happens with comms either. At some point in increasing the batch size, the throughput starts dwarfing the latency so we dropped that factor. As observed previously, the latency becomes insignificant much later (our 512 batch on 52B communication cost was still 11% latency).
 

@@ -1,0 +1,13 @@
+[debug] [2022-07-28T07:11:07.665Z] ----------------------------------------------------------------------
+[debug] [2022-07-28T07:11:07.666Z] Command:       /Users/kipply/.nvm/versions/node/v16.15.1/bin/node /Users/kipply/.nvm/versions/node/v16.15.1/bin/firebase deploy --only hosting
+[debug] [2022-07-28T07:11:07.666Z] CLI Version:   11.0.1
+[debug] [2022-07-28T07:11:07.666Z] Platform:      darwin
+[debug] [2022-07-28T07:11:07.667Z] Node Version:  v16.15.1
+[debug] [2022-07-28T07:11:07.684Z] Time:          Thu Jul 28 2022 00:11:07 GMT-0700 (Pacific Daylight Time)
+[debug] [2022-07-28T07:11:07.684Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-07-28T07:11:07.724Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-07-28T07:11:07.724Z] > authorizing via signed-in user (carolyfisher@gmail.com)
+[debug] [2022-07-28T07:11:07.724Z] [iam] checking project personal-site-c03f4 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2022-07-28T07:11:07.726Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/personal-site-c03f4:testIamPermissions [none]
+[debug] [2022-07-28T07:11:07.726Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/personal-site-c03f4:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}

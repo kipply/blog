@@ -25,7 +25,7 @@
 #home {
   padding: 40px;
   padding-bottom: 150px;
-  background: repeating-linear-gradient(45deg, rgba(66, 165, 245, 0.05), rgba(66, 165, 245, 0.05) 50px, rgba(66, 165, 245, 0.09) 50px, rgba(66, 165, 245, 0.09) 100px);
+  background: repeating-linear-gradient(45deg, rgba(66, 165, 245, 0.02), rgba(66, 165, 245, 0.02) 50px, rgba(66, 165, 245, 0.04) 50px, rgba(66, 165, 245, 0.04) 100px);
 }
 @media (min-width: 650px) {
   #home {
@@ -59,13 +59,13 @@
 }
 #home .img-circle {
   border: 15px solid rgba(66, 165, 245, 0.5);
-  box-shadow: 0 0 0 50px #f7fbff, 0 0 0 100px #eef7fe, 0 0 0 150px #f7fbff, 0 0 0 200px #eef7fe, 0 0 0 250px #f7fbff, 0 0 0 300px #eef7fe, 0 0 0 350px #f7fbff, 0 0 0 400px #eef7fe, 0 0 0 450px #f7fbff, 0 0 0 500px #eef7fe, 0 0 0 550px #f7fbff, 0 0 0 600px #eef7fe;
+  box-shadow: 0 0 0 50px #fbfdff, 0 0 0 100px #f7fbff, 0 0 0 150px #fbfdff, 0 0 0 200px #f7fbff;
   position: relative;
 }
 @media (prefers-color-scheme: dark) {
   #home .img-circle {
     border: 15px solid #42A5F5;
-    box-shadow: 0 0 0 50px #1e2125, 0 0 0 100px #1f2830, 0 0 0 150px #1e2125, 0 0 0 200px #1f2830, 0 0 0 250px #1e2125, 0 0 0 300px #1f2830, 0 0 0 350px #1e2125, 0 0 0 400px #1f2830, 0 0 0 450px #1e2125, 0 0 0 500px #1f2830, 0 0 0 550px #1e2125, 0 0 0 600px #1f2830;
+    box-shadow: 0 0 0 50px #1d1f20, 0 0 0 100px #1e2125, 0 0 0 150px #1d1f20, 0 0 0 200px #1e2125;
   }
 }
 
@@ -274,19 +274,26 @@ body {
 }
 
 a {
-  -webkit-transition: all 0.2s;
-  -moz-transition: all 0.2s;
-  -ms-transition: all 0.2s;
-  -o-transition: all 0.2s;
-  transition: all 0.2s;
   color: #42A5F5;
 }
 a:hover, a:focus {
-  color: #128ef2;
+  background: -webkit-linear-gradient(45deg, #a3d3fa, #f5a3fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @media (prefers-color-scheme: dark) {
   a {
     color: #72bcf8;
+  }
+}
+@media (prefers-color-scheme: light) {
+  a {
+    color: #42A5F5;
+  }
+  a:hover, a:focus {
+    background: -webkit-linear-gradient(45deg, #128ef2, #e712f2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 

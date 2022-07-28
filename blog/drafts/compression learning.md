@@ -1,5 +1,5 @@
 +++
-title = "Reasons To Be Good"
+title = "Compression Algorithms and a Poem About AI"
 date = 2022-07-09
 weight = 5
 +++

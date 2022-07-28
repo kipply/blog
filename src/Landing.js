@@ -24,25 +24,37 @@ const Landing = () => (
             <a href="mailto:hello@carolchen.me" target="_blank" rel="noredirect no referrer noreferrer">email me</a>
             <br />
             <a href="https://twitter.com/kipperrii" target="_blank" rel="noredirect no referrer noreferrer">tweets (tweet at me?)</a>
+            <br />
+            <a href="https://docs.google.com/spreadsheets/d/1s4OSqDGQWcC_oGHejdvd9839ASY0nKNGvWO3wQ0tgm4/edit#gid=0" target="_blank" rel="noredirect no referrer noreferrer">a spreadsheet</a>
           </div>
         </Col>
         <Col xs={12} sm={12} md={12} id="intro-text">
           <p>
-            I am currently funemployed until I start at
-            <a href="https://www.anthropic.com/" target="_blank" rel="noredirect no referrer noreferrer"> Anthropic</a>
-            .
+            I am a generalist software engineer and my favourite colour is purple.
+            This website changes colours when you refresh it!
           </p>
           <p>
             Most of my thoughts are about my friends, effective altruism, my bunny,
-            <a href="/blog/transformer-inference-arithmetic/" target="_blank" rel="noredirect no referrer noreferrer"> AI performance </a>
-            (speed, not quality), and various other programming knick-knacks.
+            AI (mostly non-research, like my
+            <a href="/blog/transformer-inference-arithmetic/" target="_blank" rel="noredirect no referrer noreferrer"> thoughts on inference performance for large language models</a>
+            )
+            and various other programming knick-knacks.
           </p>
           <p>
             I have been slowly learning to read, and I plan on learning to drive cars, do
             live-coding and solve all the New York Times crossword puzzles! I also enjoy
-            pole dance + aerial arts, dance dance revolution and writing for my blog.
+            pole dance + aerial arts, dance dance revolution, writing for my blog and having
+            other hobbies for no longer than two months at a time.
             My current residence is in San Francisco, though I&apos;ve spent some time in New
             York City and grew up in Richmond Hill, Ontario and also lived in Toronto.
+          </p>
+          <p>
+            Where do I work? Read
+            <a href="https://kipp.ly/blog/job-search-love-letters/"> my love letters </a>
+            to find out. Someone said they read like a murder mystery!
+            Before that, I was an early employee at Cohere for two and a half years
+            where I worked across the board on building a platform to serve and train
+            large language models.
           </p>
           <p>
             You may know me from one of my previous lives, like when I worked at

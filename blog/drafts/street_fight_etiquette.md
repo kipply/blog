@@ -1,8 +1,18 @@
 +++
-title = "On System Design Interviews"
+title = "On Interviewing, (System Design|Implementation|Debugging)"
 date = 2022-05-9
 weight = 2
 +++
+
+When it comes to engineers complaining about how they don't like interviewing, my top counterpoint is that being really good at interviewing makes you really good at interviews. Around a year ago I interviewed at Anthropic and didn't get an offer and six months later I did (and got other offers from companies that had in my opinion, harder interviews) with no canonical interview practice. I think a key thing that changed (which was not the most important one, but a substantial one) was designing and conducting interviews.
+
+Through this post I'm going to describe my model of Cohehres (at the time I left, it was one of each problem with implementation as the phone screen)
+
+### On Interviewing, Implementation
+
+
+
+### On Interviewing, Debugging
 
 
 

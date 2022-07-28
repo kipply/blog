@@ -55,7 +55,7 @@
 
   <script type="text/javascript">
   let fetchStyle = function() {
-    const themes = ['amber', 'blue', 'deeppurple', 'gray', 'green', 'indigo', 'lightblue', 'pink', 'purple', 'red', 'teal'];
+        const themes = ['amber', 'blue', 'deeppurple', 'gray', 'green', 'indigo', 'lightblue', 'pink', 'purple', 'red', 'teal'];
     const theme = "{{ get_url(path='themes') | safe }}/" + themes[Math.floor(Math.random() * themes.length)] + ".css";
 
     let link = document.createElement('link');
