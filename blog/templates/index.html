@@ -55,7 +55,7 @@
 
   <script type="text/javascript">
   let fetchStyle = function() {
-        const themes = ['amber', 'blue', 'deeppurple', 'gray', 'green', 'indigo', 'lightblue', 'pink', 'purple', 'red', 'teal'];
+        const themes = ['amber', 'blue', 'deeppurple', 'green', 'indigo', 'lightblue', 'pink', 'purple', 'red', 'teal'];
     const theme = "{{ get_url(path='themes') | safe }}/" + themes[Math.floor(Math.random() * themes.length)] + ".css";
 
     let link = document.createElement('link');
@@ -100,23 +100,6 @@
     {% block content -%}
     <div class="row">
       <div class="col">
-        <h1>chronological</h1>
-        {% set is_first_page = true %}
-        {% if paginator is defined %}
-            {% set pages = paginator.pages %}
-            {% set is_first_page = paginator.current_index == 1 %}
-        {% elif section is defined %}
-            {% set pages = section.pages %}
-        {% endif %}
-        {% for page in pages %}
-          {% if not page.extra.secret %}
-          <article class="c-article p-list-article">
-            {{ macros::title(page=page) }}
-          </article>
-          {% endif %}
-        {% endfor %}
-      </div>
-      <div class="col">
         <h1>favourites</h1>
           {% set section = get_section(path="endorsed/_index.md") %}
           {% for page in section.pages %}
@@ -135,6 +118,23 @@
             </article>
             {% endif %}
           {% endfor %}
+      </div>
+      <div class="col">
+        <h1>chronological</h1>
+        {% set is_first_page = true %}
+        {% if paginator is defined %}
+            {% set pages = paginator.pages %}
+            {% set is_first_page = paginator.current_index == 1 %}
+        {% elif section is defined %}
+            {% set pages = section.pages %}
+        {% endif %}
+        {% for page in pages %}
+          {% if not page.extra.secret %}
+          <article class="c-article p-list-article">
+            {{ macros::title(page=page) }}
+          </article>
+          {% endif %}
+        {% endfor %}
       </div>
     </div>
     {%- endblock content %}
