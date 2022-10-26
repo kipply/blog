@@ -35,10 +35,19 @@
       "**/.*",
       "**/node_modules/**"
     ],
+      "redirects": [ {
+    "source": "/date",
+    "destination": "https://www.notion.so/kipply/date-kipply-b896d42e248a4516b1edca799afe2577",
+    "type": 301
+  } ],
     "rewrites": [
       {
         "source": "/resume",
         "destination": "/CarolChenResume.pdf"
+      },
+      {
+        "source": "/date",
+        "destination": "https://www.notion.so/kipply/date-kipply-b896d42e248a4516b1edca799afe2577"
       },
       {
         "source": "/bestaplaid",

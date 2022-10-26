@@ -1,6 +1,6 @@
 +++
 title = "Things Read | Jul/Aug 2022"
-date = 2022-08-03
+date = 2022-09-03
 weight = 2
 +++
 
