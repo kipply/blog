@@ -30,8 +30,6 @@ const Landing = () => (
             <a href="mailto:hello@carolchen.me" target="_blank" rel="noredirect no referrer noreferrer">email me</a>
             <br />
             <a href="https://twitter.com/kipperrii" target="_blank" rel="noredirect no referrer noreferrer">tweets (tweet at me?)</a>
-            <br />
-            <a href="https://docs.google.com/spreadsheets/d/1s4OSqDGQWcC_oGHejdvd9839ASY0nKNGvWO3wQ0tgm4/edit#gid=0" target="_blank" rel="noredirect no referrer noreferrer">a spreadsheet</a>
           </div>
         </Col>
         <Col xs={12} sm={12} md={12} id="intro-text">
