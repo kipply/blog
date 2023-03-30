@@ -17,8 +17,8 @@ body {
     color: $color-text-dark;
   }
   color: $color-text;
-  font-size: 1.2rem;
-  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
   line-height: 1.50;
 }
 
@@ -33,13 +33,28 @@ h6 {
 }
 
 h1 {
-  font-size: 3.2rem;
+  font-size: 3rem;
   color: $primary;
   margin-bottom: 10px;
   @media (prefers-color-scheme: dark) {
     color: saturate(lighten($primary, 10%), 10%);
   }
 }
+  .section-title {
+    padding: 0 10px;
+    display:inline-block;
+    color: white;
+    transition: all 0.25s;
+    background: linear-gradient(120deg, adjust-hue($primary, 25deg),  adjust-hue($primary, -25deg));
+    text-decoration: none;
+    -webkit-background-clip: none;
+    -webkit-text-fill-color: none;
+    @media (prefers-color-scheme: dark) {
+      background: linear-gradient(120deg, saturate(lighten(adjust-hue($primary, 25deg), 10%), 10%),  saturate(lighten(adjust-hue($primary, -25deg), 10%), 10%));
+      color: $color-title;
+    }
+  }
+
 
 h2 {
   color: adjust-hue($primary, 10deg);
@@ -47,6 +62,7 @@ h2 {
     color: saturate(lighten(adjust-hue($primary, 10deg), 10%), 10%);
   }
   font-size: 2.4rem;
+  margin-bottom: 0;
 }
 
 h3 {
@@ -55,6 +71,7 @@ h3 {
   @media (prefers-color-scheme: dark) {
     color: saturate(lighten(adjust-hue($primary, 20deg), 10%), 10%);
   }
+  margin-bottom: 0;
 }
 
 h4 {
@@ -180,14 +197,18 @@ hr {
   border: 0.5px solid rgba($primary, 0.5);
 }
 
+footer {
+  text-align: right;
+}
+
+
 .header {
-  text-align: center;
+  padding-left: 25px;
 }
 .title-link {
-  font-size: 4.4rem;
+  font-size: 3rem;
+  margin-bottom: 0;
   a {
-    padding: 3px;
-
     text-transform: lowercase;
     &:hover {
       color: white;
@@ -217,7 +238,7 @@ hr {
   font-family: 'Montserrat', sans-serif;
   margin-bottom: 0;
   font-size: 1.5rem;
-  line-height: 1.8rem;
+  line-height: normal;
   position: relative;
   background-color: #fff;
   overflow:hidden;
@@ -229,10 +250,11 @@ hr {
 
   a {
     text-transform: lowercase;
-    color: $primary;
     font-style: normal !important;
+    color: lighten(black, 10%);
     @media (prefers-color-scheme: dark) {
       color: saturate(lighten(adjust-hue($primary, 10deg), 10%), 20%);
+      color: darken(white, 10%),
     }
 
     &:hover {
@@ -324,29 +346,9 @@ hr {
   }
 }
 
-.icon-link {
-  color: rgba($primary, 0.5);
-  &:hover {
-    transition: all 0.25s;
-    text-decoration: none;
-    background: linear-gradient(-60deg, adjust-hue($primary, 25deg), adjust-hue($primary, -25deg));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-}
-
-.social-icons {
-  margin: 5px 0;
-  margin-bottom: 20px;
-  a {
-    font-size: 2rem;
-    color: $primary;
-  }
-  font-size: 1.6rem;
-}
 .notfound {
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   h1 {
     background: linear-gradient(-60deg, adjust-hue($primary, 25deg), adjust-hue($primary, -25deg));
     -webkit-background-clip: text;
@@ -379,7 +381,7 @@ hr {
 }
 
 .main {
-  max-width: 60%;
+  max-width: 65%;
   margin: 0 auto 0;
   margin-bottom: 10%;
   @media only screen and (max-width: 900px) {
@@ -404,6 +406,44 @@ hr {
   @media only screen and (max-width: 900px) {
     display: none;
     min-width: 0;
+  }
+}
+
+.article-meta{
+  font-family: "Iter", sans-serif!important;
+}
+
+.linux-libertine{
+  font-family: "Linux Libertine 0", serif;
+  .article-body p {
+    font-size: 1.7rem;
+  }
+  h1, h2, h3, h4, h5, h6{
+    font-family: "Linux Libertine 0", serif;
+  }
+  strong {
+    font-weight: 600;
+  }
+}
+
+
+.diary{
+  font-family: "Rubik", serif;
+  .article-body p {
+    font-size: 1.6rem;
+  }
+  h1, h2, h3, h4, h5, h6{
+    font-family: "Dancing Script", serif;
+  }
+  h1 {
+    font-size: 5rem;
+  }
+  h3 {
+    font-size: 3rem;
+    line-height: 1;
+  }
+  strong {
+    font-weight: 600;
   }
 }
 

@@ -8,7 +8,11 @@
 {%- endblock title %}
 
 {% block content %}
-<header>
+{% set font_class = "" %}
+{% if page.extra.font_class %}
+    {% set font_class = page.extra.font_class %}
+{%- endif %}
+<header class="{{ font_class }}">
   <h1>{{ page.title }}</h1>
   <div>
     <div class="article-meta">
@@ -22,15 +26,16 @@
     </div>
   </div>
 </header>
-<article class="article">
+<article class="article {{ font_class }}">
   <div class="page-body">
+    <!-- {% set font_class = '' %} -->
     <section id="js-article" class="article-body">
       {{ macros::polish(content=page.content) }}
     </section>
   </div>
 </article>
 {% if page.extra.show_toc %}
-<div class="sidebar">
+<div class="sidebar {{ font_class }}">
   <ul class="sidebar-ul">
   {% for h1 in page.toc %}
       <li>
@@ -51,25 +56,12 @@
 {% endif %}
 
 <footer>
-  <div class="social-icons">
-    ---
-    <br/>
-    Thanks for reading <3
-    <br/>
-    I'm generally open to being contacted, find/contact me via:
-    <a class="icon-link" href="https://twitter.com/kipperrii">
-      <i class="fab fa-twitter"></i>
-    </a>
-    <a class="icon-link" href="https://github.com/kipply">
-      <i class="fab fa-github"></i>
-    </a>
-    <a class="icon-link" href="https://www.instagram.com/kipperrii/">
-      <i class="fab fa-instagram"></i>
-    </a>
-    <a class="icon-link" href="mailto:hello@carolchen.me">
-      <i class="fas fa-envelope"></i>
-    </a>
-  </div>
+  <hr>
+    <h1 class="title-link"><a href="{{ config.base_url }}">{{ config.title }}</a></h1>
+    <div class="header-links">
+      <a href="https://twitter.com/kipperrii">twitter</a>,
+      <a href="mailto:hello@carolchen.me">email </a>
+    </div>
 </footer>
 
 {%- endblock content %}

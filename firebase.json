@@ -39,8 +39,12 @@
     "source": "/date",
     "destination": "https://www.notion.so/kipply/date-kipply-b896d42e248a4516b1edca799afe2577",
     "type": 301
-  } ],
+  }],
     "rewrites": [
+      {
+        "source": "/",
+        "destination": "/blog/index.html"
+      },
       {
         "source": "/resume",
         "destination": "/CarolChenResume.pdf"
@@ -64,10 +68,6 @@
       {
         "source": "/blog/**",
         "destination": "/blog/404.html"
-      },
-      {
-        "source": "/",
-        "destination": "/index.html"
       },
       {
         "source": "/eng-calc",

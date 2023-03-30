@@ -35,8 +35,10 @@
 
   {% block css -%}
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Rubik&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/linux-libertine-o" rel="stylesheet">
   {%- endblock css %}
 
   {% block js %}
@@ -85,12 +87,10 @@
 <body>
   {% block header -%}
   <header class="header">
-    <h1 class="title-link"><a href="{{ config.base_url }}" class="p-title__link">{{ config.title }}</a></h1>
+    <h1 class="title-link"><a href="{{ config.base_url }}">{{ config.title }}</a></h1>
     <div class="header-links">
-      <a href="https://kipp.ly"> Personal Site </a> |
-      <a href="https://twitter.com/kipperrii"> Twitter </a> |
-      <a href="https://github.com/kipply"> Github </a> |
-      <a href="mailto:hello@carolchen.me"> Email </a>
+      <a href="https://twitter.com/kipperrii">twitter</a>,
+      <a href="mailto:hello@carolchen.me">email </a>
     </div>
   </header>
 
@@ -100,27 +100,23 @@
     {% block content -%}
     <div class="row">
       <div class="col">
-        <h1>favourites</h1>
+        <h1 class="section-title">favourites</h1>
           {% set section = get_section(path="endorsed/_index.md") %}
           {% for page in section.pages %}
-            {% if not page.extra.secret %}
             <article class="c-article p-list-article">
               {{ macros::title(page=page) }}
             </article>
-            {% endif %}
           {% endfor %}
-        <h1>second favourites</h1>
+        <h1 class="section-title">second favourites</h1>
           {% set section = get_section(path="promoted/_index.md") %}
           {% for page in section.pages %}
-            {% if not page.extra.secret %}
             <article class="c-article p-list-article">
               {{ macros::title(page=page) }}
             </article>
-            {% endif %}
-          {% endfor %}
+            {% endfor %}
       </div>
       <div class="col">
-        <h1>chronological</h1>
+        <h1 class="section-title">chronological</h1>
         {% set is_first_page = true %}
         {% if paginator is defined %}
             {% set pages = paginator.pages %}
@@ -129,11 +125,9 @@
             {% set pages = section.pages %}
         {% endif %}
         {% for page in pages %}
-          {% if not page.extra.secret %}
           <article class="c-article p-list-article">
-            {{ macros::title(page=page) }}
+            {{ macros::title(page=page, next=pages.next) }}
           </article>
-          {% endif %}
         {% endfor %}
       </div>
     </div>

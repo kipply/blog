@@ -4,6 +4,9 @@ date = 2022-07-03
 weight = 2
 path = "job-search-love-letters"
 
+
+[extra]
+font_class = "diary"
 +++
 
 I recently had the incredible privilege and experience of interviewing at five places, all of which I'd be very happy to go to. Even more than the details of interview processes, the ins and outs of considerations, emotional whims and impactful conversations are rarely documented. I write this as love letters to these companies and to eternalise this experience for myself, complete with dramatic Bad Apple lyrics.
