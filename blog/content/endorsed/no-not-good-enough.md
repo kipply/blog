@@ -43,7 +43,7 @@ I wish I could point to some source here, but hopefully you already believe me a
 
 ----
 
-If you are interested in not going to school, then the much harder question is what on earth to do. I don't have many coherent thoughts about this that is suitable as general advice, but if you want to email me at hello@carolchen.me we can chat~
+If you are interested in not going to school, then the much harder question is what on earth to do. I don't have many coherent thoughts about this that is suitable as general advice, but if you want to email me at email@kipp.ly we can chat~
 
 <3,
 Kipply

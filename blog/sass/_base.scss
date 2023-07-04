@@ -84,6 +84,9 @@ p {
 
 
 a {
+  @media (prefers-color-scheme: light) {
+    color: darken($primary, 20%);
+  }
   color: $primary;
   text-decoration: none;
 }
@@ -326,6 +329,9 @@ footer {
   line-height: 1;
   font-style: italic;
   color: $color-meta;
+  @media (prefers-color-scheme: light) {
+    color: darken($color-meta, 10%);
+  }
   margin: 0;
 }
 
@@ -415,6 +421,19 @@ footer {
 
 .linux-libertine{
   font-family: "Linux Libertine 0", serif;
+  .article-body p {
+    font-size: 1.7rem;
+  }
+  h1, h2, h3, h4, h5, h6{
+    font-family: "Linux Libertine 0", serif;
+  }
+  strong {
+    font-weight: 600;
+  }
+}
+
+.source-serif {
+  font-family: "Source Serif Pro", serif;
   .article-body p {
     font-size: 1.7rem;
   }

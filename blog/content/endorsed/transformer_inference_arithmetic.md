@@ -6,6 +6,7 @@ path = "transformer-inference-arithmetic"
 
 [extra]
 font_class = "linux-libertine"
+katex = true
 +++
 
 This article presents detailed few-principles reasoning about large language model inference performance, with no experiments or difficult math. The amount of understanding that can be acquired this way is really impressive and practical! A very simple model of latency for inference turns out to be a good fit for emprical results. It's helped me make better predictions and form better explanations about transformer inference.

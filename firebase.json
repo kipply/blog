@@ -37,8 +37,9 @@
     ],
       "redirects": [ {
     "source": "/date",
-    "destination": "https://www.notion.so/kipply/date-kipply-b896d42e248a4516b1edca799afe2577",
-    "type": 301
+        "destination": "https://docs.google.com/forms/d/e/1FAIpQLScIuEqFVFJWKnpSkutb8vAM_v0KDkDW6pJJLw5mFyHfwCp8cQ/viewform",    "type": 301
+
+
   } ,{
     "source": "/",
     "destination": "/blog",
@@ -55,7 +56,7 @@
       },
       {
         "source": "/date",
-        "destination": "https://www.notion.so/kipply/date-kipply-b896d42e248a4516b1edca799afe2577"
+        "destination": "https://docs.google.com/forms/d/e/1FAIpQLScIuEqFVFJWKnpSkutb8vAM_v0KDkDW6pJJLw5mFyHfwCp8cQ/viewform"
       },
       {
         "source": "/bestaplaid",
