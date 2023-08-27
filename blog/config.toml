@@ -1,6 +1,6 @@
 # Put all your custom variables here
 # Base URL of the site, the only required config argument
-base_url = "https://kipp.ly/blog"
+base_url = "https://kipp.ly"
 title = "kipply's blog"
 description = "kipply's blog about stuff she does or reads about or observes"
 # The default language, used in RSS
