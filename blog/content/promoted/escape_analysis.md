@@ -12,7 +12,7 @@ With software engineering, speed and memory are the basic measurement-benchmarks
 
 Escape Analysis is a technique that determines the behaviour of how a variable (more specifically, a pointer) is used in a certain scope, and whether it not it escapes that scope (the scope is usually a function). Escape analysis allows the program to stack allocate (here is an article on [Stack vs Heap ](https://stackoverflow.com/questions/79923/what-and-where-are-the-stack-and-heap/80113#80113)allocations) when it's determined the variable will not be used outside of the scope or in other cases, try to eliminate the allocation completely.
 >
-For a little background on how programming languages work, skim through my post [A Deep Introduction to JIT Compilers: JITs are not very Just-in-time](https://kipp.ly/blog/jits-intro).
+For a little background on how programming languages work, skim through my post [A Deep Introduction to JIT Compilers: JITs are not very Just-in-time](https://kipp.ly/jits-intro).
 
 ### Pypy Escapes Boxing
 
