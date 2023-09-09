@@ -1,5 +1,5 @@
 +++
-title = "Things Read | Jun/Jul 2023"
+title = "Things Read | May/June 2023"
 date = 2023-07-03
 weight = 2
 +++
