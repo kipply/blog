@@ -246,4 +246,4 @@ Python has also footed pieces of internet history, including Wikipedia, Facebook
 
 I tried to come up with a tl;dr to this post, but I don't really have one. I started writing with the intention of showing people how important Python will be to history, but I got carried away with random Python stuffs in my head but I guess that's fine.
 
-I cited sources / provided additional content where I deemed it would be helpful (ie hard to find with a quick Google). If anyone has questions about anything, please email me at `email@kipp.ly` since I did quite a bit of research on everything I wrote here.
+I cited sources / provided additional content where I deemed it would be helpful (ie hard to find with a quick Google). If anyone has questions about anything, please email me with _your_ name at kipp dot ly. I did quite a bit of research on everything I wrote here.
