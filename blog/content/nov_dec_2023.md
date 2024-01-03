@@ -20,7 +20,7 @@ Matt Levine really hit the mark on the whole OpenAI situation, my favourite was 
 
 Reread [Lena](https://qntm.org/mmacevedo), I still don’t get creeped out by it. [If You Are Reading This](https://qntm.org/readin) is incredibly utterly relatable. Another [qntm](https://qntm.org/frame) that starts out really cute and takes a morbid but funny turn. [The Difference](https://qntm.org/differenc) did manage to creep me out, as did [Gorge](https://qntm.org/gorge) — those two are definitely my favourite of the listed qntm.  
 
-**********************************************Partial Book Review: History of Western Philosophy by Bertrand Russell**********************************************
+### Partial Book Review: History of Western Philosophy by Bertrand Russell
 
 I started reading this book like six months ago and am only just halfway done because I’m bad at reading. The first two hundred and seventeen pages are about Ancient Philosophy and the following two hundred and seventy pages are about Catholic Philosophy, so I thought I’d write some notes before venturing into the three hundred and forty six pages of Modern Philosophy. Russell is a fantastic philosopher, really smart and seems underrated. He inserts opinion in isolated spots, and I at least always appreciated them. I don’t really need to know anything about ancient or catholic philosophy, but here are some of the things my brain retained (which are only a little correlated with how interesting they are, but very correlated with how recently I read them): 
 
@@ -48,7 +48,7 @@ I started reading this book like six months ago and am only just halfway done be
 - Reading through the Ancient philosophy part was interesting as it reminds me how much standard logic and intuition I take as common sense had to be derived at one point. Simple things like how some opinions can be better than others even if you don’t know that they’re true or how knowledge is useful for morality
 - A lot of the content was context for how the works of specific philosophers were passed down, and may have been poorly documented by followers of the philosophers.
 
-******************************Book Review: A Very Short Introduction to Hegel by Peter Singer******************************
+### Book Review: A Very Short Introduction to Hegel by Peter Singer
 
 I found this book at the store and I only picked it up because I saw “Peter Singer” and I was no way! Not The Most Good You Can Do Peter Singer? It was! I was biased against the book because Hegel feels like a meme and the book opens with Singer saying that Hegel was the most “impactful” philosopher of the 20th century. Of course I thought to myself “Marx erasure?” but Singer had thought of it and followed it up with something about how because Hegel influenced Marx it doesn’t count or something. 
 
