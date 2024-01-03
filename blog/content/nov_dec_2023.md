@@ -27,7 +27,7 @@ I started reading this book like six months ago and am only just halfway done be
 - Some great Catholic philosophers (like Occam) who did good thinking were perverse in that they weren’t in some truth-seeking regime, but rationalising existing beliefs. There were some goofy things, like Roger Bacon saying the first cause of ignorance is bad authority but specifying that it does not include the church. This seems rarer in this day in age where truth-seeking is more common and virtuous but I wonder where it’s happening that I’m not seeing? I feel like some research is locally like this in a good way.
 - There’s a funny [event](https://en.wikipedia.org/wiki/Western_Schism) in the 14th century where the French lost the papacy when there were two popes declared (one Roman and one Avignon). The funny part is that it was resolved by just… asking a council? Cultures of absolute chain of command are good like this I guess. Russell writes about this with “therefore a power superior to a legitimate pope had to be found” and described the Avignon pope (who was closely associated with the French monarch) as “addicted to favouritism and nepotism”. It’s a surprisingly funny book.
 - Saint Augustine semi-anticipated the cogito ergo sum, he also believed that it was morally important to live in solitude and did so for a number of years I don’t remember
-- In the middle of all the boring Catholic philosophy stuff, Russell drops this, which I don’t endorse as fully accurate but is entertaining:
+- In the middle of all the boring Catholic philosophy stuff, Russell drops this, which I don’t endorse as fully accurate but is entertaining:<br>
     
     Yahweh=Dialectical Materialism<br>
     
