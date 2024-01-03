@@ -29,19 +29,19 @@ I started reading this book like six months ago and am only just halfway done be
 - Saint Augustine semi-anticipated the cogito ergo sum, he also believed that it was morally important to live in solitude and did so for a number of years I don’t remember
 - In the middle of all the boring Catholic philosophy stuff, Russell drops this, which I don’t endorse as fully accurate but is entertaining:
     
-    Yahweh=Dialectical Materialism
+    Yahweh=Dialectical Materialism<br>
     
-    The Messiah=Marx
+    The Messiah=Marx<br>
     
-    The Elect=The Proletariat
+    The Elect=The Proletariat<br>
     
-    The Church=The Communist Party
+    The Church=The Communist Party<br>
     
-    The Second Coming=The Revolution
+    The Second Coming=The Revolution<br>
     
-    Hell=Punishment of the Capitalists
+    Hell=Punishment of the Capitalists<br>
     
-    The Millennium=The Communist Commonwealth
+    The Millennium=The Communist Commonwealth<br>
     
 - There was joke about how the Roman army figured out they could take bribes when choosing emperor and then assassinate the emperor and repeat
 - Aristotle is really pro-slavery, and has some weird reasoning about how some people are better off when ruled by superiors (like animals) and it justifies every single war as morally good. I only remember this because there was a funny comment from Russell: “Very satisfactory!”
