@@ -14,7 +14,7 @@ the openai [press release](https://openai.com/blog/openai-and-journalism) about 
 
 i only studied one paper meaningfully, but was [mamba](https://arxiv.org/pdf/2312.00752), so that’s fine. here’s a [mamba accessory](https://jackcook.com/2024/02/23/mamba.html)! 
 
-it’s elon season? it started with [Elon Musk is Misunderstood](https://caseyhandmer.wordpress.com/2024/01/02/elon-musk-is-not-understood/), then there was [Elon Musk is Overpaid](https://www.bloomberg.com/opinion/articles/2024-01-31/elon-musk-is-overpaid?srnd=undefined) (and the rest of the ongoing matt levine saga). the handmer-levine pairing (unrelated: the [mars helicopter](https://caseyhandmer.wordpress.com/2024/01/30/mars-helicopter-2-0/)) was incredible. i’m so sick of “if you liked x, try y”! i’m now into things to enjoy simultaneously. 1984 x Brave New World. 
+it’s elon season? it started with [Elon Musk is Misunderstood](https://caseyhandmer.wordpress.com/2024/01/02/elon-musk-is-not-understood/), then there was [Elon Musk is Overpaid](https://www.bloomberg.com/opinion/articles/2024-01-31/elon-musk-is-overpaid?srnd=undefined) (and the rest of the ongoing matt levine saga). the handmer-levine pairing (unrelated: the [mars helicopter](https://caseyhandmer.wordpress.com/2024/01/30/mars-helicopter-2-0/)) was incredible. i’m so sick of “if you liked x, try y”! i’m now into things to enjoy simultaneously. 1984 x brave new world. atlas shrugged x progress and poverty. making of the atomic bomb x american prometheus. 
 
 **Room for Thought** 
 
