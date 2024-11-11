@@ -85,7 +85,7 @@ p {
 
 a {
   @media (prefers-color-scheme: light) {
-    color: darken($primary, 20%);
+    color: darken($primary, 10%);
   }
   color: $primary;
   text-decoration: none;
@@ -288,7 +288,7 @@ footer {
     @media (prefers-color-scheme: light) {
       &:hover,
       &:focus {
-        background: -webkit-linear-gradient(45deg, darken($primary, 20%), darken(adjust-hue($primary, 90deg), 20%));
+        background: -webkit-linear-gradient(45deg, darken($primary, 10%), darken(adjust-hue($primary, 90deg), 20%));
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
       }
