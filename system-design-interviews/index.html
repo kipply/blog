@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" >
+<link rel="stylesheet" href="https://kipp.ly/themes/purple.css">
+<head>
+  <meta charset="utf-8" />
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+  <title>System Design Interview Meta | kipply&#x27;s blog</title>
+<meta property="og:title" content="System Design Interview Meta | kipply&#x27;s blog" />
+<meta name="twitter:title" content="System Design Interview Meta | kipply&#x27;s blog" />
+
+  <meta name="description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+  <meta property="og:description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+  <meta name="twitter:description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+
+  <meta property="og:site_name" content="kipply&#x27;s blog" />
+  <meta property="og:url" content="https:&#x2F;&#x2F;kipp.ly" />
+
+  <link
+      rel="preload"
+      href="https://fonts.cdnfonts.com/css/linux-libertine-o"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Rubik&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <noscript>
+      <link
+          href="https://fonts.cdnfonts.com/css/linux-libertine-o"
+          rel="stylesheet"
+          type="text/css"
+      />
+      <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
+          rel="stylesheet"
+          type="text/css"
+      />
+      <link
+          href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Rubik&display=swap"
+          rel="stylesheet"
+          type="text/css"
+      />
+      <link
+          href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&display=swap"
+          rel="stylesheet"
+          type="text/css"
+      />
+  </noscript>
+
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+
+  <script type="text/javascript">
+  let fetchStyle = function() {
+        const themes = ['blue', 'deeppurple', 'green', 'lightblue', 'pink', 'purple', 'red'];
+    const theme = "https://kipp.ly/themes/" + themes[Math.floor(Math.random() * themes.length)] + ".css";
+
+    let link = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.onload = function() {
+      document.documentElement.setAttribute("style", "display:auto");
+     };
+    link.href = theme;
+
+    let headScript = document.querySelector('script');
+    headScript.parentNode.insertBefore(link, headScript);
+  }
+  fetchStyle()
+  </script>
+
+  <link rel='icon' type='image/x-icon' href="https://kipp.ly/favicon.ico" />
+
+  <link rel="alternate" type="application/atom+xml" title="kipply&#x27;s blog" href="https://kipp.ly/atom.xml">
+
+  
+
+</head>
+<body>
+  <header class="header">
+    <h1 class="title-link"><a href="https:&#x2F;&#x2F;kipp.ly">kipply&#x27;s blog</a></h1>
+    <div class="header-links">
+      <a href="https://twitter.com/kipperrii">twitter</a>,
+      your_name at kipp dot ly
+    </div>
+  </header>
+
+  <main id="main" class="main">
+    
+
+
+
+<header class="">
+  <h1>System Design Interview Meta</h1>
+  <div>
+    <div class="article-meta">
+      <time datetime="2022-08-25">
+        2022-08-25
+      </time>
+      
+      (8 min read)
+    </div>
+  </div>
+</header>
+<article class="article ">
+  <div class="page-body">
+    <!--  -->
+    <section id="js-article" class="article-body">
+      
+<p>This is a slightly unorganized document containing thinking about system design interviews. It's not at all interview advice but it may be helpful for understanding what a system design interview is about. It would be more helpful for a team thinking about how to conduct and design the interviews.</p>
+<h3 id="skills">skills</h3>
+<p>The reason there are different kinds of interviews is to test for different skills. It’s worth thinking about what skills a system design interview test for.</p>
+<p>The list is something like:</p>
+<ul>
+<li>background knowledge
+<ul>
+<li>all interview questions will call for knowledge of varying types, but system design will also call on <a href="https://nintil.com/scaling-tacit-knowledge/#tacit-knowledge">tacit knowledge</a></li>
+</ul>
+</li>
+<li>ability to adapt for constraints or new tools
+<ul>
+<li>in system design, you’ll get a lot of “ok but we can’t compromise x”, &quot;let's say we can't use x&quot; and “how can you use z to help you?” as subproblems.</li>
+</ul>
+</li>
+<li>planning
+<ul>
+<li>the planning here differs from say implementation problems since it'll be less about laying out the steps and more about preparing for adaptability (the steps become a graph) and predicting circumstances.</li>
+</ul>
+</li>
+<li>communication
+<ul>
+<li>you want to accurate communicate your solution, the reasoning for applying that solution and how you plan to execute it. system design tests the latter two parts more extensively.</li>
+</ul>
+</li>
+<li>problem solving
+<ul>
+<li>main difference from implementation questions is that the solved state is less defined. that relates to the fact that he process will involve more exploration (sampling of tools, edge cases, use cases, contstraints to consider, etc) and creativity.</li>
+</ul>
+</li>
+</ul>
+<h3 id="background-knowledge">background knowledge</h3>
+<p>System design interviews almost always cover and expect background knowledge. Applying the knowledge demonstrates ability to pattern match problems, to reflect on solutions they have tried and the past. This is the main reason system design interviews are better for more senior / experienced people, ass they capture how valuable their experience is.</p>
+<p>Domain expertise allows a big advantage, and it may be hard to evaluate skills (say, their ability to think critically about solutions they’ve attempted) in isolation. Being able to isolate the skills improves reasoning about performance and improves calibration.</p>
+<p>One could cleanly separate it out by just asking them questions about their domain, but I find it’s possible to isolate in the system design interview.</p>
+<blockquote>
+<p>As an aside, I'm quite optimistic about the idea of quizzes as interviews. Not like &quot;fill out a form&quot; but someone will talk to you with a checklist of things they'd like you to know.</p>
+</blockquote>
+<p>Some conducting guidelines about this.</p>
+<ul>
+<li>Start by asking lots of questions to get a good understanding of their background to help you more accurately evaluate their reasoning and analysis skills and also guide them more effectively through the problem solving</li>
+<li>Solutions that would be a bad idea to execute do not necessarily indicate poor candidate performance. Sometimes missing information can result in a bad idea, but perhaps the ideation and evaluation process was still impressive given what they knew</li>
+<li>Let the candidate make incorrect assumptions if you think that simplifies the problem</li>
+</ul>
+<p>I think these conducting guidelines are quite common, and are the reason why I find lots of people are surprised about their evaluation on system design questions where they can accurately evaluate their own performance on implementation questions. It’s very easy for the candidate to not know that there might be a better solution given more knowledge, especially of the tacit kind.</p>
+<h3 id="guidance">guidance</h3>
+<p>System design interviews should be very interactive, as they tend to be open-ended so candidates should be asking questions like “well we can perform a trade off between latency and throughput here, which do we care about more?”. They're also harder to conduct for this reason, as you may need to guide the candidate to cover grounds for evaluation.</p>
+<p>Here are some useful prompts to capture skills</p>
+<ul>
+<li>Give the candidate an additional piece of information, say a constraint or a tool they have access to and evaluate how well they update their thinking based on the new information.</li>
+<li>Engage in discussion for questions the candidate asks. If they asked the question about latency and throughput I proposed above, don’t just give an absolute answer but discuss which one makes more sense for whatever is being worked on</li>
+<li>Talk about whether they’ve solved any similar (sub)problems, and how they’re applying that knowledge to the problem at hand. A good intuition is excellent, but being able to identify where that intuition comes from is even better.</li>
+<li>Ask questions to check their understanding or to have them develop it. A common failure mode is for the candidate to give a big blanket solution like “oh we can autoscale with kubernetes” and then not go into it further and either that part gets lost or even the interview could end too early, without enough signal.</li>
+</ul>
+<p>All of these guidance actions are specifically not hints – they are not necessarily things that are done when struggle is observed, rather they are ways to stay engaged with the process and get more signal from the interview.</p>
+<h3 id="hint-guide">hint guide</h3>
+<p>Thinking about hinting is really important for calibration but also useful for having a pleasant interview. It's not always the case that hints are given for poor performance. Hints are really helpful to help direct the candidate down a certain path where you think you can get a more thorough evaluation or to just unstuck them on things you don't expect them to figure out in the interview.</p>
+<ul>
+<li>Hints that direct people to solutions are good, and should be only lightly penalised
+<ul>
+<li>If a solution is hinted, and they can quickly understand the proposed solution and explain the benefits and tradeoffs, that’s nearly as good. Ideation is really hard in an interview setting, and many of the best systems solutions come passively from prolonged experience with problem.</li>
+</ul>
+</li>
+<li>Hints that identify problems for the candidate should usually be penalised
+<ul>
+<li>Not identifying a problem is evidence of blind-spots or poor reasoning skills. Sometimes they lack information to be certain it’s a problem, but it’s often the case that they should be at least capable of exploring whether it’s a problem.</li>
+<li>Exceptions for things like small edge cases that they immediately understand.</li>
+</ul>
+</li>
+<li>Hints that add necessary information for the candidate should not be penalised
+<ul>
+<li>Sometimes the candidate will explore down a solution path, and be missing some information needed to help them formulate a final solution. This can be revealing constants or letting them know about the existence of a feature.</li>
+<li>Need to be a little careful with this, because if they lack too much knowledge it may make more sense to direct them down a different solution path</li>
+</ul>
+</li>
+<li>Hints should be penalised if poorly acted on
+<ul>
+<li>anything from not acknowledging the hint to failing to infer the correct updates from it.</li>
+</ul>
+</li>
+</ul>
+<h3 id="problem-specification">problem specification</h3>
+<p>The list of properties a good system design question should have is uninteresting. Should be a realistic problem that gives space for candidates to explore the complexities of system design and apply their various experiences. Not too open-ended such that the field of answering is too large and not too closed such that the solution is too narrow. Shouldn’t be about link shortening.</p>
+<p>It actually turned out to be that coming up with the premise for a good question wasn't that hard, but specifying it well kind of was. Here are the things I would recommend for that:</p>
+<ul>
+<li>Keep a list of possible solution paths
+<ul>
+<li>It’s really important for interviewers to be very familiar with the problem. It's good for preparing interviewers and helps calibrate. Calibrating by comparing against past evaluations is more effective when the past evaluation is closer to the one at hand</li>
+</ul>
+</li>
+<li>Keep a list of questions that the candidate might ask
+<ul>
+<li>This is also a list of questions that candidates <em>should</em> ask</li>
+</ul>
+</li>
+<li>Keep a list of possible constants / specifications the candidate may ask for / need
+<ul>
+<li>this is common for doing some napkin math.</li>
+</ul>
+</li>
+<li>Prepare a clear list of goals to optimise for</li>
+<li>Problem spec should include a use case example
+<ul>
+<li>This is really helpful for the candidate to use as reference when explaining solutions. Not to say that candidate shouldn’t need to come up with other possible use cases</li>
+</ul>
+</li>
+<li>Create a rubric of specific skills you’re trying to capture, with examples specific to the question</li>
+<li>Preset notes about common hints to give and questions to ask
+<ul>
+<li>this is useful for calibration, consistency and for interviewer education</li>
+</ul>
+</li>
+</ul>
+<p>The specs I maintained grew quickly as I conducted the question for the first few times, it's probably not necessary to have the whole document the first time, especially as some are more important for scaling number of interviewers.</p>
+<hr />
+<p>Before interviewing for my current job I had actually problem set more system design interviews than I had taken (which is also the time where I developed this thinking, doing more interviews didn't give me any new ideas). Not really sure how correct this thinking is but it's at least the product of a lot of first principles thinking and iteration so hopefully insightful!</p>
+
+
+    </section>
+  </div>
+</article>
+
+
+<footer>
+  <hr>
+    <h1 class="title-link"><a href="https:&#x2F;&#x2F;kipp.ly">kipply&#x27;s blog</a></h1>
+    <div class="header-links">
+      <a href="https://twitter.com/kipperrii">twitter</a>,
+      <a href="mailto:email@kipp.ly">email </a>
+    </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1afaa6bb0295489fa7a15cd4b46fe09c"}'></script><!-- End Cloudflare Web Analytics -->
+  </main>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1afaa6bb0295489fa7a15cd4b46fe09c"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
+
