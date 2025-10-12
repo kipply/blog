@@ -68,8 +68,6 @@ My history with Jane Street started when I was in high school and stranded in Wa
 
 Jane Street represented moving back to New York City to me. I moved to San Francisco in January with my former partner because he was leaving Jane Street for a job in SF, and I probably prefer to live in NYC. It made this job feel like going home to live the dreamy life I was starting to build and all the sentimentality I had left behind. I had only been in NYC for half a year! This is a jpg of me visiting the office for the first time in 2018, which was also the first time I visited and fell in love with NYC.
 
-![](../img/janestreet.jpg)
-
 The two things I'd really like to communicate is 1. that the culture is wonderful. People really enjoy working there, it's not a big scary evil bank that's going to drain your soul and hours while providing no fun (I think they have an immense amount of fun!). A few words I'd pick to describe the culture are playful, delightfully nerdy and genuine. Secondly, they had hands-down _the best_ technical interviews.
 
 They were better than I thought possible and impressively staffed at two people per interview. I went through five fantastic interview problems, not algorithmic or LeetCode like in nature and very representative of possible work people might do. They opened room for collaboration, and tested skills of problem solving, thinking about edge cases and implementation. I believe most "interview with real-world problems" questions are better than algorithmic ones, but are genuinely much harder to design but Jane Street really nailed it. 
