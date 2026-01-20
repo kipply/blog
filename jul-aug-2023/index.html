@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" >
+<link rel="stylesheet" href="https://kipp.ly/themes/purple.css">
+<head>
+  <meta charset="utf-8" />
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+  <title>Things Read | Jul&#x2F;Aug 2023 | kipply&#x27;s blog</title>
+<meta property="og:title" content="Things Read | Jul&#x2F;Aug 2023 | kipply&#x27;s blog" />
+<meta name="twitter:title" content="Things Read | Jul&#x2F;Aug 2023 | kipply&#x27;s blog" />
+
+  <meta name="description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+  <meta property="og:description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+  <meta name="twitter:description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+
+  <meta property="og:site_name" content="kipply&#x27;s blog" />
+  <meta property="og:url" content="https:&#x2F;&#x2F;kipp.ly" />
+
+  <link
+      rel="preload"
+      href="https://fonts.cdnfonts.com/css/linux-libertine-o"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Rubik&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <noscript>
+      <link
+          href="https://fonts.cdnfonts.com/css/linux-libertine-o"
+          rel="stylesheet"
+          type="text/css"
+      />
+      <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
+          rel="stylesheet"
+          type="text/css"
+      />
+      <link
+          href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Rubik&display=swap"
+          rel="stylesheet"
+          type="text/css"
+      />
+      <link
+          href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&display=swap"
+          rel="stylesheet"
+          type="text/css"
+      />
+  </noscript>
+
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+
+  <script type="text/javascript">
+  let fetchStyle = function() {
+        const themes = ['blue', 'deeppurple', 'green', 'lightblue', 'pink', 'purple', 'red'];
+    const theme = "https://kipp.ly/themes/" + themes[Math.floor(Math.random() * themes.length)] + ".css";
+
+    let link = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.onload = function() {
+      document.documentElement.setAttribute("style", "display:auto");
+     };
+    link.href = theme;
+
+    let headScript = document.querySelector('script');
+    headScript.parentNode.insertBefore(link, headScript);
+  }
+  fetchStyle()
+  </script>
+
+  <link rel='icon' type='image/x-icon' href="https://kipp.ly/favicon.ico" />
+
+  <link rel="alternate" type="application/atom+xml" title="kipply&#x27;s blog" href="https://kipp.ly/atom.xml">
+
+  
+
+</head>
+<body>
+  <header class="header">
+    <h1 class="title-link"><a href="https:&#x2F;&#x2F;kipp.ly">kipply&#x27;s blog</a></h1>
+    <div class="header-links">
+      <a href="https://twitter.com/kipperrii">twitter</a>,
+      your_name at kipp dot ly
+    </div>
+  </header>
+
+  <main id="main" class="main">
+    
+
+
+
+<header class="">
+  <h1>Things Read | Jul&#x2F;Aug 2023</h1>
+  <div>
+    <div class="article-meta">
+      <time datetime="2023-09-08">
+        2023-09-08
+      </time>
+      
+      (5 min read)
+    </div>
+  </div>
+</header>
+<article class="article ">
+  <div class="page-body">
+    <!--  -->
+    <section id="js-article" class="article-body">
+      
+<p>A Liang Lab <a href="https://arxiv.org/pdf/2307.03172.pdf">evals of long contexts</a>, for which we find that language models have the same biases humans do to the beginning and end. Clever set on <a href="https://arxiv.org/pdf/2307.02477.pdf">evals on counterfactual tasks</a>, generalisation is never as real as we want it to be. <a href="https://arxiv.org/pdf/2207.00099.pdf">Proof of forgetting</a> for LLMs, though it doesn’t seem as easy as one would hope. Also yes we still have <a href="https://arxiv.org/pdf/2202.07646.pdf">a lot of memorisation</a>, which, due to the author, uses probably the best definition of k-extractability, though I wonder if some measure of loss over some context length makes more sense. I kind of think of self-play attempts as evals for some reason? Anyway <a href="https://arxiv.org/pdf/2305.10142.pdf">this one on negotiation</a> was well constructed and got good results on in-context AI feedback, usually better than human feedback. This was as month of great eval papers papers, but this one is a <a href="https://arxiv.org/pdf/2307.09009.pdf">pretty garbage paper</a> which dishonestly tries to present simple changes in formatting (usually for the better) from the GPT-4 API as performance degradation. But hey, people are working on good <a href="https://arxiv.org/pdf/2307.11088.pdf">long context evals</a> (this one is long-context human-labelled QA). </p>
+<p>An attempt at <a href="https://arxiv.org/pdf/2307.08621.pdf">a new architecture</a>, but immediately opens with a plot showing they couldn’t scale their baseline transformer properly, an inspirational quote and an impossible triangle that is used as a diagram? A <a href="https://152334h.github.io/blog/non-determinism-in-gpt-4/#are-you-really-sure-it-isnt-hardware">good explanation</a> for why GPT-4 is so non-deterministic. <a href="https://www.lesswrong.com/posts/oSZ2xTxEMZh9f3Yaz/llms-are-mostly-not-helped-by-filler-tokens">Testings of think tokens</a> (filler text) to see if it improves performance, and the answer is no except maybe for GPT-4? </p>
+<p>Three year old text on <a href="https://gravitylobby.club/administrationmarkets.html">administration markets</a>, which references a much more historically loaded piece on the <a href="https://www.the-american-interest.com/2018/08/13/the-decline-of-american-public-administration/">decline of administrations</a>. Excuse the loading time from webarchive, but this content about <a href="https://web.archive.org/web/20220810162706im_/https://pbs.twimg.com/media/FZw7vytXgAA_SYC?format=jpg&amp;name=medium">Uber</a>, <a href="https://web.archive.org/web/20220810162706im_/https://pbs.twimg.com/media/FZw7vy1WYAICi25?format=jpg&amp;name=medium">Maoism</a>, and <a href="https://web.archive.org/web/20220810162706im_/https://pbs.twimg.com/media/FZw7vyqXoAEP6Fq?format=jpg&amp;name=medium">Georgism</a>. <a href="https://www.muji.com/us/feature/whatismuji/">Muji Manifesto</a>, “this will do”. </p>
+<p><a href="https://arxiv.org/pdf/2305.07759.pdf">TinyStories</a>! I can’t believe the same organisation put out both this paper and the Longformer paper. The TinyStories doesn’t focus on what should be the primary application of its technique, which is of course mech interp. The <a href="https://openaipublic.blob.core.windows.net/neuron-explainer/paper/index.html#sec-intro">autointerpretability</a> work was quite nifty, OpenAI alignment lives on after all (I haven’t read it yet, but DeepMind interp is <a href="https://arxiv.org/pdf/2307.09458.pdf">also alive</a>!) I am a big fan of line of research around <a href="https://www-files.anthropic.com/production/files/measuring-faithfulness-in-chain-of-thought-reasoning.pdf">measuring faithfulness in chain-of-thought reasoning</a>, which includes checks like filler text (think tokens), early answering, adding mistakes and the <a href="https://arxiv.org/pdf/2305.04388.pdf">always-choose-a trick from this other paper</a>. That paper was published with the <a href="https://www-files.anthropic.com/production/files/question-decomposition-improves-the-faithfulness-of-model-generated-reasoning.pdf">decomposition paper</a>, which does two kinds of decomp and finds that it on average decreases performance (especially the factored-decomp) but increases faithfulness. nostalgebraist <a href="https://www.lesswrong.com/posts/3ou8DayvDXxufkjHD/openai-api-base-models-are-not-sycophantic-at-any-size">couldn’t find as much sycophancy in GPT models</a>, my best guess is that this is a difference in RL data. Positional embeddings <a href="https://www.lesswrong.com/posts/qvWP3aBDBaqXvPNhS/gpt-2-s-positional-embedding-matrix-is-a-helix">are a helix</a>, but also I still don’t get how they can be important. </p>
+<p>Paper doing a decent job outlining how one would manage <a href="https://arxiv.org/pdf/2307.03718.pdf">AI public safety risks</a>, though details feel a bit messy. I brought my rabbit, bundle, to the office for his second New York Times photoshoot but sadly the bunny didn’t support the <a href="https://www.nytimes.com/2023/07/11/technology/anthropic-ai-claude-chatbot.html?partner=slack&amp;smid=sl-share">AI doomerism narrative</a>. India’s excerpt on a <a href="https://www.drdo.gov.in/sites/default/files/monographs-documents/35-guided-missiles.pdf">guide to guided missiles</a>. The <a href="https://openai.com/blog/frontier-model-forum">frontier model forum</a> launched, lower cased (fingers crossed) until it goes well. Anthropic publishes <a href="https://www.anthropic.com/index/frontier-threats-red-teaming-for-ai-safety">a bit about frontier threats red-teaming</a>, a bit because it’s mostly focused on biorisk. Good luck, everyone! Paul coming out swinging with a very compelling pitch on sharing <a href="https://www.lesswrong.com/posts/fRSj2W4Fjje8rQWm9/thoughts-on-sharing-information-about-language-model#Context">LLM capabilities</a>, with a subheader that accelerating agents in particular is neutral. </p>
+<p>The highlight of this months Hillel Wayne is <a href="https://buttondown.email/hillelwayne/archive/more-software-projects-need-defenses-of-design/">in favour of defenses of design</a>. I read a bit of SemiAnalysis this month too (Gemini and TPU shenanigans, sigh), and have shamefully declared Matt Levine bankruptcy and only followed for the Sculptor Saga. Spencer Greenberg published this month on <a href="https://www.spencergreenberg.com/2023/07/false-beliefs-held-by-intellectual-giants/">smart people with dumb beliefs</a>, for which one must also see this video of <a href="https://www.youtube.com/watch?v=HKTSaezB4p8&amp;ab_channel=sdfhsfh">Feynman singing about orange juice</a> to make fun of Pauling’s vitamin C phase. Man being an olympic host basically turns your city into a charter city for a few years? They’re <a href="https://time.com/6261729/seine-clean-up-paris-olympics-2024/">spending a billion dollars</a> to <a href="https://www.countryandtownhouse.com/culture/river-seine-clean-up-paris/">clean the Seine</a>. I learned about the <a href="https://www.wallpaper.com/design/celebrating-eighty-years-of-artek-wood-bending-technique">wood-bending techniques</a> for the very expensive Artek Aalto stools, and I’m into it.</p>
+
+
+    </section>
+  </div>
+</article>
+
+
+<footer>
+  <hr>
+    <h1 class="title-link"><a href="https:&#x2F;&#x2F;kipp.ly">kipply&#x27;s blog</a></h1>
+    <div class="header-links">
+      <a href="https://twitter.com/kipperrii">twitter</a>,
+      <a href="mailto:email@kipp.ly">email </a>
+    </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1afaa6bb0295489fa7a15cd4b46fe09c"}'></script><!-- End Cloudflare Web Analytics -->
+  </main>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1afaa6bb0295489fa7a15cd4b46fe09c"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
+
