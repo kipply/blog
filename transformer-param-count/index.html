@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" >
+<link rel="stylesheet" href="https://kipp.ly/themes/purple.css">
+<head>
+  <meta charset="utf-8" />
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+  <title>LLM Parameter Counting | kipply&#x27;s blog</title>
+<meta property="og:title" content="LLM Parameter Counting | kipply&#x27;s blog" />
+<meta name="twitter:title" content="LLM Parameter Counting | kipply&#x27;s blog" />
+
+  <meta name="description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+  <meta property="og:description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+  <meta name="twitter:description" content="kipply&#x27;s blog about stuff she does or reads about or observes">
+
+  <meta property="og:site_name" content="kipply&#x27;s blog" />
+  <meta property="og:url" content="https:&#x2F;&#x2F;kipp.ly" />
+
+  <link
+      rel="preload"
+      href="https://fonts.cdnfonts.com/css/linux-libertine-o"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Rubik&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <noscript>
+      <link
+          href="https://fonts.cdnfonts.com/css/linux-libertine-o"
+          rel="stylesheet"
+          type="text/css"
+      />
+      <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
+          rel="stylesheet"
+          type="text/css"
+      />
+      <link
+          href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Rubik&display=swap"
+          rel="stylesheet"
+          type="text/css"
+      />
+      <link
+          href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&display=swap"
+          rel="stylesheet"
+          type="text/css"
+      />
+  </noscript>
+
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+
+  <script type="text/javascript">
+  let fetchStyle = function() {
+        const themes = ['blue', 'deeppurple', 'green', 'lightblue', 'pink', 'purple', 'red'];
+    const theme = "https://kipp.ly/themes/" + themes[Math.floor(Math.random() * themes.length)] + ".css";
+
+    let link = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.onload = function() {
+      document.documentElement.setAttribute("style", "display:auto");
+     };
+    link.href = theme;
+
+    let headScript = document.querySelector('script');
+    headScript.parentNode.insertBefore(link, headScript);
+  }
+  fetchStyle()
+  </script>
+
+  <link rel='icon' type='image/x-icon' href="https://kipp.ly/favicon.ico" />
+
+  <link rel="alternate" type="application/atom+xml" title="kipply&#x27;s blog" href="https://kipp.ly/atom.xml">
+
+  
+
+</head>
+<body>
+  <header class="header">
+    <h1 class="title-link"><a href="https:&#x2F;&#x2F;kipp.ly">kipply&#x27;s blog</a></h1>
+    <div class="header-links">
+      <a href="https://twitter.com/kipperrii">twitter</a>,
+      your_name at kipp dot ly
+    </div>
+  </header>
+
+  <main id="main" class="main">
+    
+
+
+
+  
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js" integrity="sha384-K3vbOmF2BtaVai+Qk37uypf7VrgBubhQreNQe9aGsz9lB63dIFiQVlJbr92dw2Lx" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/mathtex-script-type.min.js" integrity="sha384-zWYbd0NBwgTsgIdFKVprSfTh1mbMPe5Hz1X3yY4Sd1h/K1cQoUe36OGwAGz/PcDy" crossorigin="anonymous"></script>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/contrib/auto-render.min.js" integrity="sha384-kmZOZB5ObwgQnS/DuDg6TScgOiWWBiVt0plIRkZCmE6rDZGrEOQeHM5PcHi+nyqe" crossorigin="anonymous"
+            onload="renderMathInElement(document.body);"></script>
+        
+    
+  
+<header class="">
+  <h1>LLM Parameter Counting</h1>
+  <div>
+    <div class="article-meta">
+      <time datetime="2022-03-30">
+        2022-03-30
+      </time>
+      
+      (3 min read)
+    </div>
+  </div>
+</header>
+<article class="article ">
+  <div class="page-body">
+    <!--  -->
+    <section id="js-article" class="article-body">
+      
+<p>Each weight or parameter is a float that was tuned during training and is usually two bytes as most training is done half-precision now(<a href="https://en.wikipedia.org/wiki/Bfloat16_floating-point_format">bfloat16</a>). Not everything is trained/served bfloat16, but it's at least half-precision (at least since <a href="https://arxiv.org/pdf/2005.14165.pdf">the GPT-3 Paper</a> in 2020) which gets us the two bytes.</p>
+<p>The weights loosely consist of the following, per each block (where one block a decoder unit that consists of a self-attention layer and a feedforward layer, though I'll refer to blocks as layers):</p>
+<ul>
+<li>\( W_q,W_k,W_v \) matrices, which are each \(d_\text{model} \cdot n_\text{heads}\cdot d_\text{head} \) and project the input into the query, key, and value used in self-attention.</li>
+<li>A \( W_o \) matrix, which is also \(d_\text{model}\cdot n_\text{heads}\cdot d_\text{head} \) and used on the output of self-attention, before the MLP layer (the feed-foward neural network that's stacked on the self-attention layer).</li>
+<li>MLP weights, which are two matrices each of \({d_\text{model}}^2 \cdot 4\). You might also see this referred to by feedforward or linear layers.</li>
+</ul>
+<p>The four in the MLP weights calculation is based on architecture, but basically every transformer since the <a href="https://arxiv.org/pdf/1706.03762.pdf">original from 2017</a> has gone with that ratio — where the MLP is 4 four times the size of the model embedding dimension. In a vast majority of transformer architectures, \(n_\text{heads}\cdot d_\text{head} = d_\text{model}\). You can see this in <a href="https://arxiv.org/pdf/2005.14165.pdf">all the GPT models</a> at Table 2.1 (the 13B model is off by 20, but might just be a... typo?), in the <a href="https://arxiv.org/pdf/2112.11446.pdf">Gopher models</a> in Table 1 (where what I called \(d_\text{head}\), they called &quot;Key/Value Size&quot;). This is not necessarily the case, but can be assumed.</p>
+<p>So then we have a handy equation to calculate the number of parameters!</p>
+<script type="math/tex;mode=display">P = 12 \cdot n_\text{layers} \cdot {d_\text{model}}^2</script>
+<p>With these, we can practice seeing how the factor of four in the MLP layers and the relationship of \(n_\text{heads}\cdot d_\text{head} = d_\text{model}\) holds true with the dimensions in the <a href="https://arxiv.org/pdf/2112.00861.pdf">inaugural Anthropic paper</a> in Table 1, where only \(n_\text{layers}\), \(d_\text{model}\) and \(P\) are supplied.</p>
+<script type="math/tex;mode=display">P = 12 * n_\text{layers} \cdot {d_\text{model}}^2\\
+= 12 \cdot 64 \cdot 8192^2\\
+= 51,539,607,552</script>
+<p>This is not <em>quite</em> 52B. It's probably cheating to round up by half a billion parameters, but we can account for them! The equation above is most of the parameters, but we're missing token embeddings. Anthropic uses a 65536 vocab size, so we get \(n_\text{tokens} * d_\text{model} = 536,870,912 \). Adding \(536,870,912 + 51,539,607,552 = 52,076,478,464\). We actually have that half a billion params twice for the unembeddings, which leads us to about 52.5B tokens.</p>
+<p>We're also missing biases that are attached to all the weights, as well as layernorm. Biases should be approximately zero, and layernorm are \(d_\text{model}\) (though they exist per block), but otherwise known as zero. Transformers also have positional encoding mechanisms, which for GPT-2 and the original transformer is \(n_\text{ctx}\cdot d_\text{model}\) (aka, zero) but Gopher 280B there's 21.5B weights spent on the relative positional encoding method presented in the <a href="https://arxiv.org/abs/1901.02860">Transformer XL paper</a>.</p>
+
+
+    </section>
+  </div>
+</article>
+
+<div class="sidebar ">
+  <ul class="sidebar-ul">
+  
+  </ul>
+</div>
+
+
+<footer>
+  <hr>
+    <h1 class="title-link"><a href="https:&#x2F;&#x2F;kipp.ly">kipply&#x27;s blog</a></h1>
+    <div class="header-links">
+      <a href="https://twitter.com/kipperrii">twitter</a>,
+      <a href="mailto:email@kipp.ly">email </a>
+    </div>
+</footer>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1afaa6bb0295489fa7a15cd4b46fe09c"}'></script><!-- End Cloudflare Web Analytics -->
+  </main>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1afaa6bb0295489fa7a15cd4b46fe09c"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
+
