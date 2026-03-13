@@ -1,5 +1,5 @@
 +++
-title = "Digest | Jan/Feb 2027"
+title = "Digest | Jan/Feb 2026"
 date = 2026-03-13
 weight = 2
 +++
